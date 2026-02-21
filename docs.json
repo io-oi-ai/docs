@@ -43,6 +43,7 @@
             "group": "Core Features",
             "pages": [
               "features/convert",
+              "features/action-menu",
               "features/send-to-ai",
               "features/batch-convert",
               "features/preview-card",

@@ -1,0 +1,60 @@
+---
+title: "Action Menu"
+description: "A split-button dropdown giving instant access to Copy, View as Markdown, and Open in AI — all from one button."
+---
+
+## Overview
+
+The Action Menu is a split-button in the extension popup. The primary button copies the page as Markdown in one click. Click the **↑ arrow** to expand a dropdown with all available actions.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## Available actions
+
+<CardGroup cols={2}>
+  <Card title="Copy page" icon="copy">
+    Copy the current page as Markdown for LLMs. This is the default primary action.
+  </Card>
+  <Card title="View as Markdown" icon="arrow-up-right-from-square">
+    Open the current page as clean plain text in a new tab — useful for reading or sharing without an AI.
+  </Card>
+  <Card title="Open in ChatGPT" icon="arrow-up-right-from-square">
+    Convert the page and send it directly to [chatgpt.com](https://chatgpt.com) to ask questions about it.
+  </Card>
+  <Card title="Open in Claude" icon="arrow-up-right-from-square">
+    Convert the page and send it directly to [claude.ai](https://claude.ai) to ask questions about it.
+  </Card>
+  <Card title="Open in Perplexity" icon="arrow-up-right-from-square">
+    Convert the page and send it directly to [perplexity.ai](https://perplexity.ai) to ask questions about it.
+  </Card>
+</CardGroup>
+
+## How to use
+
+<Steps>
+  <Step title="Click the primary button">
+    Click **Copy page** to instantly copy the current page as Markdown. No dropdown needed for the most common action.
+  </Step>
+  <Step title="Open the dropdown">
+    Click the **↑ arrow** on the right side of the button to reveal all available actions.
+  </Step>
+  <Step title="Choose an action">
+    Select an action from the menu. "View as Markdown" and AI options open in a new tab automatically.
+  </Step>
+</Steps>
+
+## Why a split button?
+
+Previously, you needed to go into Settings to switch between Copy, Send to AI, or View modes. The Action Menu exposes all actions at once — no settings navigation required.
+
+<Tip>
+Use **Copy page** for quick clipboard workflows. Use the AI shortcuts when you want to immediately ask questions about a page's content.
+</Tip>
+
+## Related
+
+- [Send to AI](/features/send-to-ai) — configure your preferred AI platform and prompt templates
+- [Context Menu](/features/context-menu) — right-click shortcuts for the same actions
+- [Convert Pages](/features/convert) — full documentation on the conversion output
