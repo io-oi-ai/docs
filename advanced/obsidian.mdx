@@ -1,0 +1,51 @@
+---
+title: "Obsidian Integration"
+description: "Save converted Markdown directly to your Obsidian vault."
+---
+
+## Overview
+
+Web2MD can send converted Markdown directly to [Obsidian](https://obsidian.md) using the `obsidian://` URI protocol. This lets you save web content to your vault without leaving the browser.
+
+## Setup
+
+<Steps>
+  <Step title="Enable Obsidian integration">
+    Go to **Settings → Obsidian** and toggle **Enable Obsidian export**.
+  </Step>
+  <Step title="Set your vault name (optional)">
+    If you have multiple Obsidian vaults, enter the vault name to target a specific one. Leave blank to use the default vault.
+  </Step>
+  <Step title="Make sure Obsidian is running">
+    Obsidian must be open on your computer for the URI protocol to work.
+  </Step>
+</Steps>
+
+## Usage
+
+After converting a page:
+
+1. Click the **Save to Obsidian** button in the result panel
+2. Obsidian opens and creates a new note with the Markdown content
+3. The note title is set to the page title
+
+## How it works
+
+Web2MD uses Obsidian's [URI protocol](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI):
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+This creates a new note in the specified vault with the converted Markdown as content.
+
+<Warning>
+The `obsidian://` protocol has URL length limits. Very long articles may be truncated. For long content, consider using **Copy** and pasting directly into Obsidian.
+</Warning>
+
+## Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Enable Obsidian export** | Show/hide the "Save to Obsidian" button |
+| **Vault name** | Target vault (leave blank for default) |

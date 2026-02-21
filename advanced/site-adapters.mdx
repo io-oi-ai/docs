@@ -1,0 +1,78 @@
+---
+title: "Site Adapters"
+description: "Optimized content extraction for Reddit, GitHub, YouTube, and more."
+---
+
+## Overview
+
+While Web2MD works on any webpage, certain sites benefit from specialized extraction logic. Site adapters use each platform's API or DOM structure to produce better Markdown output than generic extraction.
+
+<Frame>
+  <img src="/images/site-adapters.png" alt="Site-specific adapters" />
+</Frame>
+
+## Supported sites
+
+### Reddit
+
+Extracts the full post content including:
+- Post title, author, subreddit, and score
+- Self-text or link content
+- Up to **30 comments** with author and score
+- Image and media links
+
+Uses Reddit's JSON API (`/.json`) for reliable extraction.
+
+### GitHub
+
+Extracts Issues and Pull Requests including:
+- Title, status (open/closed/merged), and labels
+- Original description/body
+- Up to **30 comments** with author info
+
+Uses GitHub's REST API for structured data.
+
+### YouTube
+
+Extracts video metadata:
+- Video title and channel name
+- Duration and view count
+- English subtitles/captions (when available)
+
+### Stack Overflow
+
+Extracts Q&A content:
+- Question title, body, tags, and vote count
+- Accepted answer (highlighted)
+- Top answers with vote counts
+
+### Twitter / X
+
+Extracts tweet content:
+- Tweet text and media
+- Author info and engagement metrics
+
+## How adapters work
+
+When you convert a page, Web2MD automatically:
+
+1. **Detects the site** from the URL
+2. **Selects the best adapter** if one exists
+3. **Extracts content** using the site-specific method
+4. **Falls back** to generic extraction if the adapter fails
+
+You don't need to configure anything — adapters are applied automatically.
+
+<Info>
+Site adapters are available to all users (Free and Pro). They run before the main conversion pipeline, so they work regardless of your plan.
+</Info>
+
+## Comparison
+
+| Feature | Generic extraction | Site adapter |
+|---------|-------------------|--------------|
+| Content accuracy | Good for articles | Optimized for site structure |
+| Comments/replies | Not extracted | Included (Reddit, GitHub, SO) |
+| Metadata | Basic (title, URL) | Rich (author, score, status) |
+| Media | Images only | Videos, captions, embeds |
+| Reliability | Depends on page structure | Uses stable APIs |

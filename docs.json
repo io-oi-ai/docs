@@ -1,11 +1,30 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "maple",
+  "name": "Web2MD",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#8b7355",
+    "light": "#a68b6a",
+    "dark": "#6b5a45"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "font": {
+    "body": {
+      "family": "Inter"
+    },
+    "headings": {
+      "family": "Georgia"
+    }
+  },
+  "background": {
+    "decoration": "gradient",
+    "color": {
+      "dark": "#141a14",
+      "light": "#f5f3ef"
+    }
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -14,55 +33,35 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Features",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "features/convert",
+              "features/send-to-ai",
+              "features/batch-convert",
+              "features/preview-card",
+              "features/context-menu"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Advanced",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "advanced/prompt-templates",
+              "advanced/site-adapters",
+              "advanced/obsidian",
+              "advanced/settings"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Plans",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "plans"
             ]
           }
         ]
@@ -71,14 +70,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Chrome Web Store",
+          "href": "https://chromewebstore.google.com/detail/web2md-web-to-markdown/ijmgpkkfgpijifldbjafjiapehppcbcn",
+          "icon": "chrome"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://web2md.org",
+          "icon": "globe"
         }
       ]
     }
@@ -91,32 +90,19 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:nicewuxi@gmail.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Install Extension",
+      "href": "https://chromewebstore.google.com/detail/web2md-web-to-markdown/ijmgpkkfgpijifldbjafjiapehppcbcn"
     }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/nicewuxi",
+      "github": "https://github.com/nicewuxi"
     }
   }
 }

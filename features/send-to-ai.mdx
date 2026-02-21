@@ -1,0 +1,74 @@
+---
+title: "Send to AI"
+description: "Send converted Markdown directly to Claude, ChatGPT, or Gemini."
+---
+
+## Overview
+
+After converting a page, you can send the Markdown content directly into your preferred AI assistant's chat interface — no manual copy-paste needed.
+
+<Frame>
+  <img src="/images/send-to-ai.png" alt="Send to AI feature" />
+</Frame>
+
+## Supported platforms
+
+<CardGroup cols={3}>
+  <Card title="Claude" icon="message">
+    [claude.ai](https://claude.ai) — Anthropic's AI assistant. Uses ProseMirror editor injection.
+  </Card>
+  <Card title="ChatGPT" icon="comment">
+    [chatgpt.com](https://chatgpt.com) — OpenAI's GPT models. Uses textarea injection.
+  </Card>
+  <Card title="Gemini" icon="sparkles">
+    [gemini.google.com](https://gemini.google.com) — Google's AI. Uses contenteditable injection.
+  </Card>
+</CardGroup>
+
+## How it works
+
+<Steps>
+  <Step title="Convert a page">
+    Convert any webpage using Web2MD.
+  </Step>
+  <Step title="Click Send to AI">
+    Click the **Send to AI** button in the result panel. Use the dropdown to pick a platform.
+  </Step>
+  <Step title="Content is injected">
+    Web2MD opens a new tab with the AI platform and automatically injects the Markdown into the chat input.
+  </Step>
+</Steps>
+
+### Fallback behavior
+
+If the injection fails (e.g. the AI platform changes its interface), Web2MD falls back gracefully:
+
+1. Copies the content to your clipboard
+2. Opens the AI platform in a new tab
+3. Shows a notification: **"Content copied! Press Ctrl+V to paste"**
+
+## Prompt templates
+
+Combine Send to AI with [Prompt Templates](/advanced/prompt-templates) to automatically wrap your content with instructions like "Summarize this article" or "Translate to English".
+
+When a template is selected, the content is wrapped with your prompt before being sent:
+
+```
+Please summarize the following article concisely:
+
+[converted Markdown content here]
+```
+
+## Auto send
+
+Enable **Auto send to AI** in Settings to automatically send content to your preferred platform after every conversion — no extra click needed.
+
+## Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Preferred AI platform** | Default platform for Send to AI (Claude, ChatGPT, or Gemini) |
+| **Prompt template** | Template to apply when sending to AI |
+| **Auto send to AI** | Automatically send after conversion |
+
+Configure these in **Settings → AI Settings**. [See all settings →](/advanced/settings)

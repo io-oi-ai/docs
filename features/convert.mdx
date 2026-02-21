@@ -1,0 +1,115 @@
+---
+title: "Convert Pages"
+description: "Convert any webpage to clean, AI-ready Markdown in one click."
+---
+
+## Overview
+
+Web2MD's core feature is converting any webpage into clean Markdown. It strips ads, navigation, sidebars, and other clutter — leaving only the content you care about.
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Converting a webpage to Markdown" />
+</Frame>
+
+## How it works
+
+<Steps>
+  <Step title="Navigate to any webpage">
+    Open the page you want to convert in your browser.
+  </Step>
+  <Step title="Trigger conversion">
+    Click the Web2MD icon, press `Alt+M`, or right-click and select **Copy page as Markdown**.
+  </Step>
+  <Step title="Get clean Markdown">
+    Web2MD extracts the main content, removes clutter, and generates well-structured Markdown.
+  </Step>
+</Steps>
+
+## Conversion output
+
+After converting, you'll see a result panel with:
+
+<Frame>
+  <img src="/images/popup-result.png" alt="Web2MD popup showing conversion result" />
+</Frame>
+
+### Stats bar
+
+| Metric | Description |
+|--------|-------------|
+| **Words** | Total word count of the extracted content |
+| **Tokens** | Estimated token count (avg 4 chars = 1 token) — useful for AI context limits |
+| **Read** | Estimated reading time (based on 200 words/min) |
+
+### Output actions
+
+<CardGroup cols={2}>
+  <Card title="Copy" icon="copy">
+    Copy the Markdown to your clipboard. Enable **Auto copy** in Settings to do this automatically.
+  </Card>
+  <Card title="Download" icon="download">
+    Save the Markdown as a `.md` file with the page title as filename.
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    Send the content directly to Claude, ChatGPT, or Gemini. [Learn more →](/features/send-to-ai)
+  </Card>
+  <Card title="Save to Obsidian" icon="vault">
+    Export to your Obsidian vault via `obsidian://` URI. [Learn more →](/advanced/obsidian)
+  </Card>
+</CardGroup>
+
+### Preview modes
+
+Toggle between two views:
+
+- **Preview** — Rendered Markdown with headings, lists, code blocks, and images
+- **Source** — Raw Markdown text, ready to copy and paste
+
+## What gets extracted
+
+Web2MD uses a two-phase DOM cleaning process:
+
+1. **Phase 1** — Always removes: `<script>`, `<style>`, `<nav>`, `<header>`, `<footer>`, `<aside>`
+2. **Phase 2** — Removes block-level distractions (ads, sidebars, social sharing) while preserving inline elements
+
+### Content preserved
+
+- Headings and hierarchy
+- Paragraphs and text formatting (bold, italic, strikethrough)
+- Lists (ordered and unordered)
+- Code blocks with language detection
+- Images with alt text
+- Links (toggleable in settings)
+- Tables
+- Blockquotes
+
+### Metadata (optional)
+
+When **Add metadata** is enabled in settings, the output includes:
+
+```markdown
+---
+title: "Article Title"
+source: https://example.com/article
+date: 2025-01-15T10:30:00.000Z
+---
+```
+
+## Selection mode
+
+Select specific text on a page before converting to extract **only the selected content** instead of the full page. This works via:
+
+- The extension popup (click Convert with text selected)
+- Right-click → **Copy selection as Markdown**
+
+<Tip>
+Selection mode is great for extracting specific sections from long articles or forum threads.
+</Tip>
+
+## Keyboard shortcut
+
+| Shortcut | Action |
+|----------|--------|
+| `Alt+M` / `Option+M` | Convert the current page |
+
+The shortcut works on any tab without needing to open the popup.

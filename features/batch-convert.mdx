@@ -1,0 +1,71 @@
+---
+title: "Batch Convert"
+description: "Convert multiple webpages at once from URLs or open browser tabs."
+---
+
+## Overview
+
+Batch Convert lets you convert multiple pages in a single operation. Perfect for research sessions, bookmarked articles, or archiving multiple pages at once.
+
+## Two input modes
+
+### Paste URLs
+
+Enter multiple URLs (one per line) and convert them all at once.
+
+<Steps>
+  <Step title="Open the Batch tab">
+    Click the **Batch** tab in the Web2MD popup.
+  </Step>
+  <Step title="Paste your URLs">
+    Enter URLs one per line in the text area. You can paste from a spreadsheet, notes, or any source.
+  </Step>
+  <Step title="Start conversion">
+    Click **Convert All** to begin. Each URL is processed sequentially.
+  </Step>
+</Steps>
+
+### Open Tabs
+
+Select from currently open browser tabs to convert multiple pages at once.
+
+<Steps>
+  <Step title="Switch to Open Tabs mode">
+    In the Batch tab, switch to the **Open Tabs** view.
+  </Step>
+  <Step title="Select tabs">
+    Check the tabs you want to convert. All convertible tabs in the current window are listed.
+  </Step>
+  <Step title="Start conversion">
+    Click **Convert All** to process all selected tabs.
+  </Step>
+</Steps>
+
+## Progress tracking
+
+During batch conversion, you'll see real-time progress:
+
+- **Progress bar** with percentage completion
+- Individual status for each URL:
+
+| Status | Meaning |
+|--------|---------|
+| Pending | Waiting to be processed |
+| Converting | Currently being converted |
+| Success | Conversion completed |
+| Error | Conversion failed (e.g. page not reachable) |
+| Skipped | URL was invalid or not supported |
+
+## Results
+
+After completion, you'll see a summary:
+
+- Total **successful** conversions
+- Total **failed** / **skipped** conversions
+- Actions: **Copy All** (all results combined) or **Download All** (individual `.md` files)
+
+Click **New Batch** to start another batch conversion.
+
+<Tip>
+Batch conversion works best with article pages and blog posts. Dynamic single-page apps may produce less consistent results.
+</Tip>

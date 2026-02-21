@@ -1,0 +1,49 @@
+---
+title: "Preview Card"
+description: "Floating in-page card for quick copy and send actions after conversion."
+---
+
+## Overview
+
+When you convert a page using the keyboard shortcut (`Alt+M`) or the context menu, a floating preview card appears in the top-right corner of the page. This lets you take action without opening the popup.
+
+## Card features
+
+Each preview card shows:
+
+- **Page title** of the converted content
+- **Word count** summary
+- **Checkbox** to select/deselect the card
+- **Close button** to dismiss
+
+### Bottom action bar
+
+When one or more cards are selected:
+
+| Action | Description |
+|--------|-------------|
+| **Copy All** | Copy all selected cards' Markdown to clipboard |
+| **Send All** | Send all selected content to your preferred AI platform |
+
+## Multiple cards
+
+You can stack up to **5 preview cards** at once. This is useful when converting multiple pages in sequence — each conversion adds a new card.
+
+## Display duration
+
+Control how long cards stay visible in **Settings → Show preview card**:
+
+| Duration | Behavior |
+|----------|----------|
+| **5 seconds** | Card auto-dismisses after 5s |
+| **15 seconds** | Card auto-dismisses after 15s |
+| **30 seconds** | Card auto-dismisses after 30s |
+| **Always** | Card persists until manually closed. Survives page refresh. |
+
+<Info>
+In **Always** mode, cards are persisted to `chrome.storage.local` and will reappear after page refresh. Use **Clear all cards** in Settings to remove them.
+</Info>
+
+## Toggle preview card
+
+You can disable the preview card entirely in **Settings → Show preview card**. When disabled, conversions via shortcut/context menu will still work but won't show a visual indicator.
