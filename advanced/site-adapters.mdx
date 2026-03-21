@@ -1,6 +1,6 @@
 ---
 title: "Site Adapters"
-description: "Optimized content extraction for Reddit, GitHub, YouTube, and more."
+description: "Optimized content extraction for Reddit, GitHub, YouTube, Notion, Feishu, and more."
 ---
 
 ## Overview
@@ -51,6 +51,20 @@ Extracts Q&A content:
 Extracts tweet content:
 - Tweet text and media
 - Author info and engagement metrics
+
+### Notion
+
+Extracts content from public and logged-in Notion pages (notion.so, notion.site):
+- Dual extraction: block-level DOM parsing (`data-block-id`) with container fallback
+- Headings, text, code blocks, lists, toggles, callouts, quotes
+- Images, tables, bookmarks, and embeds
+
+### Feishu / Lark
+
+Extracts content from Feishu Docx and Wiki pages (feishu.cn, larksuite.com):
+- Dual extraction: PageMain block model with DOM fallback
+- Headings, text, code blocks, lists, tables, images
+- Callouts and checkboxes
 
 ## How adapters work
 

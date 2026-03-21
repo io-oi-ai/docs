@@ -1,0 +1,74 @@
+---
+title: "Selection Toolbar"
+sidebarTitle: "Selection Toolbar"
+description: "Select text on any page and get a floating Markdown toolbar."
+icon: "text-slash"
+---
+
+## Overview
+
+The Selection Toolbar (v0.6) gives you a floating action bar whenever you highlight text on any webpage. Select a paragraph, a code snippet, or an entire section — then copy it as Markdown, append it to a buffer, or send it straight to AI.
+
+## How it works
+
+<Steps>
+  <Step title="Select text on any page">
+    Highlight any text on a webpage using your mouse or keyboard. The floating toolbar appears near your selection.
+  </Step>
+  <Step title="Pick an action">
+    Choose one of three actions from the toolbar: **Copy as Markdown**, **Append to buffer**, or **Send to AI**.
+  </Step>
+  <Step title="Get clean output">
+    Web2MD converts your selection to well-structured Markdown, preserving formatting, links, and code blocks.
+  </Step>
+</Steps>
+
+## Toolbar actions
+
+<CardGroup cols={3}>
+  <Card title="Copy as Markdown" icon="copy">
+    Instantly converts the selected text to Markdown and copies it to your clipboard.
+  </Card>
+  <Card title="Append to Buffer" icon="layer-plus">
+    Adds the selection to a running buffer. Select multiple fragments across the page and combine them into one Markdown document.
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    Sends the selected content directly to your preferred AI platform (Claude, ChatGPT, or Gemini).
+  </Card>
+</CardGroup>
+
+## Append Mode
+
+Append Mode is useful when you need pieces from different parts of a page — or even different pages.
+
+1. Select a section and click **Append to buffer**
+2. Scroll to another section and append again
+3. Repeat as needed
+4. Open the Web2MD popup to see the combined Markdown document
+
+Each appended fragment is separated by a horizontal rule (`---`) in the final output.
+
+<Tip>
+Append Mode is great for cherry-picking relevant sections from long documentation pages or research papers.
+</Tip>
+
+## Smart selection expansion
+
+Web2MD automatically expands your selection to include complete structural elements:
+
+| You select... | Web2MD expands to... |
+|---------------|---------------------|
+| Part of a paragraph | The full paragraph |
+| Part of a code block | The entire code block with language tag |
+| A partial list item | The complete list item |
+| Text spanning elements | All fully or partially selected blocks |
+
+This ensures your Markdown output is always well-formed — no broken paragraphs or half-rendered code blocks.
+
+## Compatibility
+
+The Selection Toolbar works on all websites. It injects as a lightweight floating element that does not interfere with the page's own UI.
+
+<Info>
+The toolbar only appears when you select text. It disappears automatically when you click elsewhere or clear your selection.
+</Info>

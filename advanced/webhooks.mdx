@@ -1,0 +1,121 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Get notified when conversions complete"
+icon: "webhook"
+---
+
+## Overview
+
+Webhooks let you receive an HTTP POST notification at your own endpoint every time a conversion completes. Use them to trigger workflows in Zapier, Make, n8n, or any custom backend.
+
+<Note>
+  Webhooks are a **PRO plan** feature. Each user can register up to **3 webhook endpoints**.
+</Note>
+
+## Setup
+
+1. Open the Web2MD extension and go to **Settings**.
+2. Scroll to the **Webhooks** section.
+3. Enter your endpoint URL and click **Add Webhook**.
+4. Copy the **signing secret** — you will need it to verify incoming requests.
+
+## Payload
+
+When a conversion completes, Web2MD sends a `POST` request to your endpoint with the following JSON body:
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event` | `string` | Always `"conversion.completed"` |
+| `data.conversionId` | `string` | Unique ID for this conversion |
+| `data.url` | `string` | The source URL that was converted |
+| `data.title` | `string` | The page title |
+| `data.markdownLength` | `number` | Character length of the generated Markdown |
+| `data.timestamp` | `string` | ISO 8601 timestamp of the conversion |
+
+## Security
+
+Every webhook request includes an `X-Web2MD-Signature` header containing an HMAC-SHA256 signature of the raw request body, signed with your webhook's signing secret.
+
+<Warning>
+  Always verify the signature before processing a webhook. This prevents attackers from sending forged requests to your endpoint.
+</Warning>
+
+### Verification example (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// In your request handler:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  Use `crypto.timingSafeEqual` instead of `===` to prevent timing attacks when comparing signatures.
+</Tip>
+
+## Retry behavior
+
+| Attempt | Timing | Timeout |
+|---------|--------|---------|
+| First | Immediate | 5 seconds |
+| Retry | 1 second after first failure | 5 seconds |
+
+If both attempts fail (non-2xx response or timeout), the delivery is dropped. Web2MD does not retry beyond the single retry attempt.
+
+## Use cases
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    Use a Webhook trigger in your automation platform to start a workflow whenever a page is converted — post to Slack, add a row to a spreadsheet, or save to Notion.
+  </Card>
+  <Card title="Slack notifications" icon="bell">
+    Send a message to a Slack channel every time a team member converts a page, keeping everyone in the loop.
+  </Card>
+  <Card title="Auto-save to external storage" icon="hard-drive">
+    Fetch the full Markdown via the REST API (using `conversionId`) and save it to S3, Google Drive, or your own database.
+  </Card>
+  <Card title="Analytics pipeline" icon="chart-line">
+    Track conversion volume and content types by forwarding webhook events to your analytics backend.
+  </Card>
+</CardGroup>
+
+## Testing webhooks
+
+During development, use a tool like [webhook.site](https://webhook.site) or [ngrok](https://ngrok.com) to expose a local endpoint and inspect incoming payloads before deploying your handler to production.

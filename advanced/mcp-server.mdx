@@ -1,0 +1,154 @@
+---
+title: "MCP Server"
+sidebarTitle: "MCP Server"
+description: "Use Web2MD from Claude Desktop, Cursor, and Windsurf"
+icon: "robot"
+---
+
+## Overview
+
+The Web2MD MCP server exposes Web2MD as a set of tools that AI assistants can call directly, using the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — an open standard for connecting AI models to external tools and data sources.
+
+Once configured, you can ask Claude, Cursor, or Windsurf to convert pages, search your conversion history, or retrieve saved Markdown without leaving the conversation.
+
+<Note>
+  The MCP server requires a **Web2MD API key** (PRO plan). Generate one from the [dashboard](https://web2md.org/dashboard/api-keys).
+</Note>
+
+## Available tools
+
+The MCP server provides three tools:
+
+| Tool | Description |
+|------|-------------|
+| `convert_url` | Convert any URL to clean Markdown |
+| `semantic_search` | Search your saved conversions with natural language |
+| `get_conversion` | Retrieve the full Markdown of a saved conversion by ID |
+
+### convert_url
+
+Fetches a URL and returns the page content as Markdown. Supports the same conversion options as the REST API.
+
+**Example prompt:** _"Convert this URL to markdown: https://docs.example.com/getting-started"_
+
+### semantic_search
+
+Searches across all your previously saved conversions using a natural language query. Returns a list of matching conversions with titles, URLs, and relevance scores.
+
+**Example prompt:** _"Search my saved pages for articles about database indexing"_
+
+### get_conversion
+
+Retrieves the full Markdown content of a specific saved conversion by its ID. Useful for pulling a complete document into context after finding it with `semantic_search`.
+
+**Example prompt:** _"Get the full content of conversion abc123"_
+
+## Setup
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Open your Claude Desktop configuration file:
+
+    - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+    Add the `web2md` entry under `mcpServers`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Restart Claude Desktop. You should see the Web2MD tools appear in the tool picker.
+  </Tab>
+  <Tab title="Cursor">
+    Open your Cursor MCP configuration file at `~/.cursor/mcp.json` and add:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Restart Cursor to load the new server.
+  </Tab>
+  <Tab title="Windsurf">
+    Open your Windsurf MCP configuration file at `~/.windsurf/mcp.json` and add:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Restart Windsurf to load the new server.
+  </Tab>
+</Tabs>
+
+## Usage examples
+
+Once the MCP server is running, you can use natural language in your AI assistant:
+
+<AccordionGroup>
+  <Accordion title="Convert a page to Markdown">
+    **You:** Convert this URL to markdown: https://react.dev/learn/thinking-in-react
+
+    **Assistant:** _(calls `convert_url`)_ Here is the converted Markdown for "Thinking in React"...
+  </Accordion>
+  <Accordion title="Search saved conversions">
+    **You:** Search my saved pages for anything about authentication
+
+    **Assistant:** _(calls `semantic_search`)_ I found 3 saved conversions related to authentication:
+    1. "OAuth 2.0 Guide" — saved 2 days ago
+    2. "JWT Best Practices" — saved last week
+    3. ...
+  </Accordion>
+  <Accordion title="Retrieve a full conversion">
+    **You:** Get the full content of conversion abc123
+
+    **Assistant:** _(calls `get_conversion`)_ Here is the full Markdown content...
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  Combine tools in a single conversation. For example: _"Search my conversions for React docs, then get the full content of the most recent one."_
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Tools don't appear after setup">
+    Make sure you have restarted the application after editing the configuration file. Verify that `npx web2md-mcp` runs successfully in your terminal.
+  </Accordion>
+  <Accordion title="Authentication errors">
+    Double-check that your `WEB2MD_API_KEY` is correct and that your PRO subscription is active. You can verify your key on the [API keys page](https://web2md.org/dashboard/api-keys).
+  </Accordion>
+  <Accordion title="npx fails to resolve the package">
+    Try installing the package globally first: `npm install -g web2md-mcp`, then change the `command` to `web2md-mcp` and remove the `args` field.
+  </Accordion>
+</AccordionGroup>

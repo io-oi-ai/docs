@@ -45,9 +45,13 @@
               "features/convert",
               "features/action-menu",
               "features/send-to-ai",
+              "features/selection-toolbar",
+              "features/ai-summary",
               "features/batch-convert",
               "features/preview-card",
-              "features/context-menu"
+              "features/context-menu",
+              "features/collections",
+              "features/semantic-search"
             ]
           },
           {
@@ -55,7 +59,11 @@
             "pages": [
               "advanced/prompt-templates",
               "advanced/site-adapters",
+              "advanced/custom-rules",
               "advanced/obsidian",
+              "advanced/api",
+              "advanced/mcp-server",
+              "advanced/webhooks",
               "advanced/settings"
             ]
           },

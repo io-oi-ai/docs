@@ -1,0 +1,157 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "Convert any URL or HTML to Markdown programmatically"
+icon: "code"
+---
+
+## Overview
+
+The Web2MD REST API lets you convert any webpage or raw HTML to clean Markdown programmatically. Use it to build pipelines, automate content ingestion, or integrate Web2MD into your own tools.
+
+<Note>
+  The REST API requires a **PRO plan**. Generate your API key from the [Web2MD dashboard](https://web2md.org/dashboard/api-keys).
+</Note>
+
+## Authentication
+
+All requests must include your API key in the `Authorization` header:
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+API keys are prefixed with `w2m_` and are tied to your account.
+
+## Endpoint
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | `string` | One of `url` or `html` | The URL of the page to convert |
+| `html` | `string` | One of `url` or `html` | Raw HTML string to convert |
+| `options` | `object` | No | Conversion options (see below) |
+
+<Warning>
+  Provide either `url` or `html`, not both. The request will fail with a `400` error if both are present or neither is provided.
+</Warning>
+
+### Options
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | Include image references in output |
+| `includeLinks` | `boolean` | `true` | Preserve hyperlinks in output |
+| `includeMeta` | `boolean` | `false` | Prepend page metadata as YAML front matter |
+
+### Response
+
+A successful response returns:
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": "5 min"
+    }
+  }
+}
+```
+
+## Rate limits
+
+API requests are rate-limited to **60 requests per minute** per API key. If you exceed the limit, the API returns a `429` status code. Wait for the reset window before retrying.
+
+## Error responses
+
+| Status | Meaning | Example |
+|--------|---------|---------|
+| `400` | Bad request — missing or conflicting input | Both `url` and `html` provided, or neither |
+| `401` | Unauthorized — invalid or missing API key | Missing `Authorization` header |
+| `422` | Unprocessable — the URL could not be fetched | Target site returned an error or timed out |
+| `429` | Rate limit exceeded | More than 60 requests in one minute |
+| `500` | Internal server error | Unexpected failure on our end |
+
+All error responses follow this shape:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## Examples
+
+### Convert a URL with curl
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### Convert raw HTML with curl
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  Store your API key in an environment variable rather than hardcoding it. For example, use `process.env.WEB2MD_API_KEY` in Node.js.
+</Tip>

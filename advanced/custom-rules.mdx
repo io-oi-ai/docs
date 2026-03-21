@@ -1,0 +1,101 @@
+---
+title: "Custom Extraction Rules"
+sidebarTitle: "Custom Rules"
+description: "Define per-domain CSS selectors for precise content extraction."
+icon: "code"
+---
+
+## Overview
+
+Custom Extraction Rules (v0.7) let you define per-domain CSS selectors that control exactly what Web2MD extracts. If a site's main content lives in an unusual container, or if there are elements you always want stripped, custom rules give you full control.
+
+<Note>
+Custom Rules is a **Pro-only** feature.
+</Note>
+
+## Creating a rule
+
+<Steps>
+  <Step title="Open Settings">
+    In the Web2MD popup, navigate to **Settings → Custom Rules**.
+  </Step>
+  <Step title="Add a new rule">
+    Click **New Rule** and enter the domain (e.g., `example.com`).
+  </Step>
+  <Step title="Define your selectors">
+    Set the content selector, remove selectors, and optionally a title selector.
+  </Step>
+  <Step title="Save and convert">
+    Save the rule. Next time you convert a page on that domain, your custom selectors will be applied automatically.
+  </Step>
+</Steps>
+
+## Rule fields
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Domain** | The domain this rule applies to (exact match) | `docs.example.com` |
+| **Content selector** | CSS selector for the main content container | `article.post-body` |
+| **Remove selectors** | CSS selectors for elements to strip (comma-separated) | `.ads, .sidebar, .related-posts` |
+| **Title selector** | Override automatic title detection | `h1.entry-title` |
+
+## Example: cleaning up a blog
+
+Suppose you regularly convert articles from a blog that wraps content in a specific div and includes noisy sidebar widgets:
+
+```
+Domain:           blog.example.com
+Content selector: div.article-content
+Remove selectors: .author-bio, .newsletter-signup, .comments-section
+Title selector:   h1.post-title
+```
+
+With this rule, Web2MD will:
+1. Extract only the content inside `div.article-content`
+2. Strip the author bio, newsletter signup, and comments
+3. Use the `h1.post-title` element as the document title
+
+## How rules are applied
+
+<CardGroup cols={2}>
+  <Card title="Automatic matching" icon="bullseye">
+    Rules are matched by domain. When you convert a page, Web2MD checks if a custom rule exists for that domain and applies it before the standard extraction pipeline.
+  </Card>
+  <Card title="Fallback behavior" icon="shield">
+    If your content selector doesn't match anything on the page, Web2MD falls back to its default extraction logic. Your rule won't break conversions.
+  </Card>
+</CardGroup>
+
+## Managing rules
+
+All rules are managed in **Settings → Custom Rules** within the extension popup.
+
+| Action | How |
+|--------|-----|
+| **Create** | Settings → Custom Rules → New Rule |
+| **Edit** | Click any existing rule to modify its selectors |
+| **Delete** | Click the trash icon next to a rule |
+| **Test** | Navigate to a page on the target domain and run a conversion |
+
+<Tip>
+Use your browser's DevTools (`Cmd+Shift+I` or `F12`) to inspect the page and find the right CSS selectors before creating a rule.
+</Tip>
+
+## Community sharing
+
+<Info>
+Community rule sharing is coming soon. You'll be able to mark rules as public (`isPublic` flag) so other users can benefit from your domain-specific selectors.
+</Info>
+
+## Relationship to Site Adapters
+
+Custom Rules and [Site Adapters](/advanced/site-adapters) serve different purposes:
+
+| | Site Adapters | Custom Rules |
+|-|---------------|-------------|
+| **Scope** | Built-in, specific platforms (Reddit, GitHub, etc.) | Any domain you define |
+| **Method** | Uses platform APIs and specialized logic | CSS selectors only |
+| **Maintained by** | Web2MD team | You |
+| **Priority** | Runs first | Runs if no adapter matches |
+
+If a Site Adapter exists for a domain, it takes priority over custom rules. Custom rules are best for sites without a dedicated adapter.

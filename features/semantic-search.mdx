@@ -1,0 +1,84 @@
+---
+title: "Semantic Search"
+sidebarTitle: "Semantic Search"
+description: "Find saved content with natural language queries across languages."
+icon: "magnifying-glass"
+---
+
+## Overview
+
+Semantic Search (v0.7) lets you find previously converted content using natural language instead of exact keywords. Ask for "articles about database optimization" and Web2MD will surface relevant results — even if those exact words never appeared in the content.
+
+<Note>
+Semantic Search is a **Pro-only** feature.
+</Note>
+
+## How it works
+
+<Steps>
+  <Step title="Convert pages as usual">
+    Every time you convert a page, Web2MD automatically generates a vector embedding of the content. No extra steps required.
+  </Step>
+  <Step title="Search with natural language">
+    Open History and type a query in plain English (or any language). Web2MD matches your query against all stored embeddings.
+  </Step>
+  <Step title="Get ranked results">
+    Results are ranked by semantic relevance, not keyword frequency. The most conceptually similar conversions appear first.
+  </Step>
+</Steps>
+
+## Cross-language matching
+
+Semantic Search works across languages. An English query will match Chinese, Japanese, Spanish, or any other language content — and vice versa.
+
+| Query language | Content language | Works? |
+|---------------|-----------------|--------|
+| English | English | Yes |
+| English | Chinese | Yes |
+| Chinese | English | Yes |
+| Any | Any | Yes |
+
+<Tip>
+This is especially useful if you read content in multiple languages. Search once, find everything relevant regardless of language.
+</Tip>
+
+## Related content
+
+After converting a page, Web2MD automatically shows up to **3 related articles** from your history. This surfaces connections you might not have noticed — a blog post from last month that covers the same topic, or a documentation page with overlapping concepts.
+
+Related content appears below the Preview Card after each conversion.
+
+## Technical details
+
+<CardGroup cols={2}>
+  <Card title="Embeddings" icon="brain">
+    Powered by OpenAI embeddings, generated automatically on every conversion. Stored securely in your account.
+  </Card>
+  <Card title="Vector search" icon="database">
+    Uses pgvector for fast similarity search across your entire conversion history.
+  </Card>
+</CardGroup>
+
+## Where to use it
+
+<Tabs>
+  <Tab title="Extension">
+    Open the History tab in the Web2MD popup and type your query in the search bar. Results update as you type.
+  </Tab>
+  <Tab title="API">
+    Use the `/api/search` endpoint to query your conversions programmatically. Pass a `q` parameter with your natural language query.
+
+    ```bash
+    curl -H "Authorization: Bearer YOUR_API_KEY" \
+      "https://web2md.org/api/search?q=database+optimization"
+    ```
+  </Tab>
+</Tabs>
+
+## Zero configuration
+
+Embeddings are generated automatically — you don't need to enable anything or provide API keys. As long as you have a Pro plan, every conversion is searchable from the moment it's saved.
+
+<Info>
+Embedding generation happens server-side and typically completes within a few seconds after conversion.
+</Info>
