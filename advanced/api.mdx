@@ -13,6 +13,15 @@ The Web2MD REST API lets you convert any webpage or raw HTML to clean Markdown p
   The REST API requires a **PRO plan**. Generate your API key from the [Web2MD dashboard](https://web2md.org/dashboard/api-keys).
 </Note>
 
+### Machine-readable specs
+
+| Resource | URL | Description |
+|----------|-----|-------------|
+| OpenAPI 3.1 spec | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | Full API schema for code generation and tooling |
+| AI plugin manifest | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | Agent discovery (ChatGPT Plugins / AI assistants) |
+
+Use the OpenAPI spec to auto-generate client SDKs or import into tools like Postman, Swagger UI, or AI agent frameworks.
+
 ## Authentication
 
 All requests must include your API key in the `Authorization` header:
@@ -47,7 +56,7 @@ API keys are prefixed with `w2m_` and are tied to your account.
 |-------|------|---------|-------------|
 | `includeImages` | `boolean` | `true` | Include image references in output |
 | `includeLinks` | `boolean` | `true` | Preserve hyperlinks in output |
-| `includeMeta` | `boolean` | `false` | Prepend page metadata as YAML front matter |
+| `includeMeta` | `boolean` | `true` | Prepend page metadata as YAML front matter |
 
 ### Response
 
@@ -61,13 +70,29 @@ A successful response returns:
     "metadata": {
       "title": "Page Title",
       "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
       "wordCount": 1250,
       "tokenCount": 1680,
-      "readingTime": "5 min"
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
     }
   }
 }
 ```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | `string` | Page title extracted from `<title>` |
+| `url` | `string` | Source URL (if provided) |
+| `extractedAt` | `string` | ISO 8601 timestamp of the conversion |
+| `wordCount` | `integer` | Total word count (English words + CJK characters) |
+| `tokenCount` | `integer` | Estimated LLM token count |
+| `readingTime` | `integer` | Estimated reading time in minutes |
+| `author` | `string?` | Author name from meta tags or JSON-LD |
+| `publishedDate` | `string?` | Publication date (YYYY-MM-DD) |
+| `description` | `string?` | Page description from Open Graph or meta tags |
 
 ## Rate limits
 
