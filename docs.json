@@ -51,7 +51,10 @@
               "features/preview-card",
               "features/context-menu",
               "features/collections",
-              "features/semantic-search"
+              "features/semantic-search",
+              "features/ai-tags",
+              "features/multi-page-queue",
+              "features/youtube-subtitles"
             ]
           },
           {

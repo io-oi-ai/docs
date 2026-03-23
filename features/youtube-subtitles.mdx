@@ -1,0 +1,50 @@
+---
+title: "YouTube Subtitles"
+description: "Extract YouTube video subtitles as timestamped Markdown."
+---
+
+## Overview
+
+Web2MD can extract subtitles from YouTube videos and convert them to clean, timestamped Markdown. This works with both manually uploaded captions and auto-generated subtitles (ASR).
+
+## What you get
+
+Converting a YouTube video produces:
+
+- **Video metadata** — title, channel, duration, view count
+- **Description** — the video's description text
+- **Full transcript** — subtitles grouped into ~30-second paragraphs with timestamps
+
+## Example output
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## Supported URLs
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## Language priority
+
+Web2MD picks the best available caption track:
+1. Manual English subtitles (highest quality)
+2. Any manual subtitles
+3. Auto-generated English (ASR)
+4. Any auto-generated subtitles

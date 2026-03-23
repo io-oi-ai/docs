@@ -14,9 +14,9 @@ Web2MD comes with 4 ready-to-use templates:
 | Template | Prompt |
 |----------|--------|
 | **Summarize** | "Please summarize the following article concisely:" |
-| **Translate to English** | "Please translate the following content to English:" |
 | **Extract Key Points** | "Please extract the key points and main takeaways from this article as a bullet list:" |
-| **Explain Simply** | "Please explain the following content in simple, easy-to-understand terms:" |
+| **Tweet** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | "Please generate a list of questions and answers based on the following content:" |
 
 ## How templates work
 
@@ -35,19 +35,19 @@ The `{content}` placeholder in your template is replaced with the converted Mark
 ## Create a custom template
 
 <Steps>
-  <Step title="Open Settings">
-    Go to the **Settings** tab in the Web2MD popup.
+  <Step title="Open the Convert tab">
+    Open the Web2MD popup and go to the **Convert** tab.
   </Step>
-  <Step title="Navigate to AI Settings">
-    Scroll to the **AI Settings** section.
+  <Step title="Click + Custom">
+    Click the **"+ Custom"** button next to the template picker.
   </Step>
-  <Step title="Click Create Template">
-    Click **Create Template** and fill in:
+  <Step title="Fill in details">
+    Enter:
     - **Name** — A short name for the template (e.g. "Code Review")
     - **Prompt** — The instruction text, using `{content}` as a placeholder
   </Step>
   <Step title="Save and select">
-    Save the template. Select it from the template dropdown to make it active.
+    Save the template. It will be automatically selected as the active template.
   </Step>
 </Steps>
 
@@ -65,18 +65,17 @@ Please review the following code and provide feedback on:
 {content}
 ```
 
+## Prompt preview
+
+Hover over any template in the template picker to see a preview of the full prompt that will be sent to AI. This helps you verify the right template is selected before converting.
+
 ## Select a template
 
-Choose your active template from:
-
-- The **template dropdown** in the result panel (after conversion)
-- The **Settings → AI Settings** section
-
-The selected template is applied automatically whenever you use **Send to AI**.
+Choose your active template from the **template picker** in the Convert tab. The selected template is applied automatically whenever you use **Send to AI**.
 
 ## Edit or delete templates
 
-In **Settings → AI Settings**, you can:
+In the Convert tab template picker, you can:
 
 - **Edit** any custom template's name or prompt
 - **Delete** custom templates you no longer need

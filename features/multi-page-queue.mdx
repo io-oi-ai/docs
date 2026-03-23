@@ -1,0 +1,51 @@
+---
+title: "Multi-Page Queue"
+description: "Convert multiple pages and send them all to AI in one merged request."
+---
+
+## Overview
+
+The multi-page queue lets you collect Markdown from several pages before sending everything to your AI assistant at once. Perfect for research, competitive analysis, or compiling information from multiple sources.
+
+## How it works
+
+<Steps>
+  <Step title="Convert a page">
+    Convert any webpage as usual.
+  </Step>
+  <Step title="Add to queue">
+    Click **"Add to queue & convert next page"** below the result.
+  </Step>
+  <Step title="Navigate & repeat">
+    Go to the next page, convert it, and add it to the queue.
+  </Step>
+  <Step title="Send all to AI">
+    When ready, click **"Send all → Claude"** (or your preferred platform) in the queue panel.
+  </Step>
+</Steps>
+
+## Queue panel
+
+The queue panel shows:
+- Page titles and word counts
+- Remove individual items with ×
+- **Send all** to your selected AI platform
+- **Clear** to empty the queue
+
+## Merged format
+
+When sending the queue to AI, all pages are merged into one document:
+
+```markdown
+# Page 1 Title
+
+[Page 1 Markdown content]
+
+---
+
+# Page 2 Title
+
+[Page 2 Markdown content]
+```
+
+Prompt templates are applied to the merged content before sending.

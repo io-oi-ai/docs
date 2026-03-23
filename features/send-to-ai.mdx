@@ -1,11 +1,11 @@
 ---
 title: "Send to AI"
-description: "Send converted Markdown directly to Claude, ChatGPT, or Gemini."
+description: "Send converted Markdown directly to Claude, ChatGPT, Gemini, Perplexity, Grok, or DeepSeek."
 ---
 
 ## Overview
 
-After converting a page, you can send the Markdown content directly into your preferred AI assistant's chat interface — no manual copy-paste needed.
+The AI platform selector is front and center at the top of the Convert tab. Pick your platform and template, then convert & send in one click — no manual copy-paste needed.
 
 <Frame>
   <img src="/images/send-to-ai.png" alt="Send to AI feature" />
@@ -23,19 +23,28 @@ After converting a page, you can send the Markdown content directly into your pr
   <Card title="Gemini" icon="sparkles">
     [gemini.google.com](https://gemini.google.com) — Google's AI. Uses contenteditable injection.
   </Card>
+  <Card title="Perplexity" icon="magnifying-glass">
+    [perplexity.ai](https://www.perplexity.ai) — AI-powered search engine.
+  </Card>
+  <Card title="Grok" icon="bolt">
+    [grok.com](https://grok.com) — xAI's conversational AI.
+  </Card>
+  <Card title="DeepSeek" icon="brain">
+    [chat.deepseek.com](https://chat.deepseek.com) — DeepSeek's AI assistant.
+  </Card>
 </CardGroup>
 
 ## How it works
 
 <Steps>
-  <Step title="Convert a page">
-    Convert any webpage using Web2MD.
+  <Step title="Select your AI platform">
+    At the top of the **Convert** tab, choose your preferred AI platform from the platform selector.
   </Step>
-  <Step title="Click Send to AI">
-    Click the **Send to AI** button in the result panel. Use the dropdown to pick a platform.
+  <Step title="Pick a prompt template">
+    Optionally select a prompt template to wrap your content with instructions.
   </Step>
-  <Step title="Content is injected">
-    Web2MD opens a new tab with the AI platform and automatically injects the Markdown into the chat input.
+  <Step title="Convert & send">
+    Click **Convert** — the page is converted to Markdown, the template is applied, and the content is injected into your AI platform's chat input in a new tab.
   </Step>
 </Steps>
 
@@ -49,7 +58,7 @@ If the injection fails (e.g. the AI platform changes its interface), Web2MD fall
 
 ## Prompt templates
 
-Combine Send to AI with [Prompt Templates](/advanced/prompt-templates) to automatically wrap your content with instructions like "Summarize this article" or "Translate to English".
+Combine Send to AI with [Prompt Templates](/advanced/prompt-templates) to automatically wrap your content with instructions like "Summarize this article" or "Extract key points".
 
 When a template is selected, the content is wrapped with your prompt before being sent:
 
@@ -61,14 +70,14 @@ Please summarize the following article concisely:
 
 ## Auto send
 
-Enable **Auto send to AI** in Settings to automatically send content to your preferred platform after every conversion — no extra click needed.
+Enable **Auto send to AI** to automatically send content to your preferred platform after every conversion — no extra click needed.
 
 ## Settings
 
 | Setting | Description |
 |---------|-------------|
-| **Preferred AI platform** | Default platform for Send to AI (Claude, ChatGPT, or Gemini) |
+| **Preferred AI platform** | Default platform for Send to AI (Claude, ChatGPT, Gemini, Perplexity, Grok, or DeepSeek) |
 | **Prompt template** | Template to apply when sending to AI |
 | **Auto send to AI** | Automatically send after conversion |
 
-Configure these in **Settings → AI Settings**. [See all settings →](/advanced/settings)
+These settings are configured directly in the **Convert** tab via the platform selector and template picker. [See all settings →](/advanced/settings)
