@@ -60,6 +60,7 @@
           {
             "group": "Advanced",
             "pages": [
+              "advanced/cli",
               "advanced/prompt-templates",
               "advanced/site-adapters",
               "advanced/custom-rules",

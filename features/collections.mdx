@@ -7,7 +7,7 @@ icon: "folder-open"
 
 ## Overview
 
-Collections (v0.7) let you organize your conversions into folders — like "React Research", "Competitor Analysis", or "Weekly Reading". Group related content, browse it later, and export entire collections as a single merged Markdown file.
+Collections let you organize your conversions into folders — like "React Research", "Competitor Analysis", or "Weekly Reading". Group related content, browse it later, and export entire collections as a single merged Markdown file.
 
 <Note>
 Collections is a **Pro-only** feature.
@@ -60,6 +60,47 @@ The export includes:
 
 <Tip>
 Exporting a collection is a fast way to build a research document or study guide from multiple sources.
+</Tip>
+
+## Compile Wiki
+
+Turn any collection into an AI-generated knowledge base — downloadable as an Obsidian-ready ZIP file.
+
+<Note>
+  Compile Wiki requires a **Pro plan**.
+</Note>
+
+### How it works
+
+<Steps>
+  <Step title="Open a collection">
+    Navigate to the Collections tab and open the collection you want to compile.
+  </Step>
+  <Step title="Click the brain icon">
+    Hover over the collection header to reveal the **Compile Wiki** button (brain icon).
+  </Step>
+  <Step title="AI generates concept articles">
+    Web2MD analyzes all conversions in the collection and generates interconnected concept articles with wikilinks.
+  </Step>
+  <Step title="Download the ZIP">
+    The result is an Obsidian-ready ZIP containing:
+    - Individual concept `.md` files with wikilinks (`[[Related Concept]]`)
+    - An `INDEX.md` with links to all articles
+    - YAML frontmatter on each file
+  </Step>
+</Steps>
+
+### Example
+
+If your collection contains 10 articles about "React Server Components", Compile Wiki might generate:
+
+- `Server Components.md` — Overview with links to [[Streaming]], [[Suspense]], [[Data Fetching]]
+- `Streaming.md` — How streaming works with links back to [[Server Components]]
+- `Data Fetching.md` — Patterns for data loading in RSC
+- `INDEX.md` — Master list of all generated articles
+
+<Tip>
+  Compile Wiki works best with collections of 5-20 related articles on a specific topic. The AI uses the content to identify key concepts and create cross-linked articles.
 </Tip>
 
 ## Managing collections

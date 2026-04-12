@@ -1,11 +1,11 @@
 ---
 title: "Site Adapters"
-description: "Optimized content extraction for Reddit, GitHub, YouTube, Notion, Feishu, and more."
+description: "Optimized content extraction for 16 popular platforms including Reddit, GitHub, YouTube, Hacker News, arXiv, Medium, and more."
 ---
 
 ## Overview
 
-While Web2MD works on any webpage, certain sites benefit from specialized extraction logic. Site adapters use each platform's API or DOM structure to produce better Markdown output than generic extraction.
+While Web2MD works on any webpage, certain sites benefit from specialized extraction logic. Web2MD includes **16 platform-specific extractors** that use each platform's API or DOM structure to produce better Markdown output than generic extraction.
 
 <Frame>
   <img src="/images/site-adapters.png" alt="Site-specific adapters" />
@@ -13,17 +13,109 @@ While Web2MD works on any webpage, certain sites benefit from specialized extrac
 
 ## Supported sites
 
-### Reddit
+### API-based (no tab needed)
+
+These extractors fetch data directly via the platform's API, so they work even without an active browser tab.
+
+#### Reddit
 
 Extracts the full post content including:
 - Post title, author, subreddit, and score
 - Self-text or link content
-- Up to **30 comments** with author and score
+- Up to **200 comments** with 4 levels of nesting, including author and score
 - Image and media links
 
 Uses Reddit's JSON API (`/.json`) for reliable extraction.
 
-### GitHub
+#### Hacker News
+
+Extracts full discussion threads via Algolia API:
+- Post title, URL, points, and comment count
+- All comments with author and nesting
+
+#### arXiv
+
+Extracts research papers:
+- Paper title, authors, and abstract
+- Full HTML content for research papers
+
+#### YouTube
+
+Extracts video metadata:
+- Video title and channel name
+- Duration and view count
+- English subtitles/captions (when available)
+
+#### Twitter / X
+
+Extracts tweet content:
+- Tweet text and media
+- Author info and engagement metrics
+
+### DOM-based (requires browser tab)
+
+These extractors parse the page DOM inside the active tab for structured content.
+
+#### OpenAI Docs
+
+Extracts documentation pages from OpenAI's documentation site:
+- Code blocks and API references
+- Structured navigation and content hierarchy
+
+#### Claude Chat
+
+Extracts conversation content from the Claude.ai chat interface.
+
+#### Notion
+
+Extracts content from public and logged-in Notion pages (notion.so, notion.site):
+- Dual extraction: block-level DOM parsing (`data-block-id`) with container fallback
+- Headings, text, code blocks, lists, toggles, callouts, quotes
+- Images, tables, bookmarks, and embeds
+
+#### Feishu / Lark
+
+Extracts content from Feishu Docx and Wiki pages (feishu.cn, larksuite.com):
+- Dual extraction: PageMain block model with DOM fallback
+- Headings, text, code blocks, lists, tables, images
+- Callouts and checkboxes
+
+#### Medium
+
+Extracts article content from Medium's DOM:
+- Author, publication date, and reading time
+- Full article content
+
+#### Substack
+
+Extracts newsletter posts:
+- Author, date, and full article content
+
+#### Wikipedia
+
+Extracts article content:
+- Sections, tables, and references
+- Removes navigation and sidebar clutter
+
+#### DEV.to
+
+Extracts developer blog posts:
+- Tags, reactions, and comments
+
+#### Product Hunt
+
+Extracts product pages:
+- Product descriptions and maker info
+- Discussion threads
+
+#### Stack Overflow
+
+Extracts Q&A content:
+- Question title, body, tags, and vote count
+- Accepted answer (highlighted)
+- Top answers with vote counts
+
+#### GitHub
 
 Extracts Issues and Pull Requests including:
 - Title, status (open/closed/merged), and labels
@@ -31,40 +123,6 @@ Extracts Issues and Pull Requests including:
 - Up to **30 comments** with author info
 
 Uses GitHub's REST API for structured data.
-
-### YouTube
-
-Extracts video metadata:
-- Video title and channel name
-- Duration and view count
-- English subtitles/captions (when available)
-
-### Stack Overflow
-
-Extracts Q&A content:
-- Question title, body, tags, and vote count
-- Accepted answer (highlighted)
-- Top answers with vote counts
-
-### Twitter / X
-
-Extracts tweet content:
-- Tweet text and media
-- Author info and engagement metrics
-
-### Notion
-
-Extracts content from public and logged-in Notion pages (notion.so, notion.site):
-- Dual extraction: block-level DOM parsing (`data-block-id`) with container fallback
-- Headings, text, code blocks, lists, toggles, callouts, quotes
-- Images, tables, bookmarks, and embeds
-
-### Feishu / Lark
-
-Extracts content from Feishu Docx and Wiki pages (feishu.cn, larksuite.com):
-- Dual extraction: PageMain block model with DOM fallback
-- Headings, text, code blocks, lists, tables, images
-- Callouts and checkboxes
 
 ## How adapters work
 
