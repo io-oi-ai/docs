@@ -66,6 +66,7 @@
               "advanced/obsidian",
               "advanced/api",
               "advanced/mcp-server",
+              "advanced/agent-bridge",
               "advanced/webhooks",
               "advanced/settings"
             ]

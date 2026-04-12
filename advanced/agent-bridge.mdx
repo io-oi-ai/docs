@@ -1,0 +1,244 @@
+---
+title: "Agent Bridge"
+sidebarTitle: "Agent Bridge"
+description: "Let AI agents batch-convert Reddit and any website via your Chrome extension"
+icon: "microchip"
+---
+
+## Overview
+
+Agent Bridge lets AI agents (Claude Code, Cursor, Cowork, etc.) remotely control the Web2MD Chrome extension to batch-convert URLs — especially Reddit, JS-rendered, and login-protected pages that block server-side API access.
+
+Instead of calling the Web2MD API (which Reddit blocks), the AI agent sends commands to your local Chrome extension via [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). The extension opens each page in a background tab using **your real browser session** — with your cookies and login state — extracts the content, converts to Markdown, and returns the result.
+
+<Note>
+  Agent Bridge requires a **PRO plan** and the **native messaging host** installed on your machine. The extension must be open in Chrome.
+</Note>
+
+## Architecture
+
+```
+AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome Extension → Any Website
+```
+
+| Component | Role |
+|-----------|------|
+| **AI Agent** | Claude Code, Cursor, Cowork — calls MCP tools |
+| **MCP Server** | Translates MCP tool calls to TCP messages |
+| **Native Host** | Relays between TCP and Chrome Native Messaging |
+| **Chrome Extension** | Opens tabs, extracts HTML, converts to Markdown |
+
+All communication is **local** — nothing leaves your machine. The Native Host listens on `localhost:12315` only.
+
+## Setup
+
+### Step 1: Build the MCP Server
+
+```bash
+cd packages/mcp-server
+pnpm build
+```
+
+### Step 2: Install the Native Messaging Host
+
+```bash
+cd packages/mcp-server
+./install.sh <your-extension-id>
+```
+
+<Tip>
+  Find your Extension ID at `chrome://extensions` with Developer Mode enabled. Look for Web2MD and copy the ID string (e.g. `ijmgpkkfgpijifldbjafjiapehppcbcn`).
+</Tip>
+
+<Warning>
+  After installation, you must **fully quit Chrome (Cmd+Q on Mac) and reopen it**. Chrome only reads Native Messaging manifests at startup — reloading the extension is not enough.
+</Warning>
+
+The install script:
+- Copies host files to `~/.web2md/` (avoids macOS TCC restrictions on `~/Desktop`)
+- Resolves the absolute path to `node` (Chrome launches with minimal PATH)
+- Writes the NM manifest to Chrome's `NativeMessagingHosts` directory
+
+### Step 3: Configure MCP
+
+<Tabs>
+  <Tab title="Claude Code">
+    Add to `~/.claude/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    Add to `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Desktop">
+    Add to your Claude Desktop config:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Step 4: Verify
+
+In Chrome, open `chrome://extensions` → click Web2MD's "Service Worker" link → check the Console:
+
+```
+[Web2MD] Service worker started
+[Web2MD] Connected to native host
+[Web2MD] Native host TCP relay ready on port 12315
+```
+
+If you see these three lines, Agent Bridge is working.
+
+## Available Tools
+
+### agent_convert
+
+Convert a single URL using the Chrome extension.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | The URL to convert |
+
+**Returns:** Markdown content with title, source URL, word count, and reading time.
+
+**Best for:** Reddit threads, login-protected pages, JS-rendered sites.
+
+### agent_batch_convert
+
+Batch convert up to 50 URLs. URLs are processed sequentially — the extension opens each page in a background tab, extracts content, closes the tab, then moves to the next.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `urls` | string[] | Array of URLs to convert (max 50) |
+
+**Returns:** Per-URL results streamed as they complete, plus a summary.
+
+**Best for:** Research workflows — batch-convert Reddit threads, HN discussions, or competitor pages for AI analysis.
+
+<Info>
+  All successful conversions are automatically saved to your [Dashboard History](https://web2md.org/dashboard/history), with AI-generated summaries and tags.
+</Info>
+
+## Usage Examples
+
+<AccordionGroup>
+  <Accordion title="Convert a Reddit thread">
+    **You:** Convert this Reddit thread to Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+
+    **Agent:** _(calls `agent_convert`)_ Here's the converted thread with 7 comments discussing RAG precision for legal documents...
+  </Accordion>
+  <Accordion title="Batch convert for research">
+    **You:** Batch convert these 5 Reddit URLs and summarize the key takeaways:
+    - https://reddit.com/r/MachineLearning/comments/...
+    - https://reddit.com/r/LocalLLaMA/comments/...
+    - https://reddit.com/r/LangChain/comments/...
+    - https://reddit.com/r/artificial/comments/...
+    - https://reddit.com/r/ChatGPT/comments/...
+
+    **Agent:** _(calls `agent_batch_convert`)_ Converted 5/5 URLs successfully. Here are the key takeaways...
+  </Accordion>
+  <Accordion title="Convert login-protected pages">
+    **You:** Convert my company's internal wiki page at https://wiki.internal.com/architecture
+
+    **Agent:** _(calls `agent_convert`)_ Since you're logged in to this site in Chrome, I was able to extract the full content...
+  </Accordion>
+</AccordionGroup>
+
+## Supported Sites
+
+Agent Bridge uses the same 16 site-specific extractors as the extension:
+
+| Site | Method | Tab Required? |
+|------|--------|:---:|
+| Reddit | JSON API | No |
+| Hacker News | Algolia API | No |
+| YouTube | Transcript API | No |
+| arXiv | HTML scraping | No |
+| Twitter/X | DOM extraction | Yes |
+| GitHub Issues/PRs | REST API | No |
+| Medium | DOM extraction | Yes |
+| Substack | DOM extraction | Yes |
+| Wikipedia | DOM extraction | Yes |
+| Stack Overflow | SE API | No |
+| Any other site | Full page HTML | Yes |
+
+Sites marked "No" for tab requirement are converted via API calls — faster and more reliable. Others use background tabs.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="'Native host not installed' or 'not found'">
+    Chrome hasn't loaded the NM manifest. **Fully quit Chrome (Cmd+Q) and reopen.** Simply reloading the extension is not enough.
+  </Accordion>
+  <Accordion title="'Native host has exited' immediately">
+    Chrome can't execute the host script. Common causes:
+    - `node` not found — re-run `./install.sh` which uses the absolute node path
+    - Host is in a TCC-protected directory (`~/Desktop`, `~/Documents`) — re-run install to move to `~/.web2md/`
+  </Accordion>
+  <Accordion title="'Agent connection error' from MCP">
+    The Native Host TCP server isn't running. Make sure:
+    1. Chrome is open
+    2. The Web2MD extension is loaded
+    3. Service Worker console shows "TCP relay ready on port 12315"
+  </Accordion>
+  <Accordion title="'Failed to extract content from the page'">
+    The extension is not logged in. Open the Web2MD popup in Chrome and sign in to your PRO account.
+  </Accordion>
+  <Accordion title="'Tab load timeout'">
+    The target page takes too long to load. This is normal for slow sites. The extension waits up to 15 seconds per tab. Reddit uses the JSON API extractor and doesn't need a tab, so timeouts on Reddit usually mean the post URL is invalid (404).
+  </Accordion>
+  <Accordion title="Conversions not appearing in Dashboard History">
+    History saving requires the extension to be logged in with a PRO account. The save is fire-and-forget — if the API call fails silently, conversions won't appear. Check that your auth token is valid.
+  </Accordion>
+</AccordionGroup>
+
+## How It Differs from the MCP Server
+
+| Feature | MCP Server (`convert_url`) | Agent Bridge (`agent_convert`) |
+|---------|---------------------------|-------------------------------|
+| Where it runs | Server-side API call | Your local Chrome browser |
+| Reddit support | ❌ Blocked by Reddit | ✅ Uses real browser session |
+| Login-protected pages | ❌ No access | ✅ Uses your cookies |
+| JS-rendered pages | ❌ No JavaScript | ✅ Full Chrome rendering |
+| Speed | Faster (no tab overhead) | Slower (opens real tabs) |
+| Requires Chrome open | No | Yes |
+
+**Rule of thumb:** Use `convert_url` for public pages. Use `agent_convert` / `agent_batch_convert` for Reddit, authenticated pages, and JS-heavy sites.
