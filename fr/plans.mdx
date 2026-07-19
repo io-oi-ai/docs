@@ -1,0 +1,105 @@
+---
+title: "Offres et tarifs"
+description: "Comparez les plans Free et Pro pour trouver celui qui correspond à votre façon de travailler."
+---
+
+## Aperçu
+
+Web2MD propose un niveau gratuit généreux et un plan Pro pour les utilisateurs avancés.
+
+<Frame>
+  <img src="/images/screenshot-4.png" alt="Page tarifaire de Web2MD" />
+</Frame>
+
+## Comparaison des plans
+
+| Fonctionnalité | Free | Pro |
+|---------|------|-----|
+| **Prix** | \$0 | \$9/mois |
+| **Conversions** | 3/jour | Illimitées |
+| **Méthode de conversion** | API côté serveur | Côté client (plus rapide, privé) |
+| **Extraction intelligente** | Oui | Oui |
+| **Adaptateurs de sites** | Oui | Oui |
+| **Envoyer à l'IA** | Oui | Oui |
+| **File d'attente multi-pages** | Oui | Oui |
+| **Carte d'aperçu** | Oui | Oui |
+| **Menu contextuel** | Oui | Oui |
+| **Templates de prompts** | Oui | Oui |
+| **Intégration Obsidian** | Oui | Oui |
+| **Tags & résumé automatiques par IA** | — | Oui |
+| **Téléchargement des fichiers Markdown** | — | Oui |
+| **Collections automatiques par plateforme** | — | Oui |
+| **Comptage de tokens** | — | Oui |
+| **Découpage intelligent du contenu** | — | Oui |
+| **Résumé & tags IA** | — | Oui |
+| **Collections & recherche sémantique** | — | Oui |
+| **Règles d'extraction personnalisées** | — | Oui |
+| **Accès API REST** (60 req/min) | — | Oui |
+| **Serveur MCP** | — | Oui |
+| **Automatisation par webhook** | — | Oui |
+| **Outil CLI** (`npx web2md`) | Oui | Oui |
+| **Agent Bridge** (contrôle par agent IA) | — | Oui |
+| **Export en image** | Filigrane | Sans filigrane |
+| **Mode surveillance** (suivi de pages) | — | Oui |
+| **Compilation Wiki** (collection → ZIP Obsidian) | — | Oui |
+| **Gestion des clés API** (jusqu'à 5) | — | Oui |
+| **Support prioritaire** | — | Oui |
+| **Accès anticipé aux fonctionnalités** | — | Oui |
+
+## Plan Free
+
+Le plan Free inclut **3 conversions par jour** — suffisant pour essayer Web2MD et voir s'il correspond à votre façon de travailler.
+
+- Les conversions sont traitées côté serveur via l'API Web2MD
+- Toutes les fonctionnalités de base sont disponibles (Send to AI, conversion par lot, templates de prompts, etc.)
+- Aucune carte de crédit requise
+
+<Info>
+Lorsque vous atteignez la limite gratuite, un message s'affiche : **"Free limit reached, please upgrade to Pro."**
+</Info>
+
+## Plan Pro
+
+Pro débloque des **conversions illimitées** avec un **traitement côté client** — votre contenu ne quitte jamais votre navigateur.
+
+Fonctionnalités Pro supplémentaires :
+
+- **Tags & résumé automatiques par IA** — Chaque conversion génère automatiquement des tags sémantiques et un résumé concis
+- **Téléchargement des fichiers Markdown** — Enregistrez les conversions sous forme de fichiers `.md` sur votre ordinateur
+- **Collections automatiques par plateforme** — Les conversions sont automatiquement triées par plateforme source
+- **Comptage de tokens** — Consultez le nombre exact de tokens pour planifier le contexte IA
+- **Découpage intelligent du contenu** — Divisez automatiquement le contenu long en segments adaptés à l'IA
+- **Résumé & tags IA** — Génère automatiquement des résumés et des tags thématiques pour le contenu converti
+- **Collections & recherche sémantique** — Organisez le contenu sauvegardé en collections et recherchez par sens
+- **Règles d'extraction personnalisées** — Créez des règles de sélecteurs CSS par domaine pour une extraction de contenu précise
+- **Accès API REST** — Utilisez l'API de conversion de Web2MD de manière programmatique (60 req/min)
+- **Intégration serveur MCP** — Connectez Web2MD à des agents IA et des outils d'automatisation
+- **Automatisation par webhook** — Transmettez les événements de conversion vers des services externes
+- **Outil CLI** — Convertissez des URLs depuis la ligne de commande avec `npx web2md`, y compris le mode batch et l'export vers un coffre Obsidian
+- **Agent Bridge** — Laissez les agents IA convertir des URLs en lot via votre extension Chrome grâce au Native Messaging
+- **Export en image** — Enregistrez le Markdown converti sous forme d'images stylisées sans filigrane
+- **Mode surveillance** — Surveillez les pages pour détecter les changements avec conversion automatisée ou déclencheurs webhook
+- **Compilation Wiki** — Générez des bases de connaissances prêtes pour Obsidian, propulsées par l'IA, à partir de vos collections
+- **Gestion des clés API** — Créez et gérez jusqu'à 5 clés API
+
+<Card title="Passer à Pro" icon="star" href="https://web2md.org/pricing">
+  Obtenez des conversions illimitées pour \$9/mois (40% de réduction sur le prix normal de \$15/mois).
+</Card>
+
+## Comment fonctionne la conversion selon le plan
+
+<AccordionGroup>
+  <Accordion title="Utilisateurs Free" icon="user">
+    1. L'adaptateur de site s'exécute (si disponible) — c'est gratuit et illimité
+    2. En l'absence d'adaptateur, le HTML de la page est envoyé à l'API serveur de Web2MD
+    3. Le serveur convertit le HTML en Markdown et renvoie le résultat
+    4. Le compteur d'utilisation s'incrémente
+  </Accordion>
+
+  <Accordion title="Utilisateurs Pro" icon="crown">
+    1. L'adaptateur de site s'exécute (si disponible)
+    2. En l'absence d'adaptateur, la conversion se fait **entièrement dans le navigateur** (côté client)
+    3. Aucune donnée n'est envoyée à un serveur
+    4. Aucune limite d'utilisation
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,182 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "Konvertieren Sie jede URL oder HTML programmgesteuert in Markdown"
+icon: "code"
+---
+
+## Übersicht
+
+Die Web2MD REST API ermöglicht es Ihnen, jede Webseite oder rohes HTML programmgesteuert in sauberes Markdown zu konvertieren. Nutzen Sie sie, um Pipelines aufzubauen, die Inhaltsaufnahme zu automatisieren oder Web2MD in Ihre eigenen Tools zu integrieren.
+
+<Note>
+  Die REST API erfordert einen **PRO-Plan**. Erstellen Sie Ihren API-Schlüssel im [Web2MD-Dashboard](https://web2md.org/dashboard/api-keys).
+</Note>
+
+### Maschinenlesbare Spezifikationen
+
+| Ressource | URL | Beschreibung |
+|----------|-----|-------------|
+| OpenAPI 3.1 Spezifikation | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | Vollständiges API-Schema für Codegenerierung und Tooling |
+| AI-Plugin-Manifest | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | Agent-Discovery (ChatGPT Plugins / AI-Assistenten) |
+
+Verwenden Sie die OpenAPI-Spezifikation, um Client-SDKs automatisch zu generieren oder sie in Tools wie Postman, Swagger UI oder AI-Agent-Frameworks zu importieren.
+
+## Authentifizierung
+
+Jede Anfrage muss Ihren API-Schlüssel im `Authorization`-Header enthalten:
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+API-Schlüssel beginnen mit dem Präfix `w2m_` und sind an Ihr Konto gebunden.
+
+## Endpunkt
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### Request Body
+
+| Feld | Typ | Erforderlich | Beschreibung |
+|-------|------|----------|-------------|
+| `url` | `string` | Entweder `url` oder `html` | Die URL der zu konvertierenden Seite |
+| `html` | `string` | Entweder `url` oder `html` | Roher HTML-String zur Konvertierung |
+| `options` | `object` | Nein | Konvertierungsoptionen (siehe unten) |
+
+<Warning>
+  Geben Sie entweder `url` oder `html` an, nicht beides. Die Anfrage schlägt mit einem `400`-Fehler fehl, wenn beide vorhanden sind oder keines von beiden angegeben wird.
+</Warning>
+
+### Optionen
+
+| Feld | Typ | Standard | Beschreibung |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | Bildreferenzen in der Ausgabe einschließen |
+| `includeLinks` | `boolean` | `true` | Hyperlinks in der Ausgabe erhalten |
+| `includeMeta` | `boolean` | `true` | Seitenmetadaten als YAML-Frontmatter voranstellen |
+
+### Antwort
+
+Eine erfolgreiche Antwort liefert:
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
+    }
+  }
+}
+```
+
+| Feld | Typ | Beschreibung |
+|-------|------|-------------|
+| `title` | `string` | Seitentitel, extrahiert aus `<title>` |
+| `url` | `string` | Quell-URL (falls angegeben) |
+| `extractedAt` | `string` | ISO 8601 Zeitstempel der Konvertierung |
+| `wordCount` | `integer` | Gesamtwortanzahl (englische Wörter + CJK-Zeichen) |
+| `tokenCount` | `integer` | Geschätzte LLM-Token-Anzahl |
+| `readingTime` | `integer` | Geschätzte Lesezeit in Minuten |
+| `author` | `string?` | Autorenname aus Meta-Tags oder JSON-LD |
+| `publishedDate` | `string?` | Veröffentlichungsdatum (YYYY-MM-DD) |
+| `description` | `string?` | Seitenbeschreibung aus Open Graph oder Meta-Tags |
+
+## Ratenbegrenzung
+
+API-Anfragen sind auf **60 Anfragen pro Minute** pro API-Schlüssel begrenzt. Bei Überschreitung des Limits gibt die API einen `429`-Statuscode zurück. Warten Sie das Reset-Fenster ab, bevor Sie es erneut versuchen.
+
+## Fehlerantworten
+
+| Status | Bedeutung | Beispiel |
+|--------|---------|---------|
+| `400` | Ungültige Anfrage — fehlende oder widersprüchliche Eingabe | Sowohl `url` als auch `html` angegeben, oder keines von beiden |
+| `401` | Nicht autorisiert — ungültiger oder fehlender API-Schlüssel | Fehlender `Authorization`-Header |
+| `422` | Nicht verarbeitbar — die URL konnte nicht abgerufen werden | Ziel-Website gab einen Fehler zurück oder Zeitüberschreitung |
+| `429` | Ratenlimit überschritten | Mehr als 60 Anfragen pro Minute |
+| `500` | Interner Serverfehler | Unerwarteter Fehler auf unserer Seite |
+
+Alle Fehlerantworten folgen diesem Format:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## Beispiele
+
+### URL mit curl konvertieren
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### Rohes HTML mit curl konvertieren
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  Speichern Sie Ihren API-Schlüssel in einer Umgebungsvariable, anstatt ihn fest im Code zu hinterlegen. Verwenden Sie zum Beispiel `process.env.WEB2MD_API_KEY` in Node.js.
+</Tip>

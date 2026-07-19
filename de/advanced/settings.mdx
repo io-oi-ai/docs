@@ -1,0 +1,86 @@
+---
+title: "Einstellungen"
+description: "Vollständige Referenz für alle Web2MD-Einstellungen und -Optionen."
+---
+
+## Übersicht
+
+Greifen Sie über den Tab **Settings** im Web2MD-Popup oder über die Options-Seite (Rechtsklick auf das Erweiterungssymbol → Options) auf die Einstellungen zu.
+
+## Konvertierungsoptionen
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Include images** | Ein | Bildlinks mit Alt-Text in der Markdown-Ausgabe erhalten |
+| **Include links** | Ein | Hyperlinks in der Ausgabe behalten. Ausschalten für reinen Text |
+| **Add metadata** | Ein | YAML-Frontmatter (Titel, Quell-URL, Zeitstempel) zur Ausgabe hinzufügen |
+| **Detect code language** | Ein | Programmiersprache für Codeblöcke automatisch erkennen |
+| **Auto copy** | Aus | Markdown nach der Konvertierung automatisch in die Zwischenablage kopieren |
+
+## Optionen für die Vorschaukarte
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Show preview card** | Ein | Schwebende Vorschaukarte nach Konvertierung per Shortcut/Kontextmenü anzeigen |
+| **Card duration** | 15s | Wie lange Karten sichtbar bleiben: 5s, 15s, 30s oder Always |
+| **Clear all cards** | — | Alle dauerhaften Karten entfernen (sichtbar im Always-Modus) |
+
+## AI-Einstellungen
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Preferred AI platform** | Claude | Standardplattform für Send to AI: Claude, ChatGPT oder Gemini |
+| **Prompt template** | Keine | Aktive Vorlage, die beim Senden an AI angewendet wird. [Mehr erfahren →](/de/advanced/prompt-templates) |
+| **Auto send to AI** | Aus | Nach jeder Konvertierung automatisch an AI senden |
+
+## Obsidian-Einstellungen
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Enable Obsidian export** | Aus | Die Schaltfläche "Save to Obsidian" anzeigen. [Mehr erfahren →](/de/advanced/obsidian) |
+| **Vault name** | (leer) | Name des Ziel-Obsidian-Vaults |
+
+## Ziel-AI-Modell
+
+<Note>Hinzugefügt in v0.6</Note>
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Target AI model** | Keine | Wählen Sie Claude 200K, GPT-4 128K, Gemini 1M oder None. Wenn festgelegt, komprimiert Web2MD Inhalte automatisch, um in das Kontextfenster des ausgewählten Modells zu passen. |
+
+## Benutzerdefinierte Extraktionsregeln
+
+<Note>Hinzugefügt in v0.7 — nur PRO</Note>
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Custom rules** | (leer) | Erstellen Sie domänenspezifische CSS-Selektorregeln für eine feingranulare Extraktionskontrolle. [Mehr erfahren →](/de/advanced/custom-rules) |
+
+## API-Schlüssel
+
+<Note>Hinzugefügt in v0.8 — nur PRO</Note>
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **API keys** | (keine) | Erstellen und verwalten Sie API-Schlüssel für die REST API und den MCP Server. Bis zu 5 Schlüssel pro Konto. [Mehr erfahren →](/de/advanced/api) |
+
+## Webhooks
+
+<Note>Hinzugefügt in v0.8 — nur PRO</Note>
+
+| Einstellung | Standard | Beschreibung |
+|---------|---------|-------------|
+| **Webhook endpoints** | (keine) | Konfigurieren Sie Webhook-URLs, um Konvertierungsereignisse automatisch zu empfangen. [Mehr erfahren →](/de/advanced/webhooks) |
+
+## Hilfe & Feedback
+
+| Link | Beschreibung |
+|------|-------------|
+| **Documentation** | Öffnet die Web2MD-Dokumentationsseite |
+| **Send feedback** | Öffnet eine E-Mail an den Support |
+
+## Datenspeicherung
+
+Web2MD speichert Ihre Einstellungen lokal mithilfe von `chrome.storage.local`. Ihre Einstellungen werden über Browser-Sitzungen hinweg synchronisiert, jedoch **nicht** geräteübergreifend.
+
+Es werden keine persönlichen Daten oder konvertierten Inhalte an die Web2MD-Server gesendet, es sei denn, Sie sind ein Free-Nutzer, der die serverseitige Konvertierungs-API verwendet.

@@ -1,0 +1,51 @@
+---
+title: "Fila de Múltiplas Páginas"
+description: "Converta várias páginas e envie todas para a IA em uma única solicitação mesclada."
+---
+
+## Visão geral
+
+A fila de múltiplas páginas permite reunir Markdown de várias páginas antes de enviar tudo para seu assistente de IA de uma só vez. Perfeito para pesquisas, análises da concorrência ou compilação de informações de múltiplas fontes.
+
+## Como funciona
+
+<Steps>
+  <Step title="Converta uma página">
+    Converta qualquer página da web normalmente.
+  </Step>
+  <Step title="Adicione à fila">
+    Clique em **"Adicionar à fila e converter próxima página"** abaixo do resultado.
+  </Step>
+  <Step title="Navegue e repita">
+    Vá para a próxima página, converta-a e adicione-a à fila.
+  </Step>
+  <Step title="Envie tudo para a IA">
+    Quando estiver pronto, clique em **"Enviar tudo → Claude"** (ou sua plataforma preferida) no painel da fila.
+  </Step>
+</Steps>
+
+## Painel da fila
+
+O painel da fila mostra:
+- Títulos das páginas e contagem de palavras
+- Remoção de itens individuais com ×
+- **Enviar tudo** para a plataforma de IA selecionada
+- **Limpar** para esvaziar a fila
+
+## Formato mesclado
+
+Ao enviar a fila para a IA, todas as páginas são mescladas em um único documento:
+
+```markdown
+# Título da Página 1
+
+[Conteúdo Markdown da Página 1]
+
+---
+
+# Título da Página 2
+
+[Conteúdo Markdown da Página 2]
+```
+
+Os modelos de prompt são aplicados ao conteúdo mesclado antes do envio.

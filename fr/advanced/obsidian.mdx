@@ -1,0 +1,51 @@
+---
+title: "Intégration Obsidian"
+description: "Enregistrez le Markdown converti directement dans votre coffre Obsidian."
+---
+
+## Vue d'ensemble
+
+Web2MD peut envoyer le Markdown converti directement vers [Obsidian](https://obsidian.md) en utilisant le protocole d'URI `obsidian://`. Cela vous permet d'enregistrer du contenu web dans votre coffre sans quitter le navigateur.
+
+## Configuration
+
+<Steps>
+  <Step title="Activer l'intégration Obsidian">
+    Allez dans **Settings → Obsidian** et activez **Enable Obsidian export**.
+  </Step>
+  <Step title="Définir le nom de votre coffre (facultatif)">
+    Si vous avez plusieurs coffres Obsidian, saisissez le nom du coffre pour cibler un coffre spécifique. Laissez vide pour utiliser le coffre par défaut.
+  </Step>
+  <Step title="Vérifier qu'Obsidian est en cours d'exécution">
+    Obsidian doit être ouvert sur votre ordinateur pour que le protocole d'URI fonctionne.
+  </Step>
+</Steps>
+
+## Utilisation
+
+Après avoir converti une page :
+
+1. Cliquez sur le bouton **Save to Obsidian** dans le panneau de résultat
+2. Obsidian s'ouvre et crée une nouvelle note avec le contenu Markdown
+3. Le titre de la note est défini sur le titre de la page
+
+## Fonctionnement
+
+Web2MD utilise le [protocole d'URI](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI) d'Obsidian :
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+Cela crée une nouvelle note dans le coffre spécifié avec le Markdown converti comme contenu.
+
+<Warning>
+Le protocole `obsidian://` a des limites de longueur d'URL. Les articles très longs peuvent être tronqués. Pour un contenu long, envisagez d'utiliser **Copy** et de le coller directement dans Obsidian.
+</Warning>
+
+## Paramètres
+
+| Paramètre | Description |
+|---------|-------------|
+| **Enable Obsidian export** | Affiche/masque le bouton « Save to Obsidian » |
+| **Vault name** | Coffre cible (laissez vide pour le coffre par défaut) |

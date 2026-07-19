@@ -1,0 +1,122 @@
+---
+title: "Collections"
+sidebarTitle: "Collections"
+description: "Organisez vos conversions en dossiers de connaissances consultables."
+icon: "folder-open"
+---
+
+## Vue d'ensemble
+
+Les Collections vous permettent d'organiser vos conversions en dossiers — comme « React Research », « Competitor Analysis » ou « Weekly Reading ». Regroupez du contenu lié, parcourez-le plus tard, et exportez des collections entières sous la forme d'un seul fichier Markdown fusionné.
+
+<Note>
+Les Collections sont une fonctionnalité **réservée au plan Pro**.
+</Note>
+
+## Créer une collection
+
+<Steps>
+  <Step title="Ouvrir l'onglet Collections">
+    Dans le popup Web2MD, allez dans l'onglet **Collections**.
+  </Step>
+  <Step title="Créer une nouvelle collection">
+    Cliquez sur **New Collection**, saisissez un nom, et choisissez éventuellement une collection parente pour l'imbrication.
+  </Step>
+  <Step title="Commencer à ajouter des conversions">
+    Ajoutez des conversions depuis l'onglet History, ou assignez-les directement lors de la conversion.
+  </Step>
+</Steps>
+
+## Ajouter des conversions à une collection
+
+Il existe deux façons d'ajouter du contenu :
+
+<CardGroup cols={2}>
+  <Card title="Depuis History" icon="clock-rotate-left">
+    Ouvrez l'onglet History, trouvez une conversion, et utilisez le **menu déroulant du dossier** pour l'assigner à une collection.
+  </Card>
+  <Card title="Collections imbriquées" icon="folder-tree">
+    Créez des sous-collections dans n'importe quelle collection pour une organisation plus fine. Par exemple : **Research → Frontend → React**.
+  </Card>
+</CardGroup>
+
+## Parcourir les collections
+
+L'onglet Collections affiche tous vos dossiers sous forme d'arborescence. Cliquez sur une collection pour voir son contenu :
+
+- Titre, URL et date de la conversion
+- Résumé et tags générés par l'IA (si disponibles)
+- Actions rapides : ouvrir la page d'origine, reconvertir, retirer de la collection
+
+## Exporter une collection
+
+Cliquez sur **Export** sur n'importe quelle collection pour générer un seul fichier Markdown fusionné contenant tous les éléments de cette collection.
+
+L'export inclut :
+
+- Une table des matières avec des liens vers chaque section
+- Chaque conversion séparée par un titre et une ligne de séparation
+- Les URLs sources et métadonnées conservées
+
+<Tip>
+Exporter une collection est un moyen rapide de construire un document de recherche ou un guide d'étude à partir de plusieurs sources.
+</Tip>
+
+## Compile Wiki
+
+Transformez n'importe quelle collection en base de connaissances générée par IA — téléchargeable sous forme de fichier ZIP prêt pour Obsidian.
+
+<Note>
+  Compile Wiki nécessite un **plan Pro**.
+</Note>
+
+### Comment ça marche
+
+<Steps>
+  <Step title="Ouvrir une collection">
+    Allez dans l'onglet Collections et ouvrez la collection que vous souhaitez compiler.
+  </Step>
+  <Step title="Cliquer sur l'icône cerveau">
+    Survolez l'en-tête de la collection pour faire apparaître le bouton **Compile Wiki** (icône cerveau).
+  </Step>
+  <Step title="L'IA génère des articles conceptuels">
+    Web2MD analyse toutes les conversions de la collection et génère des articles conceptuels interconnectés avec des wikilinks.
+  </Step>
+  <Step title="Télécharger le ZIP">
+    Le résultat est un ZIP prêt pour Obsidian contenant :
+    - Des fichiers `.md` individuels par concept, avec des wikilinks (`[[Related Concept]]`)
+    - Un fichier `INDEX.md` avec des liens vers tous les articles
+    - Un frontmatter YAML sur chaque fichier
+  </Step>
+</Steps>
+
+### Exemple
+
+Si votre collection contient 10 articles sur « React Server Components », Compile Wiki pourrait générer :
+
+- `Server Components.md` — Vue d'ensemble avec des liens vers [[Streaming]], [[Suspense]], [[Data Fetching]]
+- `Streaming.md` — Fonctionnement du streaming, avec des liens retour vers [[Server Components]]
+- `Data Fetching.md` — Modèles de chargement de données en RSC
+- `INDEX.md` — Liste principale de tous les articles générés
+
+<Tip>
+  Compile Wiki fonctionne le mieux avec des collections de 5 à 20 articles liés sur un sujet précis. L'IA utilise le contenu pour identifier les concepts clés et créer des articles reliés entre eux.
+</Tip>
+
+## Gérer les collections
+
+| Action | Comment faire |
+|--------|-----|
+| **Créer** | Onglet Collections → New Collection |
+| **Renommer** | Cliquez sur le nom de la collection → Edit |
+| **Imbriquer** | Glissez une collection dans une autre, ou définissez un parent à la création |
+| **Supprimer** | Cliquez sur l'icône de corbeille sur n'importe quelle collection (les conversions ne sont pas supprimées, juste désassignées) |
+
+<Warning>
+Supprimer une collection ne supprime que le dossier. Vos conversions restent dans History et peuvent être réassignées à d'autres collections.
+</Warning>
+
+## Stockage des données
+
+Toutes les données de collections sont stockées dans votre compte Web2MD et synchronisées entre appareils. Vos connaissances organisées restent avec vous tant que votre abonnement Pro est actif.
+</content>

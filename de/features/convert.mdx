@@ -1,0 +1,115 @@
+---
+title: "Seiten konvertieren"
+description: "Konvertieren Sie jede Webseite mit einem Klick in sauberes, KI-taugliches Markdown."
+---
+
+## Überblick
+
+Die Kernfunktion von Web2MD ist die Umwandlung jeder Webseite in sauberes Markdown. Dabei werden Werbung, Navigation, Seitenleisten und anderer visueller Ballast entfernt — übrig bleibt nur der Inhalt, der Sie wirklich interessiert.
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Converting a webpage to Markdown" />
+</Frame>
+
+## So funktioniert es
+
+<Steps>
+  <Step title="Zu einer beliebigen Webseite navigieren">
+    Öffnen Sie die Seite, die Sie konvertieren möchten, in Ihrem Browser.
+  </Step>
+  <Step title="Konvertierung auslösen">
+    Klicken Sie auf das Web2MD-Icon, drücken Sie `Alt+M`, oder klicken Sie mit der rechten Maustaste und wählen Sie **Copy page as Markdown**.
+  </Step>
+  <Step title="Sauberes Markdown erhalten">
+    Web2MD extrahiert den Hauptinhalt, entfernt Ballast und erzeugt gut strukturiertes Markdown.
+  </Step>
+</Steps>
+
+## Ausgabe der Konvertierung
+
+Nach der Konvertierung sehen Sie ein Ergebnisfenster mit:
+
+<Frame>
+  <img src="/images/popup-result.png" alt="Web2MD popup showing conversion result" />
+</Frame>
+
+### Statistikleiste
+
+| Metrik | Beschreibung |
+|--------|-------------|
+| **Words** | Gesamtzahl der Wörter im extrahierten Inhalt |
+| **Tokens** | Geschätzte Anzahl an Tokens (Ø 4 Zeichen = 1 Token) — nützlich für KI-Kontextlimits |
+| **Read** | Geschätzte Lesezeit (basierend auf 200 Wörtern/Minute) |
+
+### Ausgabeaktionen
+
+<CardGroup cols={2}>
+  <Card title="Kopieren" icon="copy">
+    Kopieren Sie das Markdown in Ihre Zwischenablage. Aktivieren Sie **Auto copy** in den Einstellungen, um dies automatisch zu tun.
+  </Card>
+  <Card title="Herunterladen" icon="download">
+    Speichern Sie das Markdown als `.md`-Datei mit dem Seitentitel als Dateiname.
+  </Card>
+  <Card title="An KI senden" icon="paper-plane">
+    Senden Sie den Inhalt direkt an Claude, ChatGPT oder Gemini. [Mehr erfahren →](/de/features/send-to-ai)
+  </Card>
+  <Card title="In Obsidian speichern" icon="vault">
+    Export in Ihren Obsidian-Vault über eine `obsidian://`-URI. [Mehr erfahren →](/de/advanced/obsidian)
+  </Card>
+</CardGroup>
+
+### Vorschaumodi
+
+Wechseln Sie zwischen zwei Ansichten:
+
+- **Preview** — Gerendertes Markdown mit Überschriften, Listen, Codeblöcken und Bildern
+- **Source** — Roher Markdown-Text, bereit zum Kopieren und Einfügen
+
+## Was extrahiert wird
+
+Web2MD verwendet einen zweiphasigen DOM-Bereinigungsprozess:
+
+1. **Phase 1** — Entfernt immer: `<script>`, `<style>`, `<nav>`, `<header>`, `<footer>`, `<aside>`
+2. **Phase 2** — Entfernt Block-Level-Ablenkungen (Werbung, Seitenleisten, Social-Sharing-Buttons), während Inline-Elemente erhalten bleiben
+
+### Erhaltene Inhalte
+
+- Überschriften und Hierarchie
+- Absätze und Textformatierung (fett, kursiv, durchgestrichen)
+- Listen (geordnet und ungeordnet)
+- Codeblöcke mit Spracherkennung
+- Bilder mit Alt-Text
+- Links (in den Einstellungen umschaltbar)
+- Tabellen
+- Blockzitate
+
+### Metadaten (optional)
+
+Wenn **Add metadata** in den Einstellungen aktiviert ist, enthält die Ausgabe:
+
+```markdown
+---
+title: "Article Title"
+source: https://example.com/article
+date: 2025-01-15T10:30:00.000Z
+---
+```
+
+## Auswahlmodus
+
+Markieren Sie vor der Konvertierung bestimmten Text auf einer Seite, um **nur den ausgewählten Inhalt** statt der gesamten Seite zu extrahieren. Dies funktioniert über:
+
+- Das Erweiterungs-Popup (Convert klicken bei markiertem Text)
+- Rechtsklick → **Copy selection as Markdown**
+
+<Tip>
+Der Auswahlmodus eignet sich hervorragend, um bestimmte Abschnitte aus langen Artikeln oder Forenthreads zu extrahieren.
+</Tip>
+
+## Tastaturkürzel
+
+| Shortcut | Aktion |
+|----------|--------|
+| `Alt+M` / `Option+M` | Konvertiert die aktuelle Seite |
+
+Das Tastaturkürzel funktioniert auf jedem Tab, ohne dass das Popup geöffnet werden muss.

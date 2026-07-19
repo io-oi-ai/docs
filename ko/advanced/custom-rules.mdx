@@ -1,0 +1,103 @@
+---
+title: "커스텀 추출 규칙"
+sidebarTitle: "Custom Rules"
+description: "정밀한 콘텐츠 추출을 위해 도메인별 CSS 셀렉터를 정의하세요."
+icon: "code"
+---
+
+## 개요
+
+커스텀 추출 규칙(v0.7)을 사용하면 Web2MD가 정확히 무엇을 추출할지 제어하는 도메인별 CSS 셀렉터를 정의할 수 있습니다. 사이트의 메인 콘텐츠가 특이한 컨테이너에 들어 있거나, 항상 제거하고 싶은 요소가 있다면 커스텀 규칙으로 완전히 제어할 수 있습니다.
+
+<Note>
+Custom Rules는 **Pro 전용** 기능입니다.
+</Note>
+
+## 규칙 만들기
+
+<Steps>
+  <Step title="설정 열기">
+    Web2MD 팝업에서 **Settings → Custom Rules**로 이동합니다.
+  </Step>
+  <Step title="새 규칙 추가">
+    **New Rule**을 클릭하고 도메인(예: `example.com`)을 입력합니다.
+  </Step>
+  <Step title="셀렉터 정의">
+    콘텐츠 셀렉터, 제거 셀렉터, 필요하다면 제목 셀렉터를 설정합니다.
+  </Step>
+  <Step title="저장 및 변환">
+    규칙을 저장합니다. 다음에 해당 도메인의 페이지를 변환할 때 커스텀 셀렉터가 자동으로 적용됩니다.
+  </Step>
+</Steps>
+
+## 규칙 필드
+
+| 필드 | 설명 | 예시 |
+|-------|-------------|---------|
+| **Domain** | 이 규칙이 적용될 도메인 (정확히 일치) | `docs.example.com` |
+| **Content selector** | 메인 콘텐츠 컨테이너에 대한 CSS 셀렉터 | `article.post-body` |
+| **Remove selectors** | 제거할 요소의 CSS 셀렉터 (쉼표로 구분) | `.ads, .sidebar, .related-posts` |
+| **Title selector** | 자동 제목 감지를 재정의 | `h1.entry-title` |
+
+## 예시: 블로그 정리하기
+
+특정 div에 콘텐츠를 감싸고 잡음이 많은 사이드바 위젯을 포함하는 블로그의 기사를 정기적으로 변환한다고 가정해 봅시다.
+
+```
+Domain:           blog.example.com
+Content selector: div.article-content
+Remove selectors: .author-bio, .newsletter-signup, .comments-section
+Title selector:   h1.post-title
+```
+
+이 규칙을 적용하면 Web2MD는 다음을 수행합니다.
+1. `div.article-content` 내부의 콘텐츠만 추출합니다
+2. 작성자 소개, 뉴스레터 가입, 댓글 섹션을 제거합니다
+3. `h1.post-title` 요소를 문서 제목으로 사용합니다
+
+## 규칙 적용 방식
+
+<CardGroup cols={2}>
+  <Card title="자동 매칭" icon="bullseye">
+    규칙은 도메인 기준으로 매칭됩니다. 페이지를 변환할 때 Web2MD는 해당 도메인에 커스텀 규칙이 있는지 확인하고, 표준 추출 파이프라인 이전에 이를 적용합니다.
+  </Card>
+  <Card title="폴백 동작" icon="shield">
+    콘텐츠 셀렉터가 페이지의 어떤 요소와도 일치하지 않으면 Web2MD는 기본 추출 로직으로 폴백합니다. 규칙 때문에 변환이 깨지는 일은 없습니다.
+  </Card>
+</CardGroup>
+
+## 규칙 관리하기
+
+모든 규칙은 확장 프로그램 팝업의 **Settings → Custom Rules**에서 관리됩니다.
+
+| 작업 | 방법 |
+|--------|-----|
+| **생성(Create)** | Settings → Custom Rules → New Rule |
+| **수정(Edit)** | 기존 규칙을 클릭해 셀렉터를 수정 |
+| **삭제(Delete)** | 규칙 옆의 휴지통 아이콘 클릭 |
+| **테스트(Test)** | 대상 도메인의 페이지로 이동해 변환을 실행 |
+
+<Tip>
+규칙을 만들기 전에 브라우저의 DevTools(`Cmd+Shift+I` 또는 `F12`)를 사용해 페이지를 검사하고 올바른 CSS 셀렉터를 찾아보세요.
+</Tip>
+
+## 커뮤니티 공유
+
+<Info>
+커뮤니티 규칙 공유 기능은 곧 제공될 예정입니다. 규칙을 공개(`isPublic` 플래그)로 표시하면 다른 사용자들도 여러분이 만든 도메인별 셀렉터의 혜택을 받을 수 있게 됩니다.
+</Info>
+
+## Site Adapters와의 관계
+
+Custom Rules와 [Site Adapters](/ko/advanced/site-adapters)는 서로 다른 목적을 가지고 있습니다.
+
+| | Site Adapters | Custom Rules |
+|-|---------------|-------------|
+| **범위** | 내장, 특정 플랫폼(Reddit, GitHub 등) | 사용자가 정의하는 모든 도메인 |
+| **방식** | 플랫폼 API와 전용 로직 사용 | CSS 셀렉터만 사용 |
+| **관리 주체** | Web2MD 팀 | 사용자 |
+| **우선순위** | 먼저 실행됨 | 어댑터가 매칭되지 않을 때 실행됨 |
+
+특정 도메인에 Site Adapter가 존재하면 커스텀 규칙보다 우선 적용됩니다. 커스텀 규칙은 전용 어댑터가 없는 사이트에 가장 적합합니다.
+</content>
+</invoke>

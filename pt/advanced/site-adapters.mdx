@@ -1,0 +1,150 @@
+---
+title: "Adaptadores de Site"
+description: "Extração de conteúdo otimizada para 16 plataformas populares, incluindo Reddit, GitHub, YouTube, Hacker News, arXiv, Medium e outras."
+---
+
+## Visão geral
+
+Embora o Web2MD funcione em qualquer página web, certos sites se beneficiam de uma lógica de extração especializada. O Web2MD inclui **16 extratores específicos por plataforma** que usam a API ou a estrutura DOM de cada plataforma para produzir uma saída em Markdown melhor do que a extração genérica.
+
+<Frame>
+  <img src="/images/site-adapters.png" alt="Site-specific adapters" />
+</Frame>
+
+## Sites suportados
+
+### Baseados em API (sem necessidade de aba)
+
+Esses extratores buscam dados diretamente pela API da plataforma, então funcionam mesmo sem uma aba de navegador ativa.
+
+#### Reddit
+
+Extrai o conteúdo completo do post, incluindo:
+- Título do post, autor, subreddit e pontuação
+- Texto próprio ou conteúdo de link
+- Até **200 comentários** com 4 níveis de aninhamento, incluindo autor e pontuação
+- Links de imagens e mídia
+
+Usa a API JSON do Reddit (`/.json`) para uma extração confiável.
+
+#### Hacker News
+
+Extrai threads de discussão completas via API do Algolia:
+- Título do post, URL, pontos e contagem de comentários
+- Todos os comentários com autor e aninhamento
+
+#### arXiv
+
+Extrai papers de pesquisa:
+- Título, autores e resumo do paper
+- Conteúdo HTML completo dos papers de pesquisa
+
+#### YouTube
+
+Extrai metadados do vídeo:
+- Título do vídeo e nome do canal
+- Duração e número de visualizações
+- Legendas em inglês (quando disponíveis)
+
+#### Twitter / X
+
+Extrai conteúdo de tweets:
+- Texto e mídia do tweet
+- Informações do autor e métricas de engajamento
+
+### Baseados em DOM (requer aba do navegador)
+
+Esses extratores analisam o DOM da página dentro da aba ativa para obter conteúdo estruturado.
+
+#### OpenAI Docs
+
+Extrai páginas de documentação do site de documentação da OpenAI:
+- Blocos de código e referências de API
+- Navegação estruturada e hierarquia de conteúdo
+
+#### Claude Chat
+
+Extrai o conteúdo da conversa da interface de chat do Claude.ai.
+
+#### Notion
+
+Extrai conteúdo de páginas públicas e autenticadas do Notion (notion.so, notion.site):
+- Extração dupla: parsing de DOM em nível de bloco (`data-block-id`) com fallback de container
+- Títulos, texto, blocos de código, listas, toggles, callouts, citações
+- Imagens, tabelas, bookmarks e embeds
+
+#### Feishu / Lark
+
+Extrai conteúdo de páginas Feishu Docx e Wiki (feishu.cn, larksuite.com):
+- Extração dupla: modelo de bloco PageMain com fallback de DOM
+- Títulos, texto, blocos de código, listas, tabelas, imagens
+- Callouts e checkboxes
+
+#### Medium
+
+Extrai conteúdo de artigos do DOM do Medium:
+- Autor, data de publicação e tempo de leitura
+- Conteúdo completo do artigo
+
+#### Substack
+
+Extrai posts de newsletter:
+- Autor, data e conteúdo completo do artigo
+
+#### Wikipedia
+
+Extrai conteúdo de artigos:
+- Seções, tabelas e referências
+- Remove navegação e ruído de barra lateral
+
+#### DEV.to
+
+Extrai posts de blog para desenvolvedores:
+- Tags, reações e comentários
+
+#### Product Hunt
+
+Extrai páginas de produtos:
+- Descrições de produtos e informações do criador
+- Threads de discussão
+
+#### Stack Overflow
+
+Extrai conteúdo de perguntas e respostas:
+- Título da pergunta, corpo, tags e contagem de votos
+- Resposta aceita (destacada)
+- Melhores respostas com contagem de votos
+
+#### GitHub
+
+Extrai Issues e Pull Requests, incluindo:
+- Título, status (aberto/fechado/mesclado) e labels
+- Descrição/corpo original
+- Até **30 comentários** com informações do autor
+
+Usa a API REST do GitHub para dados estruturados.
+
+## Como os adaptadores funcionam
+
+Quando você converte uma página, o Web2MD automaticamente:
+
+1. **Detecta o site** a partir da URL
+2. **Seleciona o melhor adaptador**, se existir
+3. **Extrai o conteúdo** usando o método específico do site
+4. **Recorre** à extração genérica se o adaptador falhar
+
+Você não precisa configurar nada — os adaptadores são aplicados automaticamente.
+
+<Info>
+Os adaptadores de site estão disponíveis para todos os usuários (Free e Pro). Eles rodam antes do pipeline principal de conversão, então funcionam independentemente do seu plano.
+</Info>
+
+## Comparação
+
+| Recurso | Extração genérica | Adaptador de site |
+|---------|-------------------|--------------|
+| Precisão do conteúdo | Boa para artigos | Otimizada para a estrutura do site |
+| Comentários/respostas | Não extraídos | Incluídos (Reddit, GitHub, SO) |
+| Metadados | Básicos (título, URL) | Ricos (autor, pontuação, status) |
+| Mídia | Apenas imagens | Vídeos, legendas, embeds |
+| Confiabilidade | Depende da estrutura da página | Usa APIs estáveis |

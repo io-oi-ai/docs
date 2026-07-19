@@ -1,0 +1,154 @@
+---
+title: "MCP Server"
+sidebarTitle: "MCP Server"
+description: "Claude Desktop, Cursor, Windsurf에서 Web2MD를 사용하세요"
+icon: "robot"
+---
+
+## 개요
+
+Web2MD MCP server는 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — AI 모델을 외부 도구 및 데이터 소스에 연결하기 위한 개방형 표준 — 을 사용하여 Web2MD를 AI 어시스턴트가 직접 호출할 수 있는 도구 세트로 노출합니다.
+
+설정을 완료하면 대화창을 벗어나지 않고도 Claude, Cursor, Windsurf에게 페이지 변환, 변환 기록 검색, 저장된 Markdown 조회를 요청할 수 있습니다.
+
+<Note>
+  MCP server를 사용하려면 **Web2MD API key**(PRO 플랜)가 필요합니다. [dashboard](https://web2md.org/dashboard/api-keys)에서 발급받으세요.
+</Note>
+
+## 사용 가능한 도구
+
+MCP server는 세 가지 도구를 제공합니다.
+
+| 도구 | 설명 |
+|------|-------------|
+| `convert_url` | 모든 URL을 깔끔한 Markdown으로 변환 |
+| `semantic_search` | 자연어로 저장된 변환 기록 검색 |
+| `get_conversion` | ID로 저장된 변환의 전체 Markdown 조회 |
+
+### convert_url
+
+URL을 가져와 페이지 콘텐츠를 Markdown으로 반환합니다. REST API와 동일한 변환 옵션을 지원합니다.
+
+**예시 프롬프트:** _"이 URL을 markdown으로 변환해줘: https://docs.example.com/getting-started"_
+
+### semantic_search
+
+자연어 쿼리를 사용해 이전에 저장한 모든 변환 기록을 검색합니다. 제목, URL, 관련도 점수가 포함된 일치하는 변환 목록을 반환합니다.
+
+**예시 프롬프트:** _"저장한 페이지 중에서 데이터베이스 인덱싱 관련 글을 찾아줘"_
+
+### get_conversion
+
+특정 저장된 변환의 전체 Markdown 콘텐츠를 ID로 조회합니다. `semantic_search`로 찾은 문서를 완전한 형태로 컨텍스트에 가져올 때 유용합니다.
+
+**예시 프롬프트:** _"conversion abc123의 전체 내용을 가져와줘"_
+
+## 설정
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Claude Desktop 설정 파일을 여세요.
+
+    - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+    `mcpServers` 아래에 `web2md` 항목을 추가하세요.
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Claude Desktop을 재시작하세요. 도구 선택창에 Web2MD 도구가 나타나는 것을 확인할 수 있습니다.
+  </Tab>
+  <Tab title="Cursor">
+    `~/.cursor/mcp.json`에 있는 Cursor MCP 설정 파일을 열고 다음을 추가하세요.
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    새 server를 불러오려면 Cursor를 재시작하세요.
+  </Tab>
+  <Tab title="Windsurf">
+    `~/.windsurf/mcp.json`에 있는 Windsurf MCP 설정 파일을 열고 다음을 추가하세요.
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    새 server를 불러오려면 Windsurf를 재시작하세요.
+  </Tab>
+</Tabs>
+
+## 사용 예시
+
+MCP server가 실행 중이면 AI 어시스턴트에서 자연어를 사용할 수 있습니다.
+
+<AccordionGroup>
+  <Accordion title="페이지를 Markdown으로 변환">
+    **사용자:** 이 URL을 markdown으로 변환해줘: https://react.dev/learn/thinking-in-react
+
+    **어시스턴트:** _(`convert_url` 호출)_ "Thinking in React"의 변환된 Markdown입니다...
+  </Accordion>
+  <Accordion title="저장된 변환 검색">
+    **사용자:** 저장한 페이지 중에서 인증 관련 내용을 찾아줘
+
+    **어시스턴트:** _(`semantic_search` 호출)_ 인증 관련 저장된 변환을 3개 찾았습니다.
+    1. "OAuth 2.0 Guide" — 2일 전 저장
+    2. "JWT Best Practices" — 지난주 저장
+    3. ...
+  </Accordion>
+  <Accordion title="전체 변환 내용 조회">
+    **사용자:** conversion abc123의 전체 내용을 가져와줘
+
+    **어시스턴트:** _(`get_conversion` 호출)_ 전체 Markdown 콘텐츠입니다...
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  한 대화 안에서 여러 도구를 함께 사용할 수 있습니다. 예를 들어 _"내 변환 기록에서 React 문서를 검색한 다음, 가장 최근 항목의 전체 내용을 가져와줘"_ 처럼요.
+</Tip>
+
+## 문제 해결
+
+<AccordionGroup>
+  <Accordion title="설정 후 도구가 나타나지 않아요">
+    설정 파일을 수정한 뒤 애플리케이션을 재시작했는지 확인하세요. 터미널에서 `npx web2md-mcp`가 정상적으로 실행되는지 확인하세요.
+  </Accordion>
+  <Accordion title="인증 오류가 발생해요">
+    `WEB2MD_API_KEY`가 올바른지, PRO 구독이 활성화되어 있는지 다시 확인하세요. [API keys 페이지](https://web2md.org/dashboard/api-keys)에서 키를 확인할 수 있습니다.
+  </Accordion>
+  <Accordion title="npx가 패키지를 찾지 못해요">
+    먼저 패키지를 전역으로 설치해보세요: `npm install -g web2md-mcp`. 그런 다음 `command`를 `web2md-mcp`로 변경하고 `args` 필드를 제거하세요.
+  </Accordion>
+</AccordionGroup>

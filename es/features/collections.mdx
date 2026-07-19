@@ -1,0 +1,122 @@
+---
+title: "Colecciones"
+sidebarTitle: "Colecciones"
+description: "Organiza tus conversiones en carpetas de conocimiento con capacidad de búsqueda."
+icon: "folder-open"
+---
+
+## Descripción general
+
+Las colecciones te permiten organizar tus conversiones en carpetas — como "Investigación de React", "Análisis de la competencia" o "Lecturas semanales". Agrupa contenido relacionado, explóralo más tarde y exporta colecciones enteras como un único archivo Markdown combinado.
+
+<Note>
+Collections es una función **exclusiva de Pro**.
+</Note>
+
+## Crear una colección
+
+<Steps>
+  <Step title="Abre la pestaña Collections">
+    En el popup de Web2MD, navega a la pestaña **Collections**.
+  </Step>
+  <Step title="Crea una nueva colección">
+    Haz clic en **New Collection**, escribe un nombre y, opcionalmente, elige una colección principal para anidarla.
+  </Step>
+  <Step title="Empieza a añadir conversiones">
+    Añade conversiones desde la pestaña History, o asígnalas durante la conversión.
+  </Step>
+</Steps>
+
+## Añadir conversiones a una colección
+
+Hay dos formas de añadir contenido:
+
+<CardGroup cols={2}>
+  <Card title="Desde History" icon="clock-rotate-left">
+    Abre la pestaña History, busca una conversión y usa el **menú desplegable de carpeta** para asignarla a una colección.
+  </Card>
+  <Card title="Colecciones anidadas" icon="folder-tree">
+    Crea subcolecciones dentro de cualquier colección para una organización más profunda. Por ejemplo: **Research → Frontend → React**.
+  </Card>
+</CardGroup>
+
+## Explorar colecciones
+
+La pestaña Collections muestra todas tus carpetas en una vista de árbol. Haz clic en cualquier colección para ver su contenido:
+
+- Título, URL y fecha de la conversión
+- Resumen y etiquetas generados por IA (si están disponibles)
+- Acciones rápidas: abrir la página original, volver a convertir, quitar de la colección
+
+## Exportar una colección
+
+Haz clic en **Export** en cualquier colección para generar un único archivo Markdown combinado con todos los elementos de esa colección.
+
+La exportación incluye:
+
+- Una tabla de contenidos con enlaces a cada sección
+- Cada conversión separada por un encabezado y una línea horizontal
+- URLs de origen y metadatos preservados
+
+<Tip>
+Exportar una colección es una forma rápida de crear un documento de investigación o una guía de estudio a partir de varias fuentes.
+</Tip>
+
+## Compile Wiki
+
+Convierte cualquier colección en una base de conocimiento generada por IA — descargable como un archivo ZIP listo para Obsidian.
+
+<Note>
+  Compile Wiki requiere un **plan Pro**.
+</Note>
+
+### Cómo funciona
+
+<Steps>
+  <Step title="Abre una colección">
+    Ve a la pestaña Collections y abre la colección que quieres compilar.
+  </Step>
+  <Step title="Haz clic en el ícono de cerebro">
+    Pasa el cursor sobre el encabezado de la colección para revelar el botón **Compile Wiki** (ícono de cerebro).
+  </Step>
+  <Step title="La IA genera artículos de conceptos">
+    Web2MD analiza todas las conversiones de la colección y genera artículos de conceptos interconectados con wikilinks.
+  </Step>
+  <Step title="Descarga el ZIP">
+    El resultado es un ZIP listo para Obsidian que contiene:
+    - Archivos `.md` individuales de conceptos con wikilinks (`[[Related Concept]]`)
+    - Un `INDEX.md` con enlaces a todos los artículos
+    - Frontmatter YAML en cada archivo
+  </Step>
+</Steps>
+
+### Ejemplo
+
+Si tu colección contiene 10 artículos sobre "React Server Components", Compile Wiki podría generar:
+
+- `Server Components.md` — Resumen con enlaces a [[Streaming]], [[Suspense]], [[Data Fetching]]
+- `Streaming.md` — Cómo funciona el streaming, con enlaces de vuelta a [[Server Components]]
+- `Data Fetching.md` — Patrones para la carga de datos en RSC
+- `INDEX.md` — Lista maestra de todos los artículos generados
+
+<Tip>
+  Compile Wiki funciona mejor con colecciones de 5 a 20 artículos relacionados sobre un tema específico. La IA usa el contenido para identificar conceptos clave y crear artículos interconectados.
+</Tip>
+
+## Gestionar colecciones
+
+| Acción | Cómo |
+|--------|-----|
+| **Crear** | Pestaña Collections → New Collection |
+| **Renombrar** | Haz clic en el nombre de la colección → Edit |
+| **Anidar** | Arrastra una colección dentro de otra, o define la principal al crearla |
+| **Eliminar** | Haz clic en el ícono de papelera de cualquier colección (las conversiones no se eliminan, solo se desasignan) |
+
+<Warning>
+Eliminar una colección solo elimina la carpeta. Tus conversiones permanecen en History y pueden reasignarse a otras colecciones.
+</Warning>
+
+## Almacenamiento de datos
+
+Todos los datos de las colecciones se almacenan en tu cuenta de Web2MD y se sincronizan entre dispositivos. Tu conocimiento organizado permanece contigo mientras tengas una suscripción Pro activa.
+</content>

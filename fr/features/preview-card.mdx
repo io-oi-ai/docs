@@ -1,0 +1,50 @@
+---
+title: "Carte de prévisualisation"
+description: "Carte flottante intégrée à la page pour copier et envoyer rapidement après la conversion."
+---
+
+## Vue d'ensemble
+
+Lorsque vous convertissez une page à l'aide du raccourci clavier (`Alt+M`) ou du menu contextuel, une carte de prévisualisation flottante apparaît en haut à droite de la page. Elle vous permet d'agir sans ouvrir le popup.
+
+## Fonctionnalités de la carte
+
+Chaque carte de prévisualisation affiche :
+
+- **Le titre de la page** du contenu converti
+- **Un résumé du nombre de mots**
+- **Une case à cocher** pour sélectionner/désélectionner la carte
+- **Un bouton de fermeture** pour la fermer
+
+### Barre d'actions inférieure
+
+Lorsqu'une ou plusieurs cartes sont sélectionnées :
+
+| Action | Description |
+|--------|-------------|
+| **Copy All** | Copie le Markdown de toutes les cartes sélectionnées dans le presse-papiers |
+| **Send All** | Envoie tout le contenu sélectionné vers votre plateforme d'IA préférée |
+
+## Plusieurs cartes
+
+Vous pouvez empiler jusqu'à **5 cartes de prévisualisation** à la fois. Pratique lorsque vous convertissez plusieurs pages à la suite — chaque conversion ajoute une nouvelle carte.
+
+## Durée d'affichage
+
+Contrôlez la durée d'affichage des cartes dans **Paramètres → Show preview card** :
+
+| Durée | Comportement |
+|----------|-------------|
+| **5 secondes** | La carte disparaît automatiquement après 5 s |
+| **15 secondes** | La carte disparaît automatiquement après 15 s |
+| **30 secondes** | La carte disparaît automatiquement après 30 s |
+| **Toujours** | La carte reste affichée jusqu'à sa fermeture manuelle. Elle survit à un rafraîchissement de la page. |
+
+<Info>
+En mode **Toujours**, les cartes sont conservées dans `chrome.storage.local` et réapparaissent après un rafraîchissement de la page. Utilisez **Clear all cards** dans les Paramètres pour les supprimer.
+</Info>
+
+## Activer/désactiver la carte de prévisualisation
+
+Vous pouvez désactiver entièrement la carte de prévisualisation dans **Paramètres → Show preview card**. Une fois désactivée, les conversions via raccourci/menu contextuel fonctionnent toujours, mais sans indicateur visuel.
+</content>

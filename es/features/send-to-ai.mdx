@@ -1,0 +1,83 @@
+---
+title: "Enviar a IA"
+description: "Envía el Markdown convertido directamente a Claude, ChatGPT, Gemini, Perplexity, Grok o DeepSeek."
+---
+
+## Descripción general
+
+El selector de plataforma de IA está en un lugar destacado, en la parte superior de la pestaña Convert. Elige tu plataforma y plantilla, y luego convierte y envía con un solo clic, sin necesidad de copiar y pegar manualmente.
+
+<Frame>
+  <img src="/images/send-to-ai.png" alt="Send to AI feature" />
+</Frame>
+
+## Plataformas compatibles
+
+<CardGroup cols={3}>
+  <Card title="Claude" icon="message">
+    [claude.ai](https://claude.ai) — El asistente de IA de Anthropic. Usa inyección mediante el editor ProseMirror.
+  </Card>
+  <Card title="ChatGPT" icon="comment">
+    [chatgpt.com](https://chatgpt.com) — Los modelos GPT de OpenAI. Usa inyección mediante textarea.
+  </Card>
+  <Card title="Gemini" icon="sparkles">
+    [gemini.google.com](https://gemini.google.com) — La IA de Google. Usa inyección mediante contenteditable.
+  </Card>
+  <Card title="Perplexity" icon="magnifying-glass">
+    [perplexity.ai](https://www.perplexity.ai) — Motor de búsqueda potenciado por IA.
+  </Card>
+  <Card title="Grok" icon="bolt">
+    [grok.com](https://grok.com) — La IA conversacional de xAI.
+  </Card>
+  <Card title="DeepSeek" icon="brain">
+    [chat.deepseek.com](https://chat.deepseek.com) — El asistente de IA de DeepSeek.
+  </Card>
+</CardGroup>
+
+## Cómo funciona
+
+<Steps>
+  <Step title="Selecciona tu plataforma de IA">
+    En la parte superior de la pestaña **Convert**, elige tu plataforma de IA preferida en el selector.
+  </Step>
+  <Step title="Elige una plantilla de prompt">
+    Opcionalmente, selecciona una plantilla de prompt para envolver tu contenido con instrucciones.
+  </Step>
+  <Step title="Convierte y envía">
+    Haz clic en **Convert**: la página se convierte a Markdown, se aplica la plantilla y el contenido se inyecta en el campo de chat de tu plataforma de IA en una nueva pestaña.
+  </Step>
+</Steps>
+
+### Comportamiento de respaldo
+
+Si la inyección falla (por ejemplo, porque la plataforma de IA cambió su interfaz), Web2MD recurre a un plan de respaldo:
+
+1. Copia el contenido a tu portapapeles
+2. Abre la plataforma de IA en una nueva pestaña
+3. Muestra una notificación: **"Content copied! Press Ctrl+V to paste"**
+
+## Plantillas de prompts
+
+Combina Send to AI con [Prompt Templates](/es/advanced/prompt-templates) para envolver automáticamente tu contenido con instrucciones como "Resume este artículo" o "Extrae los puntos clave".
+
+Cuando se selecciona una plantilla, el contenido se envuelve con tu prompt antes de enviarse:
+
+```
+Please summarize the following article concisely:
+
+[converted Markdown content here]
+```
+
+## Envío automático
+
+Activa **Auto send to AI** para enviar automáticamente el contenido a tu plataforma preferida después de cada conversión, sin necesidad de clics adicionales.
+
+## Ajustes
+
+| Ajuste | Descripción |
+|---------|-------------|
+| **Preferred AI platform** | Plataforma predeterminada para Send to AI (Claude, ChatGPT, Gemini, Perplexity, Grok o DeepSeek) |
+| **Prompt template** | Plantilla que se aplica al enviar a la IA |
+| **Auto send to AI** | Envía automáticamente después de la conversión |
+
+Estos ajustes se configuran directamente en la pestaña **Convert**, mediante el selector de plataforma y el selector de plantillas. [Ver todos los ajustes →](/es/advanced/settings)

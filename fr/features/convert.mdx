@@ -1,0 +1,115 @@
+---
+title: "Convertir des pages"
+description: "Convertissez n'importe quelle page web en Markdown propre et prêt pour l'IA en un clic."
+---
+
+## Aperçu
+
+La fonctionnalité principale de Web2MD consiste à convertir n'importe quelle page web en Markdown propre. Elle supprime les publicités, la navigation, les barres latérales et autres éléments superflus — ne laissant que le contenu qui vous intéresse.
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Conversion d'une page web en Markdown" />
+</Frame>
+
+## Comment ça marche
+
+<Steps>
+  <Step title="Accédez à n'importe quelle page web">
+    Ouvrez la page que vous souhaitez convertir dans votre navigateur.
+  </Step>
+  <Step title="Déclenchez la conversion">
+    Cliquez sur l'icône Web2MD, appuyez sur `Alt+M`, ou faites un clic droit et sélectionnez **Copier la page en Markdown**.
+  </Step>
+  <Step title="Obtenez un Markdown propre">
+    Web2MD extrait le contenu principal, supprime les éléments superflus et génère un Markdown bien structuré.
+  </Step>
+</Steps>
+
+## Résultat de la conversion
+
+Après la conversion, vous verrez un panneau de résultats avec :
+
+<Frame>
+  <img src="/images/popup-result.png" alt="Popup Web2MD affichant le résultat de la conversion" />
+</Frame>
+
+### Barre de statistiques
+
+| Métrique | Description |
+|--------|-------------|
+| **Mots** | Nombre total de mots du contenu extrait |
+| **Tokens** | Estimation du nombre de tokens (moy. 4 caractères = 1 token) — utile pour les limites de contexte des IA |
+| **Lecture** | Temps de lecture estimé (basé sur 200 mots/min) |
+
+### Actions sur le résultat
+
+<CardGroup cols={2}>
+  <Card title="Copier" icon="copy">
+    Copiez le Markdown dans votre presse-papiers. Activez **Copie automatique** dans les Paramètres pour le faire automatiquement.
+  </Card>
+  <Card title="Télécharger" icon="download">
+    Enregistrez le Markdown sous forme de fichier `.md` avec le titre de la page comme nom de fichier.
+  </Card>
+  <Card title="Envoyer à l'IA" icon="paper-plane">
+    Envoyez le contenu directement à Claude, ChatGPT ou Gemini. [En savoir plus →](/fr/features/send-to-ai)
+  </Card>
+  <Card title="Enregistrer dans Obsidian" icon="vault">
+    Exportez vers votre coffre Obsidian via une URI `obsidian://`. [En savoir plus →](/fr/advanced/obsidian)
+  </Card>
+</CardGroup>
+
+### Modes d'aperçu
+
+Basculez entre deux vues :
+
+- **Aperçu** — Markdown rendu avec titres, listes, blocs de code et images
+- **Source** — Texte Markdown brut, prêt à copier-coller
+
+## Ce qui est extrait
+
+Web2MD utilise un processus de nettoyage du DOM en deux phases :
+
+1. **Phase 1** — Supprime toujours : `<script>`, `<style>`, `<nav>`, `<header>`, `<footer>`, `<aside>`
+2. **Phase 2** — Supprime les éléments perturbateurs de niveau bloc (publicités, barres latérales, partage social) tout en préservant les éléments en ligne
+
+### Contenu préservé
+
+- Titres et hiérarchie
+- Paragraphes et mise en forme du texte (gras, italique, barré)
+- Listes (ordonnées et non ordonnées)
+- Blocs de code avec détection du langage
+- Images avec texte alternatif
+- Liens (activables/désactivables dans les paramètres)
+- Tableaux
+- Citations
+
+### Métadonnées (optionnel)
+
+Lorsque **Ajouter les métadonnées** est activé dans les paramètres, le résultat inclut :
+
+```markdown
+---
+title: "Article Title"
+source: https://example.com/article
+date: 2025-01-15T10:30:00.000Z
+---
+```
+
+## Mode sélection
+
+Sélectionnez un texte spécifique sur une page avant de convertir pour extraire **uniquement le contenu sélectionné** au lieu de la page entière. Cela fonctionne via :
+
+- Le popup de l'extension (cliquez sur Convertir avec du texte sélectionné)
+- Clic droit → **Copier la sélection en Markdown**
+
+<Tip>
+Le mode sélection est idéal pour extraire des sections spécifiques d'articles longs ou de fils de discussion.
+</Tip>
+
+## Raccourci clavier
+
+| Raccourci | Action |
+|----------|--------|
+| `Alt+M` / `Option+M` | Convertir la page actuelle |
+
+Le raccourci fonctionne sur n'importe quel onglet sans avoir besoin d'ouvrir le popup.

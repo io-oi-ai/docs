@@ -1,0 +1,60 @@
+---
+title: "Aktionsmenü"
+description: "Eine Split-Button-Dropdown-Leiste für sofortigen Zugriff auf Copy, View as Markdown und Open in AI — alles über eine einzige Schaltfläche."
+---
+
+## Überblick
+
+Das Aktionsmenü ist ein Split-Button im Erweiterungs-Popup. Die primäre Schaltfläche kopiert die Seite mit einem Klick als Markdown. Klicken Sie auf den **↑-Pfeil**, um ein Dropdown mit allen verfügbaren Aktionen zu öffnen.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## Verfügbare Aktionen
+
+<CardGroup cols={2}>
+  <Card title="Seite kopieren" icon="copy">
+    Kopiert die aktuelle Seite als Markdown für LLMs. Dies ist die standardmäßige primäre Aktion.
+  </Card>
+  <Card title="Als Markdown anzeigen" icon="arrow-up-right-from-square">
+    Öffnet die aktuelle Seite als sauberen Klartext in einem neuen Tab — nützlich zum Lesen oder Teilen ohne KI.
+  </Card>
+  <Card title="In ChatGPT öffnen" icon="arrow-up-right-from-square">
+    Konvertiert die Seite und sendet sie direkt an [chatgpt.com](https://chatgpt.com), um Fragen dazu zu stellen.
+  </Card>
+  <Card title="In Claude öffnen" icon="arrow-up-right-from-square">
+    Konvertiert die Seite und sendet sie direkt an [claude.ai](https://claude.ai), um Fragen dazu zu stellen.
+  </Card>
+  <Card title="In Perplexity öffnen" icon="arrow-up-right-from-square">
+    Konvertiert die Seite und sendet sie direkt an [perplexity.ai](https://perplexity.ai), um Fragen dazu zu stellen.
+  </Card>
+</CardGroup>
+
+## Verwendung
+
+<Steps>
+  <Step title="Primäre Schaltfläche klicken">
+    Klicken Sie auf **Copy page**, um die aktuelle Seite sofort als Markdown zu kopieren. Für die häufigste Aktion ist kein Dropdown nötig.
+  </Step>
+  <Step title="Dropdown öffnen">
+    Klicken Sie auf den **↑-Pfeil** auf der rechten Seite der Schaltfläche, um alle verfügbaren Aktionen anzuzeigen.
+  </Step>
+  <Step title="Eine Aktion auswählen">
+    Wählen Sie eine Aktion aus dem Menü. "View as Markdown" und die KI-Optionen öffnen automatisch einen neuen Tab.
+  </Step>
+</Steps>
+
+## Warum ein Split-Button?
+
+Bisher mussten Sie in die Einstellungen wechseln, um zwischen Copy-, Send-to-AI- oder View-Modi umzuschalten. Das Aktionsmenü zeigt alle Aktionen auf einmal an — keine Einstellungsnavigation erforderlich.
+
+<Tip>
+Verwenden Sie **Copy page** für schnelle Zwischenablage-Workflows. Nutzen Sie die KI-Shortcuts, wenn Sie sofort Fragen zum Inhalt einer Seite stellen möchten.
+</Tip>
+
+## Verwandte Themen
+
+- [Send to AI](/de/features/send-to-ai) — konfigurieren Sie Ihre bevorzugte KI-Plattform und Prompt-Vorlagen
+- [Context Menu](/de/features/context-menu) — Rechtsklick-Shortcuts für dieselben Aktionen
+- [Convert Pages](/de/features/convert) — vollständige Dokumentation zur Konvertierungsausgabe

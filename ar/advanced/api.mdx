@@ -1,0 +1,182 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "حوّل أي رابط أو HTML إلى Markdown برمجيًا"
+icon: "code"
+---
+
+## نظرة عامة
+
+يتيح لك Web2MD REST API تحويل أي صفحة ويب أو HTML خام إلى Markdown نظيف برمجيًا. استخدمه لبناء خطوط معالجة (pipelines)، أو أتمتة استيراد المحتوى، أو دمج Web2MD في أدواتك الخاصة.
+
+<Note>
+  يتطلب REST API خطة **PRO**. أنشئ مفتاح API الخاص بك من [لوحة تحكم Web2MD](https://web2md.org/dashboard/api-keys).
+</Note>
+
+### مواصفات قابلة للقراءة الآلية
+
+| المورد | الرابط | الوصف |
+|----------|-----|-------------|
+| مواصفات OpenAPI 3.1 | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | مخطط API كامل لتوليد الأكواد والأدوات |
+| ملف manifest لإضافة AI | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | اكتشاف الوكلاء (ChatGPT Plugins / مساعدات AI) |
+
+استخدم مواصفات OpenAPI لتوليد SDKs للعملاء تلقائيًا أو استيرادها في أدوات مثل Postman وSwagger UI أو أطر عمل وكلاء AI.
+
+## المصادقة
+
+يجب أن تتضمن جميع الطلبات مفتاح API الخاص بك في ترويسة `Authorization`:
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+مفاتيح API تبدأ بالبادئة `w2m_` وترتبط بحسابك.
+
+## نقطة النهاية (Endpoint)
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### محتوى الطلب
+
+| الحقل | النوع | مطلوب | الوصف |
+|-------|------|----------|-------------|
+| `url` | `string` | أحد `url` أو `html` | رابط الصفحة المراد تحويلها |
+| `html` | `string` | أحد `url` أو `html` | نص HTML خام للتحويل |
+| `options` | `object` | لا | خيارات التحويل (انظر أدناه) |
+
+<Warning>
+  قدّم إما `url` أو `html`، وليس كلاهما. سيفشل الطلب بخطأ `400` إذا كان كلاهما موجودًا أو لم يُقدَّم أي منهما.
+</Warning>
+
+### الخيارات
+
+| الحقل | النوع | الافتراضي | الوصف |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | تضمين مراجع الصور في المُخرَج |
+| `includeLinks` | `boolean` | `true` | الحفاظ على الروابط التشعبية في المُخرَج |
+| `includeMeta` | `boolean` | `true` | إضافة بيانات وصفية للصفحة كترويسة YAML في بداية المُخرَج |
+
+### الاستجابة
+
+تُرجع الاستجابة الناجحة ما يلي:
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
+    }
+  }
+}
+```
+
+| الحقل | النوع | الوصف |
+|-------|------|-------------|
+| `title` | `string` | عنوان الصفحة المستخرج من `<title>` |
+| `url` | `string` | الرابط المصدر (إن وُجد) |
+| `extractedAt` | `string` | طابع زمني بصيغة ISO 8601 لوقت التحويل |
+| `wordCount` | `integer` | إجمالي عدد الكلمات (كلمات إنجليزية + أحرف CJK) |
+| `tokenCount` | `integer` | عدد التوكنات (tokens) المقدّر لنماذج LLM |
+| `readingTime` | `integer` | زمن القراءة المقدّر بالدقائق |
+| `author` | `string?` | اسم الكاتب من الوسوم الوصفية أو JSON-LD |
+| `publishedDate` | `string?` | تاريخ النشر (YYYY-MM-DD) |
+| `description` | `string?` | وصف الصفحة من Open Graph أو الوسوم الوصفية |
+
+## حدود معدل الطلبات
+
+طلبات API محدودة بمعدل **60 طلبًا في الدقيقة** لكل مفتاح API. إذا تجاوزت الحد، يُرجع API رمز الحالة `429`. انتظر نافذة إعادة التعيين قبل إعادة المحاولة.
+
+## استجابات الخطأ
+
+| الحالة | المعنى | مثال |
+|--------|---------|---------|
+| `400` | طلب غير صالح — إدخال مفقود أو متعارض | تم تقديم `url` و`html` معًا، أو لم يُقدَّم أي منهما |
+| `401` | غير مصرَّح — مفتاح API غير صالح أو مفقود | ترويسة `Authorization` مفقودة |
+| `422` | تعذّرت المعالجة — تعذّر جلب الرابط | أعاد الموقع الهدف خطأ أو انتهت مهلة الاتصال |
+| `429` | تم تجاوز حد المعدل | أكثر من 60 طلبًا في دقيقة واحدة |
+| `500` | خطأ داخلي في الخادم | فشل غير متوقع من جانبنا |
+
+تتبع جميع استجابات الخطأ هذا الشكل:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## أمثلة
+
+### تحويل رابط باستخدام curl
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### تحويل HTML خام باستخدام curl
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  خزّن مفتاح API الخاص بك في متغير بيئة بدلًا من كتابته مباشرة في الكود. على سبيل المثال، استخدم `process.env.WEB2MD_API_KEY` في Node.js.
+</Tip>

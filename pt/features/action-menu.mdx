@@ -1,0 +1,60 @@
+---
+title: "Menu de Ações"
+description: "Um botão dividido em dropdown que dá acesso instantâneo a Copy, View as Markdown e Open in AI — tudo em um único botão."
+---
+
+## Visão geral
+
+O Menu de Ações é um botão dividido no popup da extensão. O botão principal copia a página como Markdown com um único clique. Clique na **seta ↑** para expandir um dropdown com todas as ações disponíveis.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## Ações disponíveis
+
+<CardGroup cols={2}>
+  <Card title="Copy page" icon="copy">
+    Copia a página atual como Markdown para uso com LLMs. Essa é a ação principal padrão.
+  </Card>
+  <Card title="View as Markdown" icon="arrow-up-right-from-square">
+    Abre a página atual como texto simples e limpo em uma nova aba — útil para ler ou compartilhar sem precisar de uma IA.
+  </Card>
+  <Card title="Open in ChatGPT" icon="arrow-up-right-from-square">
+    Converte a página e envia diretamente para o [chatgpt.com](https://chatgpt.com) para você fazer perguntas sobre ela.
+  </Card>
+  <Card title="Open in Claude" icon="arrow-up-right-from-square">
+    Converte a página e envia diretamente para o [claude.ai](https://claude.ai) para você fazer perguntas sobre ela.
+  </Card>
+  <Card title="Open in Perplexity" icon="arrow-up-right-from-square">
+    Converte a página e envia diretamente para o [perplexity.ai](https://perplexity.ai) para você fazer perguntas sobre ela.
+  </Card>
+</CardGroup>
+
+## Como usar
+
+<Steps>
+  <Step title="Clique no botão principal">
+    Clique em **Copy page** para copiar instantaneamente a página atual como Markdown. Não é necessário abrir o dropdown para a ação mais comum.
+  </Step>
+  <Step title="Abra o dropdown">
+    Clique na **seta ↑** no lado direito do botão para ver todas as ações disponíveis.
+  </Step>
+  <Step title="Escolha uma ação">
+    Selecione uma ação no menu. As opções "View as Markdown" e as de IA abrem automaticamente em uma nova aba.
+  </Step>
+</Steps>
+
+## Por que um botão dividido?
+
+Antes, era preciso entrar nas Configurações para alternar entre os modos Copy, Send to AI ou View. O Menu de Ações expõe todas as ações de uma vez — sem precisar navegar pelas configurações.
+
+<Tip>
+Use **Copy page** para fluxos rápidos com a área de transferência. Use os atalhos de IA quando quiser fazer perguntas imediatamente sobre o conteúdo de uma página.
+</Tip>
+
+## Relacionados
+
+- [Send to AI](/pt/features/send-to-ai) — configure sua plataforma de IA preferida e modelos de prompt
+- [Context Menu](/pt/features/context-menu) — atalhos do menu de contexto para as mesmas ações
+- [Convert Pages](/pt/features/convert) — documentação completa sobre o resultado da conversão

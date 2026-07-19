@@ -1,0 +1,60 @@
+---
+title: "Menú de acciones"
+description: "Un menú desplegable con botón dividido que da acceso instantáneo a Copy, View as Markdown y Open in AI, todo desde un solo botón."
+---
+
+## Descripción general
+
+El Menú de acciones (Action Menu) es un botón dividido en el popup de la extensión. El botón principal copia la página como Markdown con un solo clic. Haz clic en la **flecha ↑** para desplegar un menú con todas las acciones disponibles.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## Acciones disponibles
+
+<CardGroup cols={2}>
+  <Card title="Copiar página" icon="copy">
+    Copia la página actual como Markdown para LLMs. Esta es la acción principal por defecto.
+  </Card>
+  <Card title="Ver como Markdown" icon="arrow-up-right-from-square">
+    Abre la página actual como texto plano limpio en una nueva pestaña, útil para leer o compartir sin usar una IA.
+  </Card>
+  <Card title="Abrir en ChatGPT" icon="arrow-up-right-from-square">
+    Convierte la página y la envía directamente a [chatgpt.com](https://chatgpt.com) para hacer preguntas sobre su contenido.
+  </Card>
+  <Card title="Abrir en Claude" icon="arrow-up-right-from-square">
+    Convierte la página y la envía directamente a [claude.ai](https://claude.ai) para hacer preguntas sobre su contenido.
+  </Card>
+  <Card title="Abrir en Perplexity" icon="arrow-up-right-from-square">
+    Convierte la página y la envía directamente a [perplexity.ai](https://perplexity.ai) para hacer preguntas sobre su contenido.
+  </Card>
+</CardGroup>
+
+## Cómo usarlo
+
+<Steps>
+  <Step title="Haz clic en el botón principal">
+    Haz clic en **Copy page** para copiar al instante la página actual como Markdown. No hace falta el menú desplegable para la acción más común.
+  </Step>
+  <Step title="Abre el menú desplegable">
+    Haz clic en la **flecha ↑** en el lado derecho del botón para ver todas las acciones disponibles.
+  </Step>
+  <Step title="Elige una acción">
+    Selecciona una acción del menú. "View as Markdown" y las opciones de IA se abren automáticamente en una nueva pestaña.
+  </Step>
+</Steps>
+
+## Por qué un botón dividido
+
+Antes había que entrar en Ajustes para cambiar entre los modos Copy, Send to AI o View. El Menú de acciones expone todas las acciones a la vez, sin necesidad de navegar por los ajustes.
+
+<Tip>
+Usa **Copy page** para flujos rápidos con el portapapeles. Usa los atajos de IA cuando quieras preguntar de inmediato sobre el contenido de una página.
+</Tip>
+
+## Relacionado
+
+- [Send to AI](/es/features/send-to-ai) — configura tu plataforma de IA preferida y las plantillas de prompts
+- [Context Menu](/es/features/context-menu) — atajos del clic derecho para las mismas acciones
+- [Convert Pages](/es/features/convert) — documentación completa sobre el resultado de la conversión

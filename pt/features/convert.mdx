@@ -1,0 +1,115 @@
+---
+title: "Converter Páginas"
+description: "Converta qualquer página da web em Markdown limpo e pronto para IA com um clique."
+---
+
+## Visão geral
+
+O recurso principal do Web2MD é converter qualquer página da web em Markdown limpo. Ele remove anúncios, menus de navegação, barras laterais e outras distrações — deixando apenas o conteúdo que realmente importa.
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Converting a webpage to Markdown" />
+</Frame>
+
+## Como funciona
+
+<Steps>
+  <Step title="Acesse qualquer página">
+    Abra no navegador a página que você quer converter.
+  </Step>
+  <Step title="Inicie a conversão">
+    Clique no ícone do Web2MD, pressione `Alt+M`, ou clique com o botão direito e selecione **Copy page as Markdown**.
+  </Step>
+  <Step title="Obtenha o Markdown limpo">
+    O Web2MD extrai o conteúdo principal, remove as distrações e gera um Markdown bem estruturado.
+  </Step>
+</Steps>
+
+## Resultado da conversão
+
+Depois de converter, você verá um painel de resultado com:
+
+<Frame>
+  <img src="/images/popup-result.png" alt="Web2MD popup showing conversion result" />
+</Frame>
+
+### Barra de estatísticas
+
+| Métrica | Descrição |
+|--------|-------------|
+| **Words** | Contagem total de palavras do conteúdo extraído |
+| **Tokens** | Estimativa de tokens (média de 4 caracteres = 1 token) — útil para limites de contexto de IA |
+| **Read** | Tempo estimado de leitura (baseado em 200 palavras/min) |
+
+### Ações sobre o resultado
+
+<CardGroup cols={2}>
+  <Card title="Copy" icon="copy">
+    Copia o Markdown para a área de transferência. Ative **Auto copy** nas Configurações para fazer isso automaticamente.
+  </Card>
+  <Card title="Download" icon="download">
+    Salva o Markdown como um arquivo `.md`, usando o título da página como nome do arquivo.
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    Envia o conteúdo diretamente para Claude, ChatGPT ou Gemini. [Saiba mais →](/pt/features/send-to-ai)
+  </Card>
+  <Card title="Save to Obsidian" icon="vault">
+    Exporta para o seu vault do Obsidian via URI `obsidian://`. [Saiba mais →](/pt/advanced/obsidian)
+  </Card>
+</CardGroup>
+
+### Modos de visualização
+
+Alterne entre duas visualizações:
+
+- **Preview** — Markdown renderizado, com títulos, listas, blocos de código e imagens
+- **Source** — Texto bruto em Markdown, pronto para copiar e colar
+
+## O que é extraído
+
+O Web2MD usa um processo de limpeza do DOM em duas fases:
+
+1. **Fase 1** — Sempre remove: `<script>`, `<style>`, `<nav>`, `<header>`, `<footer>`, `<aside>`
+2. **Fase 2** — Remove distrações em nível de bloco (anúncios, barras laterais, compartilhamento social), preservando os elementos inline
+
+### Conteúdo preservado
+
+- Títulos e hierarquia
+- Parágrafos e formatação de texto (negrito, itálico, tachado)
+- Listas (ordenadas e não ordenadas)
+- Blocos de código com detecção de linguagem
+- Imagens com texto alternativo
+- Links (pode ser desativado nas configurações)
+- Tabelas
+- Citações em bloco
+
+### Metadados (opcional)
+
+Quando **Add metadata** está ativado nas configurações, o resultado inclui:
+
+```markdown
+---
+title: "Article Title"
+source: https://example.com/article
+date: 2025-01-15T10:30:00.000Z
+---
+```
+
+## Modo de seleção
+
+Selecione um trecho específico de texto na página antes de converter, para extrair **apenas o conteúdo selecionado** em vez da página inteira. Isso funciona por meio de:
+
+- O popup da extensão (clique em Convert com o texto selecionado)
+- Clique com o botão direito → **Copy selection as Markdown**
+
+<Tip>
+O modo de seleção é ótimo para extrair seções específicas de artigos longos ou tópicos de fórum.
+</Tip>
+
+## Atalho de teclado
+
+| Atalho | Ação |
+|----------|--------|
+| `Alt+M` / `Option+M` | Converte a página atual |
+
+O atalho funciona em qualquer aba, sem precisar abrir o popup.

@@ -1,0 +1,51 @@
+---
+title: "Integración con Obsidian"
+description: "Guarda el Markdown convertido directamente en tu bóveda de Obsidian."
+---
+
+## Descripción general
+
+Web2MD puede enviar el Markdown convertido directamente a [Obsidian](https://obsidian.md) usando el protocolo de URI `obsidian://`. Esto te permite guardar contenido web en tu bóveda sin salir del navegador.
+
+## Configuración
+
+<Steps>
+  <Step title="Activa la integración con Obsidian">
+    Ve a **Settings → Obsidian** y activa **Enable Obsidian export**.
+  </Step>
+  <Step title="Define el nombre de tu bóveda (opcional)">
+    Si tienes varias bóvedas de Obsidian, ingresa el nombre de la bóveda para apuntar a una específica. Déjalo en blanco para usar la bóveda predeterminada.
+  </Step>
+  <Step title="Asegúrate de que Obsidian esté abierto">
+    Obsidian debe estar abierto en tu computadora para que el protocolo de URI funcione.
+  </Step>
+</Steps>
+
+## Uso
+
+Después de convertir una página:
+
+1. Haz clic en el botón **Save to Obsidian** en el panel de resultados
+2. Obsidian se abre y crea una nueva nota con el contenido en Markdown
+3. El título de la nota se establece según el título de la página
+
+## Cómo funciona
+
+Web2MD usa el [protocolo de URI](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI) de Obsidian:
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+Esto crea una nueva nota en la bóveda especificada con el Markdown convertido como contenido.
+
+<Warning>
+El protocolo `obsidian://` tiene límites de longitud de URL. Los artículos muy extensos pueden truncarse. Para contenido largo, considera usar **Copy** y pegarlo directamente en Obsidian.
+</Warning>
+
+## Configuración
+
+| Opción | Descripción |
+|---------|-------------|
+| **Enable Obsidian export** | Muestra u oculta el botón "Save to Obsidian" |
+| **Vault name** | Bóveda de destino (déjalo en blanco para usar la predeterminada) |

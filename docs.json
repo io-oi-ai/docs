@@ -196,6 +196,398 @@
             ]
           }
         ]
+      },
+      {
+        "language": "es",
+        "tabs": [
+          {
+            "tab": "Guías",
+            "groups": [
+              {
+                "group": "Primeros pasos",
+                "pages": [
+                  "es/index",
+                  "es/quickstart"
+                ]
+              },
+              {
+                "group": "Funciones principales",
+                "pages": [
+                  "es/features/convert",
+                  "es/features/action-menu",
+                  "es/features/send-to-ai",
+                  "es/features/selection-toolbar",
+                  "es/features/ai-summary",
+                  "es/features/batch-convert",
+                  "es/features/preview-card",
+                  "es/features/context-menu",
+                  "es/features/collections",
+                  "es/features/semantic-search",
+                  "es/features/ai-tags",
+                  "es/features/multi-page-queue",
+                  "es/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Avanzado",
+                "pages": [
+                  "es/advanced/cli",
+                  "es/advanced/prompt-templates",
+                  "es/advanced/site-adapters",
+                  "es/advanced/custom-rules",
+                  "es/advanced/obsidian",
+                  "es/advanced/api",
+                  "es/advanced/mcp-server",
+                  "es/advanced/agent-bridge",
+                  "es/advanced/webhooks",
+                  "es/advanced/settings"
+                ]
+              },
+              {
+                "group": "Planes",
+                "pages": [
+                  "es/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "fr",
+        "tabs": [
+          {
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Premiers pas",
+                "pages": [
+                  "fr/index",
+                  "fr/quickstart"
+                ]
+              },
+              {
+                "group": "Fonctionnalités principales",
+                "pages": [
+                  "fr/features/convert",
+                  "fr/features/action-menu",
+                  "fr/features/send-to-ai",
+                  "fr/features/selection-toolbar",
+                  "fr/features/ai-summary",
+                  "fr/features/batch-convert",
+                  "fr/features/preview-card",
+                  "fr/features/context-menu",
+                  "fr/features/collections",
+                  "fr/features/semantic-search",
+                  "fr/features/ai-tags",
+                  "fr/features/multi-page-queue",
+                  "fr/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Avancé",
+                "pages": [
+                  "fr/advanced/cli",
+                  "fr/advanced/prompt-templates",
+                  "fr/advanced/site-adapters",
+                  "fr/advanced/custom-rules",
+                  "fr/advanced/obsidian",
+                  "fr/advanced/api",
+                  "fr/advanced/mcp-server",
+                  "fr/advanced/agent-bridge",
+                  "fr/advanced/webhooks",
+                  "fr/advanced/settings"
+                ]
+              },
+              {
+                "group": "Forfaits",
+                "pages": [
+                  "fr/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "de",
+        "tabs": [
+          {
+            "tab": "Anleitungen",
+            "groups": [
+              {
+                "group": "Erste Schritte",
+                "pages": [
+                  "de/index",
+                  "de/quickstart"
+                ]
+              },
+              {
+                "group": "Kernfunktionen",
+                "pages": [
+                  "de/features/convert",
+                  "de/features/action-menu",
+                  "de/features/send-to-ai",
+                  "de/features/selection-toolbar",
+                  "de/features/ai-summary",
+                  "de/features/batch-convert",
+                  "de/features/preview-card",
+                  "de/features/context-menu",
+                  "de/features/collections",
+                  "de/features/semantic-search",
+                  "de/features/ai-tags",
+                  "de/features/multi-page-queue",
+                  "de/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Erweitert",
+                "pages": [
+                  "de/advanced/cli",
+                  "de/advanced/prompt-templates",
+                  "de/advanced/site-adapters",
+                  "de/advanced/custom-rules",
+                  "de/advanced/obsidian",
+                  "de/advanced/api",
+                  "de/advanced/mcp-server",
+                  "de/advanced/agent-bridge",
+                  "de/advanced/webhooks",
+                  "de/advanced/settings"
+                ]
+              },
+              {
+                "group": "Tarife",
+                "pages": [
+                  "de/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ko",
+        "tabs": [
+          {
+            "tab": "가이드",
+            "groups": [
+              {
+                "group": "시작하기",
+                "pages": [
+                  "ko/index",
+                  "ko/quickstart"
+                ]
+              },
+              {
+                "group": "핵심 기능",
+                "pages": [
+                  "ko/features/convert",
+                  "ko/features/action-menu",
+                  "ko/features/send-to-ai",
+                  "ko/features/selection-toolbar",
+                  "ko/features/ai-summary",
+                  "ko/features/batch-convert",
+                  "ko/features/preview-card",
+                  "ko/features/context-menu",
+                  "ko/features/collections",
+                  "ko/features/semantic-search",
+                  "ko/features/ai-tags",
+                  "ko/features/multi-page-queue",
+                  "ko/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "고급",
+                "pages": [
+                  "ko/advanced/cli",
+                  "ko/advanced/prompt-templates",
+                  "ko/advanced/site-adapters",
+                  "ko/advanced/custom-rules",
+                  "ko/advanced/obsidian",
+                  "ko/advanced/api",
+                  "ko/advanced/mcp-server",
+                  "ko/advanced/agent-bridge",
+                  "ko/advanced/webhooks",
+                  "ko/advanced/settings"
+                ]
+              },
+              {
+                "group": "요금제",
+                "pages": [
+                  "ko/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "pt-BR",
+        "tabs": [
+          {
+            "tab": "Guias",
+            "groups": [
+              {
+                "group": "Primeiros passos",
+                "pages": [
+                  "pt/index",
+                  "pt/quickstart"
+                ]
+              },
+              {
+                "group": "Recursos principais",
+                "pages": [
+                  "pt/features/convert",
+                  "pt/features/action-menu",
+                  "pt/features/send-to-ai",
+                  "pt/features/selection-toolbar",
+                  "pt/features/ai-summary",
+                  "pt/features/batch-convert",
+                  "pt/features/preview-card",
+                  "pt/features/context-menu",
+                  "pt/features/collections",
+                  "pt/features/semantic-search",
+                  "pt/features/ai-tags",
+                  "pt/features/multi-page-queue",
+                  "pt/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Avançado",
+                "pages": [
+                  "pt/advanced/cli",
+                  "pt/advanced/prompt-templates",
+                  "pt/advanced/site-adapters",
+                  "pt/advanced/custom-rules",
+                  "pt/advanced/obsidian",
+                  "pt/advanced/api",
+                  "pt/advanced/mcp-server",
+                  "pt/advanced/agent-bridge",
+                  "pt/advanced/webhooks",
+                  "pt/advanced/settings"
+                ]
+              },
+              {
+                "group": "Planos",
+                "pages": [
+                  "pt/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ru",
+        "tabs": [
+          {
+            "tab": "Руководства",
+            "groups": [
+              {
+                "group": "Начало работы",
+                "pages": [
+                  "ru/index",
+                  "ru/quickstart"
+                ]
+              },
+              {
+                "group": "Основные функции",
+                "pages": [
+                  "ru/features/convert",
+                  "ru/features/action-menu",
+                  "ru/features/send-to-ai",
+                  "ru/features/selection-toolbar",
+                  "ru/features/ai-summary",
+                  "ru/features/batch-convert",
+                  "ru/features/preview-card",
+                  "ru/features/context-menu",
+                  "ru/features/collections",
+                  "ru/features/semantic-search",
+                  "ru/features/ai-tags",
+                  "ru/features/multi-page-queue",
+                  "ru/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Дополнительно",
+                "pages": [
+                  "ru/advanced/cli",
+                  "ru/advanced/prompt-templates",
+                  "ru/advanced/site-adapters",
+                  "ru/advanced/custom-rules",
+                  "ru/advanced/obsidian",
+                  "ru/advanced/api",
+                  "ru/advanced/mcp-server",
+                  "ru/advanced/agent-bridge",
+                  "ru/advanced/webhooks",
+                  "ru/advanced/settings"
+                ]
+              },
+              {
+                "group": "Тарифы",
+                "pages": [
+                  "ru/plans"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ar",
+        "tabs": [
+          {
+            "tab": "أدلة",
+            "groups": [
+              {
+                "group": "البدء",
+                "pages": [
+                  "ar/index",
+                  "ar/quickstart"
+                ]
+              },
+              {
+                "group": "الميزات الأساسية",
+                "pages": [
+                  "ar/features/convert",
+                  "ar/features/action-menu",
+                  "ar/features/send-to-ai",
+                  "ar/features/selection-toolbar",
+                  "ar/features/ai-summary",
+                  "ar/features/batch-convert",
+                  "ar/features/preview-card",
+                  "ar/features/context-menu",
+                  "ar/features/collections",
+                  "ar/features/semantic-search",
+                  "ar/features/ai-tags",
+                  "ar/features/multi-page-queue",
+                  "ar/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "متقدم",
+                "pages": [
+                  "ar/advanced/cli",
+                  "ar/advanced/prompt-templates",
+                  "ar/advanced/site-adapters",
+                  "ar/advanced/custom-rules",
+                  "ar/advanced/obsidian",
+                  "ar/advanced/api",
+                  "ar/advanced/mcp-server",
+                  "ar/advanced/agent-bridge",
+                  "ar/advanced/webhooks",
+                  "ar/advanced/settings"
+                ]
+              },
+              {
+                "group": "الخطط",
+                "pages": [
+                  "ar/plans"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ],
     "global": {

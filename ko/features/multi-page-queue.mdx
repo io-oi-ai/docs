@@ -1,0 +1,51 @@
+---
+title: "Multi-Page Queue"
+description: "여러 페이지를 변환한 뒤 하나로 병합된 요청으로 AI에 전송하세요."
+---
+
+## 개요
+
+Multi-page queue를 사용하면 여러 페이지의 Markdown을 모아두었다가 한 번에 AI 어시스턴트로 전송할 수 있습니다. 리서치, 경쟁사 분석, 여러 출처의 정보를 정리할 때 유용합니다.
+
+## 작동 방식
+
+<Steps>
+  <Step title="페이지 변환">
+    평소처럼 웹페이지를 변환합니다.
+  </Step>
+  <Step title="큐에 추가">
+    결과 아래의 **"Add to queue & convert next page"**를 클릭합니다.
+  </Step>
+  <Step title="이동 후 반복">
+    다음 페이지로 이동해 변환한 뒤 큐에 추가합니다.
+  </Step>
+  <Step title="AI로 전체 전송">
+    준비가 되면 큐 패널에서 **"Send all → Claude"**(또는 원하는 플랫폼)를 클릭합니다.
+  </Step>
+</Steps>
+
+## 큐 패널
+
+큐 패널에는 다음이 표시됩니다:
+- 페이지 제목과 단어 수
+- ×로 개별 항목 제거
+- 선택한 AI 플랫폼으로 **Send all**
+- 큐를 비우는 **Clear**
+
+## 병합 형식
+
+큐를 AI로 전송하면 모든 페이지가 하나의 문서로 병합됩니다:
+
+```markdown
+# Page 1 Title
+
+[Page 1 Markdown content]
+
+---
+
+# Page 2 Title
+
+[Page 2 Markdown content]
+```
+
+전송 전에 병합된 콘텐츠에 프롬프트 템플릿이 적용됩니다.

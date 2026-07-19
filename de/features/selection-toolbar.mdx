@@ -1,0 +1,74 @@
+---
+title: "Auswahl-Toolbar"
+sidebarTitle: "Auswahl-Toolbar"
+description: "Markieren Sie Text auf einer beliebigen Seite und erhalten Sie eine schwebende Markdown-Toolbar."
+icon: "text-slash"
+---
+
+## Überblick
+
+Die Auswahl-Toolbar (v0.6) zeigt Ihnen eine schwebende Aktionsleiste, sobald Sie Text auf einer beliebigen Webseite markieren. Markieren Sie einen Absatz, einen Code-Ausschnitt oder einen ganzen Abschnitt — und kopieren Sie ihn dann als Markdown, fügen Sie ihn zu einem Puffer hinzu oder senden Sie ihn direkt an die KI.
+
+## So funktioniert es
+
+<Steps>
+  <Step title="Text auf einer beliebigen Seite markieren">
+    Markieren Sie beliebigen Text auf einer Webseite mit Maus oder Tastatur. Die schwebende Toolbar erscheint in der Nähe Ihrer Auswahl.
+  </Step>
+  <Step title="Eine Aktion auswählen">
+    Wählen Sie eine von drei Aktionen aus der Toolbar: **Copy as Markdown**, **Append to buffer** oder **Send to AI**.
+  </Step>
+  <Step title="Saubere Ausgabe erhalten">
+    Web2MD konvertiert Ihre Auswahl in gut strukturiertes Markdown und erhält dabei Formatierung, Links und Codeblöcke.
+  </Step>
+</Steps>
+
+## Toolbar-Aktionen
+
+<CardGroup cols={3}>
+  <Card title="Als Markdown kopieren" icon="copy">
+    Konvertiert den markierten Text sofort in Markdown und kopiert ihn in Ihre Zwischenablage.
+  </Card>
+  <Card title="Zum Puffer hinzufügen" icon="layer-plus">
+    Fügt die Auswahl einem laufenden Puffer hinzu. Markieren Sie mehrere Ausschnitte über die Seite verteilt und kombinieren Sie sie zu einem einzigen Markdown-Dokument.
+  </Card>
+  <Card title="An KI senden" icon="paper-plane">
+    Sendet den markierten Inhalt direkt an Ihre bevorzugte KI-Plattform (Claude, ChatGPT oder Gemini).
+  </Card>
+</CardGroup>
+
+## Anhängemodus
+
+Der Anhängemodus ist nützlich, wenn Sie Ausschnitte aus verschiedenen Teilen einer Seite — oder sogar von verschiedenen Seiten — benötigen.
+
+1. Markieren Sie einen Abschnitt und klicken Sie auf **Append to buffer**
+2. Scrollen Sie zu einem anderen Abschnitt und hängen Sie erneut an
+3. Wiederholen Sie dies nach Bedarf
+4. Öffnen Sie das Web2MD-Popup, um das kombinierte Markdown-Dokument zu sehen
+
+Jeder angehängte Ausschnitt wird in der finalen Ausgabe durch eine horizontale Trennlinie (`---`) abgetrennt.
+
+<Tip>
+Der Anhängemodus eignet sich hervorragend, um relevante Abschnitte aus langen Dokumentationsseiten oder wissenschaftlichen Arbeiten herauszupicken.
+</Tip>
+
+## Intelligente Auswahlerweiterung
+
+Web2MD erweitert Ihre Auswahl automatisch, um vollständige strukturelle Elemente einzuschließen:
+
+| Sie markieren... | Web2MD erweitert auf... |
+|---------------|---------------------|
+| Teil eines Absatzes | Den vollständigen Absatz |
+| Teil eines Codeblocks | Den gesamten Codeblock inklusive Sprach-Tag |
+| Ein unvollständiges Listenelement | Das vollständige Listenelement |
+| Text über mehrere Elemente hinweg | Alle vollständig oder teilweise markierten Blöcke |
+
+Dies stellt sicher, dass Ihre Markdown-Ausgabe immer wohlgeformt ist — keine abgebrochenen Absätze oder halb dargestellten Codeblöcke.
+
+## Kompatibilität
+
+Die Auswahl-Toolbar funktioniert auf allen Websites. Sie wird als leichtgewichtiges, schwebendes Element eingefügt, das die eigene Benutzeroberfläche der Seite nicht stört.
+
+<Info>
+Die Toolbar erscheint nur, wenn Sie Text markieren. Sie verschwindet automatisch, sobald Sie an anderer Stelle klicken oder Ihre Auswahl aufheben.
+</Info>

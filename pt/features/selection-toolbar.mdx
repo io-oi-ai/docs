@@ -1,0 +1,74 @@
+---
+title: "Barra de Seleção"
+sidebarTitle: "Barra de Seleção"
+description: "Selecione texto em qualquer página e obtenha uma barra de ferramentas flutuante em Markdown."
+icon: "text-slash"
+---
+
+## Visão geral
+
+A Barra de Seleção (v0.6) exibe uma barra de ações flutuante sempre que você destaca texto em qualquer página da web. Selecione um parágrafo, um trecho de código ou uma seção inteira — e então copie como Markdown, adicione a um buffer ou envie diretamente para a IA.
+
+## Como funciona
+
+<Steps>
+  <Step title="Selecione texto em qualquer página">
+    Destaque qualquer texto de uma página da web usando o mouse ou o teclado. A barra flutuante aparece perto da sua seleção.
+  </Step>
+  <Step title="Escolha uma ação">
+    Escolha uma das três ações da barra: **Copy as Markdown**, **Append to buffer** ou **Send to AI**.
+  </Step>
+  <Step title="Obtenha o resultado limpo">
+    O Web2MD converte sua seleção em Markdown bem estruturado, preservando formatação, links e blocos de código.
+  </Step>
+</Steps>
+
+## Ações da barra
+
+<CardGroup cols={3}>
+  <Card title="Copy as Markdown" icon="copy">
+    Converte instantaneamente o texto selecionado para Markdown e copia para a área de transferência.
+  </Card>
+  <Card title="Append to Buffer" icon="layer-plus">
+    Adiciona a seleção a um buffer contínuo. Selecione múltiplos trechos em diferentes partes da página e combine-os em um único documento Markdown.
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    Envia o conteúdo selecionado diretamente para a sua plataforma de IA preferida (Claude, ChatGPT ou Gemini).
+  </Card>
+</CardGroup>
+
+## Modo Append
+
+O Modo Append é útil quando você precisa reunir trechos de diferentes partes de uma página — ou até de páginas diferentes.
+
+1. Selecione uma seção e clique em **Append to buffer**
+2. Role até outra seção e adicione novamente
+3. Repita quantas vezes for necessário
+4. Abra o popup do Web2MD para ver o documento Markdown combinado
+
+Cada trecho adicionado é separado por uma linha horizontal (`---`) no resultado final.
+
+<Tip>
+O Modo Append é ótimo para selecionar seções relevantes de páginas de documentação longas ou artigos acadêmicos.
+</Tip>
+
+## Expansão inteligente da seleção
+
+O Web2MD expande automaticamente sua seleção para incluir elementos estruturais completos:
+
+| Você seleciona... | O Web2MD expande para... |
+|---------------|---------------------|
+| Parte de um parágrafo | O parágrafo completo |
+| Parte de um bloco de código | O bloco de código inteiro, com a tag de linguagem |
+| Um item de lista parcial | O item de lista completo |
+| Texto que atravessa elementos | Todos os blocos total ou parcialmente selecionados |
+
+Isso garante que o resultado em Markdown seja sempre bem formado — sem parágrafos quebrados ou blocos de código renderizados pela metade.
+
+## Compatibilidade
+
+A Barra de Seleção funciona em todos os sites. Ela é injetada como um elemento flutuante leve, que não interfere na interface própria da página.
+
+<Info>
+A barra só aparece quando você seleciona um texto. Ela desaparece automaticamente quando você clica em outro lugar ou limpa a seleção.
+</Info>

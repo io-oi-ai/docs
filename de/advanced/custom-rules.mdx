@@ -1,0 +1,101 @@
+---
+title: "Benutzerdefinierte Extraktionsregeln"
+sidebarTitle: "Benutzerdefinierte Regeln"
+description: "Definieren Sie domänenspezifische CSS-Selektoren für eine präzise Inhaltsextraktion."
+icon: "code"
+---
+
+## Überblick
+
+Mit benutzerdefinierten Extraktionsregeln (v0.7) können Sie domänenspezifische CSS-Selektoren definieren, die genau festlegen, was Web2MD extrahiert. Wenn sich der Hauptinhalt einer Website in einem ungewöhnlichen Container befindet oder es Elemente gibt, die Sie immer entfernen möchten, geben Ihnen benutzerdefinierte Regeln die volle Kontrolle.
+
+<Note>
+Benutzerdefinierte Regeln sind eine **reine Pro-Funktion**.
+</Note>
+
+## Eine Regel erstellen
+
+<Steps>
+  <Step title="Einstellungen öffnen">
+    Navigieren Sie im Web2MD-Popup zu **Settings → Custom Rules**.
+  </Step>
+  <Step title="Eine neue Regel hinzufügen">
+    Klicken Sie auf **New Rule** und geben Sie die Domain ein (z. B. `example.com`).
+  </Step>
+  <Step title="Ihre Selektoren definieren">
+    Legen Sie den Content-Selektor, die Remove-Selektoren und optional einen Title-Selektor fest.
+  </Step>
+  <Step title="Speichern und konvertieren">
+    Speichern Sie die Regel. Wenn Sie das nächste Mal eine Seite dieser Domain konvertieren, werden Ihre benutzerdefinierten Selektoren automatisch angewendet.
+  </Step>
+</Steps>
+
+## Regelfelder
+
+| Feld | Beschreibung | Beispiel |
+|-------|-------------|---------|
+| **Domain** | Die Domain, für die diese Regel gilt (exakte Übereinstimmung) | `docs.example.com` |
+| **Content-Selektor** | CSS-Selektor für den Haupt-Inhaltscontainer | `article.post-body` |
+| **Remove-Selektoren** | CSS-Selektoren für zu entfernende Elemente (kommagetrennt) | `.ads, .sidebar, .related-posts` |
+| **Title-Selektor** | Überschreibt die automatische Titelerkennung | `h1.entry-title` |
+
+## Beispiel: einen Blog bereinigen
+
+Angenommen, Sie konvertieren regelmäßig Artikel von einem Blog, der Inhalte in einem bestimmten div umhüllt und störende Sidebar-Widgets enthält:
+
+```
+Domain:           blog.example.com
+Content selector: div.article-content
+Remove selectors: .author-bio, .newsletter-signup, .comments-section
+Title selector:   h1.post-title
+```
+
+Mit dieser Regel wird Web2MD:
+1. Nur den Inhalt innerhalb von `div.article-content` extrahieren
+2. Die Autoren-Bio, die Newsletter-Anmeldung und den Kommentarbereich entfernen
+3. Das Element `h1.post-title` als Dokumenttitel verwenden
+
+## Wie Regeln angewendet werden
+
+<CardGroup cols={2}>
+  <Card title="Automatischer Abgleich" icon="bullseye">
+    Regeln werden anhand der Domain abgeglichen. Beim Konvertieren einer Seite prüft Web2MD, ob eine benutzerdefinierte Regel für diese Domain existiert, und wendet sie vor der Standard-Extraktions-Pipeline an.
+  </Card>
+  <Card title="Fallback-Verhalten" icon="shield">
+    Wenn Ihr Content-Selektor nichts auf der Seite trifft, greift Web2MD auf seine Standard-Extraktionslogik zurück. Ihre Regel bricht keine Konvertierungen ab.
+  </Card>
+</CardGroup>
+
+## Regeln verwalten
+
+Alle Regeln werden unter **Settings → Custom Rules** im Popup der Erweiterung verwaltet.
+
+| Aktion | Vorgehen |
+|--------|-----|
+| **Erstellen** | Settings → Custom Rules → New Rule |
+| **Bearbeiten** | Klicken Sie auf eine bestehende Regel, um ihre Selektoren zu ändern |
+| **Löschen** | Klicken Sie auf das Papierkorb-Symbol neben einer Regel |
+| **Testen** | Rufen Sie eine Seite der Zieldomain auf und führen Sie eine Konvertierung aus |
+
+<Tip>
+Nutzen Sie die DevTools Ihres Browsers (`Cmd+Shift+I` oder `F12`), um die Seite zu untersuchen und die richtigen CSS-Selektoren zu finden, bevor Sie eine Regel erstellen.
+</Tip>
+
+## Community-Sharing
+
+<Info>
+Das Teilen von Regeln in der Community ist in Kürze verfügbar. Sie werden Regeln als öffentlich markieren können (`isPublic`-Flag), damit andere Nutzer von Ihren domänenspezifischen Selektoren profitieren können.
+</Info>
+
+## Verhältnis zu Site-Adaptern
+
+Benutzerdefinierte Regeln und [Site-Adapter](/de/advanced/site-adapters) erfüllen unterschiedliche Zwecke:
+
+| | Site-Adapter | Benutzerdefinierte Regeln |
+|-|---------------|-------------|
+| **Umfang** | Integriert, für bestimmte Plattformen (Reddit, GitHub usw.) | Jede von Ihnen definierte Domain |
+| **Methode** | Nutzt Plattform-APIs und spezialisierte Logik | Nur CSS-Selektoren |
+| **Gepflegt von** | Web2MD-Team | Ihnen |
+| **Priorität** | Läuft zuerst | Läuft, wenn kein Adapter zutrifft |
+
+Existiert ein Site-Adapter für eine Domain, hat dieser Vorrang vor benutzerdefinierten Regeln. Benutzerdefinierte Regeln eignen sich am besten für Websites ohne eigenen Adapter.

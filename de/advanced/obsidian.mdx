@@ -1,0 +1,51 @@
+---
+title: "Obsidian-Integration"
+description: "Speichern Sie konvertiertes Markdown direkt in Ihrem Obsidian-Vault."
+---
+
+## Überblick
+
+Web2MD kann konvertiertes Markdown über das `obsidian://`-URI-Protokoll direkt an [Obsidian](https://obsidian.md) senden. So können Sie Webinhalte in Ihrem Vault speichern, ohne den Browser zu verlassen.
+
+## Einrichtung
+
+<Steps>
+  <Step title="Obsidian-Integration aktivieren">
+    Gehen Sie zu **Settings → Obsidian** und aktivieren Sie **Enable Obsidian export**.
+  </Step>
+  <Step title="Vault-Namen festlegen (optional)">
+    Wenn Sie mehrere Obsidian-Vaults haben, geben Sie den Vault-Namen ein, um einen bestimmten Vault anzusprechen. Lassen Sie das Feld leer, um den Standard-Vault zu verwenden.
+  </Step>
+  <Step title="Sicherstellen, dass Obsidian läuft">
+    Obsidian muss auf Ihrem Computer geöffnet sein, damit das URI-Protokoll funktioniert.
+  </Step>
+</Steps>
+
+## Verwendung
+
+Nach dem Konvertieren einer Seite:
+
+1. Klicken Sie im Ergebnisbereich auf die Schaltfläche **Save to Obsidian**
+2. Obsidian öffnet sich und erstellt eine neue Notiz mit dem Markdown-Inhalt
+3. Der Notiztitel wird auf den Seitentitel gesetzt
+
+## Funktionsweise
+
+Web2MD nutzt das [URI-Protokoll](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI) von Obsidian:
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+Dadurch wird eine neue Notiz im angegebenen Vault mit dem konvertierten Markdown als Inhalt erstellt.
+
+<Warning>
+Das `obsidian://`-Protokoll unterliegt Beschränkungen bei der URL-Länge. Sehr lange Artikel können abgeschnitten werden. Nutzen Sie bei langen Inhalten am besten **Copy** und fügen Sie den Inhalt direkt in Obsidian ein.
+</Warning>
+
+## Einstellungen
+
+| Einstellung | Beschreibung |
+|---------|-------------|
+| **Enable Obsidian export** | Schaltfläche „Save to Obsidian" ein-/ausblenden |
+| **Vault name** | Ziel-Vault (leer lassen für den Standard) |

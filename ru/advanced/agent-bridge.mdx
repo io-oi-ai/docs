@@ -1,0 +1,244 @@
+---
+title: "Agent Bridge"
+sidebarTitle: "Agent Bridge"
+description: "Позвольте AI-агентам пакетно преобразовывать Reddit и любые сайты через ваше расширение Chrome"
+icon: "microchip"
+---
+
+## Обзор
+
+Agent Bridge позволяет AI-агентам (Claude Code, Cursor, Cowork и др.) удалённо управлять расширением Web2MD для Chrome, чтобы пакетно преобразовывать URL — особенно страницы Reddit, страницы с JS-рендерингом и страницы, защищённые авторизацией, которые блокируют серверный доступ к API.
+
+Вместо обращения к API Web2MD (которое блокирует Reddit) AI-агент отправляет команды вашему локальному расширению Chrome через [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). Расширение открывает каждую страницу в фоновой вкладке, используя **вашу реальную сессию браузера** — с вашими cookies и данными авторизации, — извлекает содержимое, преобразует его в Markdown и возвращает результат.
+
+<Note>
+  Для Agent Bridge требуется тариф **PRO** и установленный на вашем компьютере **native messaging host**. Расширение должно быть открыто в Chrome.
+</Note>
+
+## Архитектура
+
+```
+AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome Extension → Any Website
+```
+
+| Компонент | Роль |
+|-----------|------|
+| **AI Agent** | Claude Code, Cursor, Cowork — вызывает инструменты MCP |
+| **MCP Server** | Преобразует вызовы инструментов MCP в TCP-сообщения |
+| **Native Host** | Передаёт данные между TCP и Chrome Native Messaging |
+| **Chrome Extension** | Открывает вкладки, извлекает HTML, преобразует в Markdown |
+
+Всё взаимодействие происходит **локально** — ничего не покидает ваш компьютер. Native Host прослушивает только `localhost:12315`.
+
+## Настройка
+
+### Шаг 1. Соберите MCP Server
+
+```bash
+cd packages/mcp-server
+pnpm build
+```
+
+### Шаг 2. Установите Native Messaging Host
+
+```bash
+cd packages/mcp-server
+./install.sh <your-extension-id>
+```
+
+<Tip>
+  Найдите ID вашего расширения на странице `chrome://extensions` с включённым режимом разработчика. Найдите Web2MD и скопируйте строку ID (например, `ijmgpkkfgpijifldbjafjiapehppcbcn`).
+</Tip>
+
+<Warning>
+  После установки необходимо **полностью закрыть Chrome (Cmd+Q на Mac) и снова открыть его**. Chrome считывает манифесты Native Messaging только при запуске — перезагрузки расширения недостаточно.
+</Warning>
+
+Скрипт установки:
+- Копирует файлы host в `~/.web2md/` (во избежание ограничений macOS TCC на `~/Desktop`)
+- Определяет абсолютный путь к `node` (Chrome запускается с минимальным PATH)
+- Записывает манифест NM в каталог `NativeMessagingHosts` браузера Chrome
+
+### Шаг 3. Настройте MCP
+
+<Tabs>
+  <Tab title="Claude Code">
+    Добавьте в `~/.claude/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    Добавьте в `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Desktop">
+    Добавьте в конфигурацию Claude Desktop:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Шаг 4. Проверка
+
+В Chrome откройте `chrome://extensions` → нажмите на ссылку «Service Worker» рядом с Web2MD → проверьте консоль:
+
+```
+[Web2MD] Service worker started
+[Web2MD] Connected to native host
+[Web2MD] Native host TCP relay ready on port 12315
+```
+
+Если вы видите эти три строки, Agent Bridge работает корректно.
+
+## Доступные инструменты
+
+### agent_convert
+
+Преобразование одного URL с помощью расширения Chrome.
+
+| Параметр | Тип | Описание |
+|-----------|------|-------------|
+| `url` | string | URL для преобразования |
+
+**Возвращает:** содержимое Markdown с заголовком, исходным URL, количеством слов и временем чтения.
+
+**Лучше всего подходит для:** тредов Reddit, страниц, защищённых авторизацией, сайтов с JS-рендерингом.
+
+### agent_batch_convert
+
+Пакетное преобразование до 50 URL. URL обрабатываются последовательно — расширение открывает каждую страницу в фоновой вкладке, извлекает содержимое, закрывает вкладку, затем переходит к следующей.
+
+| Параметр | Тип | Описание |
+|-----------|------|-------------|
+| `urls` | string[] | Массив URL для преобразования (максимум 50) |
+
+**Возвращает:** результаты по каждому URL, передаваемые потоково по мере готовности, а также итоговую сводку.
+
+**Лучше всего подходит для:** исследовательских задач — пакетного преобразования тредов Reddit, обсуждений на HN или страниц конкурентов для AI-анализа.
+
+<Info>
+  Все успешные преобразования автоматически сохраняются в вашей [истории на панели управления](https://web2md.org/dashboard/history) вместе со сгенерированными AI резюме и тегами.
+</Info>
+
+## Примеры использования
+
+<AccordionGroup>
+  <Accordion title="Преобразование треда Reddit">
+    **Вы:** Преобразуй этот тред Reddit в Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+
+    **Агент:** _(вызывает `agent_convert`)_ Вот преобразованный тред с 7 комментариями, обсуждающими точность RAG для юридических документов...
+  </Accordion>
+  <Accordion title="Пакетное преобразование для исследования">
+    **Вы:** Преобразуй эти 5 ссылок Reddit и обобщи ключевые выводы:
+    - https://reddit.com/r/MachineLearning/comments/...
+    - https://reddit.com/r/LocalLLaMA/comments/...
+    - https://reddit.com/r/LangChain/comments/...
+    - https://reddit.com/r/artificial/comments/...
+    - https://reddit.com/r/ChatGPT/comments/...
+
+    **Агент:** _(вызывает `agent_batch_convert`)_ Успешно преобразовано 5 из 5 ссылок. Вот ключевые выводы...
+  </Accordion>
+  <Accordion title="Преобразование страниц с ограниченным доступом">
+    **Вы:** Преобразуй страницу внутренней wiki моей компании по адресу https://wiki.internal.com/architecture
+
+    **Агент:** _(вызывает `agent_convert`)_ Поскольку вы авторизованы на этом сайте в Chrome, мне удалось извлечь полное содержимое...
+  </Accordion>
+</AccordionGroup>
+
+## Поддерживаемые сайты
+
+Agent Bridge использует те же 16 специализированных экстракторов для конкретных сайтов, что и расширение:
+
+| Сайт | Метод | Требуется вкладка? |
+|------|--------|:---:|
+| Reddit | JSON API | Нет |
+| Hacker News | Algolia API | Нет |
+| YouTube | Transcript API | Нет |
+| arXiv | Парсинг HTML | Нет |
+| Twitter/X | Извлечение из DOM | Да |
+| GitHub Issues/PRs | REST API | Нет |
+| Medium | Извлечение из DOM | Да |
+| Substack | Извлечение из DOM | Да |
+| Wikipedia | Извлечение из DOM | Да |
+| Stack Overflow | SE API | Нет |
+| Любой другой сайт | Полный HTML страницы | Да |
+
+Сайты, отмеченные «Нет» в столбце требования вкладки, преобразуются через вызовы API — это быстрее и надёжнее. Остальные используют фоновые вкладки.
+
+## Устранение неполадок
+
+<AccordionGroup>
+  <Accordion title="«Native host not installed» или «not found»">
+    Chrome не загрузил манифест NM. **Полностью закройте Chrome (Cmd+Q) и откройте снова.** Простой перезагрузки расширения недостаточно.
+  </Accordion>
+  <Accordion title="«Native host has exited» сразу же">
+    Chrome не может выполнить скрипт host. Частые причины:
+    - `node` не найден — повторно запустите `./install.sh`, который использует абсолютный путь к node
+    - Host находится в директории, защищённой TCC (`~/Desktop`, `~/Documents`) — повторно запустите установку, чтобы переместить его в `~/.web2md/`
+  </Accordion>
+  <Accordion title="«Agent connection error» от MCP">
+    TCP-сервер Native Host не запущен. Убедитесь, что:
+    1. Chrome открыт
+    2. Расширение Web2MD загружено
+    3. В консоли Service Worker отображается «TCP relay ready on port 12315»
+  </Accordion>
+  <Accordion title="«Failed to extract content from the page»">
+    Расширение не авторизовано. Откройте попап Web2MD в Chrome и войдите в свой аккаунт PRO.
+  </Accordion>
+  <Accordion title="«Tab load timeout»">
+    Целевая страница загружается слишком долго. Это нормально для медленных сайтов. Расширение ожидает до 15 секунд на вкладку. Reddit использует экстрактор JSON API и не нуждается во вкладке, поэтому таймауты на Reddit обычно означают, что URL публикации недействителен (404).
+  </Accordion>
+  <Accordion title="Преобразования не отображаются в истории на панели управления">
+    Для сохранения истории расширение должно быть авторизовано в аккаунте PRO. Сохранение выполняется по принципу fire-and-forget — если вызов API завершается неудачей молча, преобразования не появятся. Проверьте, действителен ли ваш токен авторизации.
+  </Accordion>
+</AccordionGroup>
+
+## Отличия от MCP Server
+
+| Функция | MCP Server (`convert_url`) | Agent Bridge (`agent_convert`) |
+|---------|---------------------------|-------------------------------|
+| Где выполняется | Серверный вызов API | Ваш локальный браузер Chrome |
+| Поддержка Reddit | ❌ Блокируется Reddit | ✅ Использует реальную сессию браузера |
+| Страницы с ограниченным доступом | ❌ Нет доступа | ✅ Использует ваши cookies |
+| Страницы с JS-рендерингом | ❌ Без JavaScript | ✅ Полный рендеринг Chrome |
+| Скорость | Быстрее (без накладных расходов на вкладки) | Медленнее (открывает реальные вкладки) |
+| Требуется открытый Chrome | Нет | Да |
+
+**Общее правило:** используйте `convert_url` для публичных страниц. Используйте `agent_convert` / `agent_batch_convert` для Reddit, страниц с авторизацией и сайтов с активным JS.

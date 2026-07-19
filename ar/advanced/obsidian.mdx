@@ -1,0 +1,51 @@
+---
+title: "التكامل مع Obsidian"
+description: "احفظ محتوى Markdown المحوَّل مباشرة في مخزن Obsidian الخاص بك."
+---
+
+## نظرة عامة
+
+يمكن لـ Web2MD إرسال محتوى Markdown المحوَّل مباشرة إلى [Obsidian](https://obsidian.md) باستخدام بروتوكول عنوان `obsidian://` URI. يتيح لك هذا حفظ محتوى الويب في مخزنك دون مغادرة المتصفح.
+
+## الإعداد
+
+<Steps>
+  <Step title="فعّل التكامل مع Obsidian">
+    اذهب إلى **Settings → Obsidian** وفعّل خيار **Enable Obsidian export**.
+  </Step>
+  <Step title="حدد اسم المخزن (اختياري)">
+    إذا كان لديك أكثر من مخزن Obsidian واحد، أدخل اسم المخزن لاستهداف واحد محدد. اتركه فارغًا لاستخدام المخزن الافتراضي.
+  </Step>
+  <Step title="تأكد من تشغيل Obsidian">
+    يجب أن يكون Obsidian مفتوحًا على جهازك حتى يعمل بروتوكول URI.
+  </Step>
+</Steps>
+
+## الاستخدام
+
+بعد تحويل صفحة:
+
+1. اضغط زر **Save to Obsidian** في لوحة النتائج
+2. يفتح Obsidian وينشئ ملاحظة جديدة تحتوي على محتوى Markdown
+3. يُضبط عنوان الملاحظة على عنوان الصفحة
+
+## كيف يعمل
+
+يستخدم Web2MD [بروتوكول URI](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI) الخاص بـ Obsidian:
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+هذا ينشئ ملاحظة جديدة في المخزن المحدد بمحتوى Markdown المحوَّل.
+
+<Warning>
+يفرض بروتوكول `obsidian://` حدودًا على طول الرابط. قد تُقتطَع المقالات الطويلة جدًا. بالنسبة للمحتوى الطويل، فكّر في استخدام **Copy** ولصقه مباشرة في Obsidian.
+</Warning>
+
+## الإعدادات
+
+| الإعداد | الوصف |
+|---------|-------------|
+| **Enable Obsidian export** | إظهار/إخفاء زر "Save to Obsidian" |
+| **اسم المخزن (Vault name)** | المخزن المستهدف (اتركه فارغًا للمخزن الافتراضي) |

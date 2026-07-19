@@ -1,0 +1,87 @@
+---
+title: "Settings"
+description: "Web2MD의 모든 설정과 옵션에 대한 전체 레퍼런스입니다."
+---
+
+## 개요
+
+Web2MD 팝업의 **Settings** 탭에서, 또는 Options 페이지(확장 프로그램 아이콘 우클릭 → Options)에서 설정에 접근할 수 있습니다.
+
+## 변환 옵션
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Include images** | On | Markdown 출력물에 alt 텍스트가 포함된 이미지 링크를 유지합니다 |
+| **Include links** | On | 출력물에 하이퍼링크를 유지합니다. 일반 텍스트로 변환하려면 끄세요 |
+| **Add metadata** | On | 출력물에 YAML frontmatter(제목, 원본 URL, 타임스탬프)를 추가합니다 |
+| **Detect code language** | On | 코드 블록의 프로그래밍 언어를 자동으로 감지합니다 |
+| **Auto copy** | Off | 변환 후 Markdown을 클립보드에 자동으로 복사합니다 |
+
+## 미리보기 카드 옵션
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Show preview card** | On | 단축키/컨텍스트 메뉴로 변환한 후 플로팅 미리보기 카드를 표시합니다 |
+| **Card duration** | 15s | 카드가 표시되는 시간: 5s, 15s, 30s, 또는 Always |
+| **Clear all cards** | — | (Always 모드에서 표시되는) 유지 중인 모든 카드를 제거합니다 |
+
+## AI 설정
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Preferred AI platform** | Claude | Send to AI의 기본 플랫폼: Claude, ChatGPT, 또는 Gemini |
+| **Prompt template** | None | AI로 전송할 때 적용되는 활성 템플릿입니다. [자세히 알아보기 →](/ko/advanced/prompt-templates) |
+| **Auto send to AI** | Off | 변환할 때마다 자동으로 AI에 전송합니다 |
+
+## Obsidian 설정
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Enable Obsidian export** | Off | "Save to Obsidian" 버튼을 표시합니다. [자세히 알아보기 →](/ko/advanced/obsidian) |
+| **Vault name** | (blank) | 대상 Obsidian vault 이름 |
+
+## Target AI model
+
+<Note>v0.6에서 추가됨</Note>
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Target AI model** | None | Claude 200K, GPT-4 128K, Gemini 1M, 또는 None 중에서 선택합니다. 설정하면 Web2MD가 선택한 모델의 컨텍스트 창에 맞게 콘텐츠를 자동으로 압축합니다. |
+
+## 커스텀 추출 규칙
+
+<Note>v0.7에서 추가됨 — PRO 전용</Note>
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Custom rules** | (empty) | 도메인별 CSS 선택자 규칙을 만들어 세밀하게 추출을 제어합니다. [자세히 알아보기 →](/ko/advanced/custom-rules) |
+
+## API 키
+
+<Note>v0.8에서 추가됨 — PRO 전용</Note>
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **API keys** | (none) | REST API와 MCP Server용 API 키를 생성하고 관리합니다. 계정당 최대 5개의 키를 만들 수 있습니다. [자세히 알아보기 →](/ko/advanced/api) |
+
+## Webhooks
+
+<Note>v0.8에서 추가됨 — PRO 전용</Note>
+
+| 설정 | 기본값 | 설명 |
+|---------|---------|-------------|
+| **Webhook endpoints** | (none) | webhook URL을 설정해 변환 이벤트를 자동으로 수신합니다. [자세히 알아보기 →](/ko/advanced/webhooks) |
+
+## 도움말 및 피드백
+
+| 링크 | 설명 |
+|------|-------------|
+| **Documentation** | Web2MD 문서 사이트를 엽니다 |
+| **Send feedback** | 지원팀에 이메일을 보냅니다 |
+
+## 데이터 저장
+
+Web2MD는 `chrome.storage.local`을 사용해 사용자의 설정을 로컬에 저장합니다. 설정은 브라우저 세션 간에는 동기화되지만, 기기 간에는 **동기화되지 않습니다**.
+
+Free 사용자가 서버 측 변환 API를 사용하는 경우가 아니라면, 개인 데이터나 변환된 콘텐츠는 Web2MD 서버로 전송되지 않습니다.
+</content>

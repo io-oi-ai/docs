@@ -1,0 +1,84 @@
+---
+title: "Semantische Suche"
+sidebarTitle: "Semantische Suche"
+description: "Finden Sie gespeicherte Inhalte mit natürlichsprachigen Anfragen über Sprachgrenzen hinweg."
+icon: "magnifying-glass"
+---
+
+## Überblick
+
+Mit Semantic Search (v0.7) finden Sie zuvor konvertierte Inhalte mithilfe natürlicher Sprache statt exakter Schlüsselwörter. Fragen Sie nach "Artikel über Datenbankoptimierung", und Web2MD zeigt relevante Ergebnisse an — selbst wenn diese genauen Wörter nie im Inhalt vorkamen.
+
+<Note>
+Semantic Search ist eine reine **Pro-Funktion**.
+</Note>
+
+## So funktioniert es
+
+<Steps>
+  <Step title="Konvertieren Sie Seiten wie gewohnt">
+    Jedes Mal, wenn Sie eine Seite konvertieren, generiert Web2MD automatisch ein Vector-Embedding des Inhalts. Keine zusätzlichen Schritte nötig.
+  </Step>
+  <Step title="Mit natürlicher Sprache suchen">
+    Öffnen Sie History und geben Sie eine Anfrage in normalem Deutsch (oder einer beliebigen Sprache) ein. Web2MD gleicht Ihre Anfrage mit allen gespeicherten Embeddings ab.
+  </Step>
+  <Step title="Erhalten Sie sortierte Ergebnisse">
+    Die Ergebnisse werden nach semantischer Relevanz sortiert, nicht nach Häufigkeit von Schlüsselwörtern. Die inhaltlich ähnlichsten Konvertierungen erscheinen zuerst.
+  </Step>
+</Steps>
+
+## Sprachübergreifender Abgleich
+
+Semantic Search funktioniert über Sprachgrenzen hinweg. Eine englische Anfrage findet chinesische, japanische, spanische oder anderssprachige Inhalte — und umgekehrt.
+
+| Sprache der Anfrage | Sprache des Inhalts | Funktioniert? |
+|---------------|-----------------|--------|
+| Englisch | Englisch | Ja |
+| Englisch | Chinesisch | Ja |
+| Chinesisch | Englisch | Ja |
+| Beliebig | Beliebig | Ja |
+
+<Tip>
+Das ist besonders nützlich, wenn Sie Inhalte in mehreren Sprachen lesen. Einmal suchen, alles Relevante finden — unabhängig von der Sprache.
+</Tip>
+
+## Verwandte Inhalte
+
+Nach der Konvertierung einer Seite zeigt Web2MD automatisch bis zu **3 verwandte Artikel** aus Ihrem Verlauf an. Das deckt Zusammenhänge auf, die Ihnen sonst vielleicht entgangen wären — etwa einen Blogbeitrag vom letzten Monat zum gleichen Thema oder eine Dokumentationsseite mit überschneidenden Konzepten.
+
+Verwandte Inhalte erscheinen nach jeder Konvertierung unterhalb der Preview-Karte.
+
+## Technische Details
+
+<CardGroup cols={2}>
+  <Card title="Embeddings" icon="brain">
+    Angetrieben von OpenAI-Embeddings, automatisch bei jeder Konvertierung generiert. Sicher in Ihrem Konto gespeichert.
+  </Card>
+  <Card title="Vektorsuche" icon="database">
+    Nutzt pgvector für eine schnelle Ähnlichkeitssuche über Ihren gesamten Konvertierungsverlauf.
+  </Card>
+</CardGroup>
+
+## Wo Sie es nutzen können
+
+<Tabs>
+  <Tab title="Extension">
+    Öffnen Sie den History-Tab im Web2MD-Popup und geben Sie Ihre Anfrage in die Suchleiste ein. Die Ergebnisse aktualisieren sich während der Eingabe.
+  </Tab>
+  <Tab title="API">
+    Verwenden Sie den Endpunkt `/api/search`, um Ihre Konvertierungen programmatisch abzufragen. Übergeben Sie einen Parameter `q` mit Ihrer natürlichsprachigen Anfrage.
+
+    ```bash
+    curl -H "Authorization: Bearer YOUR_API_KEY" \
+      "https://web2md.org/api/search?q=database+optimization"
+    ```
+  </Tab>
+</Tabs>
+
+## Keine Konfiguration nötig
+
+Embeddings werden automatisch generiert — Sie müssen nichts aktivieren oder API-Schlüssel bereitstellen. Solange Sie einen Pro-Plan haben, ist jede Konvertierung ab dem Moment des Speicherns durchsuchbar.
+
+<Info>
+Die Embedding-Generierung erfolgt serverseitig und ist in der Regel innerhalb weniger Sekunden nach der Konvertierung abgeschlossen.
+</Info>

@@ -1,0 +1,244 @@
+---
+title: "Agent Bridge"
+sidebarTitle: "Agent Bridge"
+description: "دع وكلاء AI يحوّلون Reddit وأي موقع دفعة واحدة عبر إضافة Chrome الخاصة بك"
+icon: "microchip"
+---
+
+## نظرة عامة
+
+يتيح Agent Bridge لوكلاء AI (Claude Code وCursor وCowork وغيرها) التحكم عن بُعد في إضافة Web2MD لـ Chrome لتحويل مجموعة روابط دفعة واحدة — خصوصًا صفحات Reddit، والصفحات المُعالَجة بـ JS، والصفحات المحمية بتسجيل الدخول التي تمنع الوصول عبر API من جانب الخادم.
+
+بدلًا من استدعاء Web2MD API (الذي يحظره Reddit)، يرسل وكيل AI أوامر إلى إضافة Chrome المحلية لديك عبر [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). تفتح الإضافة كل صفحة في تبويب خلفي باستخدام **جلسة المتصفح الحقيقية الخاصة بك** — بملفات تعريف الارتباط (cookies) وحالة تسجيل الدخول — وتستخرج المحتوى، وتحوّله إلى Markdown، وتُرجع النتيجة.
+
+<Note>
+  يتطلب Agent Bridge خطة **PRO** و**مضيف المراسلة الأصلية (native messaging host)** مثبتًا على جهازك. يجب أن تكون الإضافة مفتوحة في Chrome.
+</Note>
+
+## البنية المعمارية
+
+```
+AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome Extension → Any Website
+```
+
+| المكوّن | الدور |
+|-----------|------|
+| **وكيل AI** | Claude Code، Cursor، Cowork — يستدعي أدوات MCP |
+| **خادم MCP** | يترجم استدعاءات أدوات MCP إلى رسائل TCP |
+| **المضيف الأصلي (Native Host)** | ينقل البيانات بين TCP وChrome Native Messaging |
+| **إضافة Chrome** | تفتح التبويبات، وتستخرج HTML، وتحوّله إلى Markdown |
+
+كل الاتصال **محلي** — لا شيء يغادر جهازك. يستمع المضيف الأصلي على `localhost:12315` فقط.
+
+## الإعداد
+
+### الخطوة 1: بناء خادم MCP
+
+```bash
+cd packages/mcp-server
+pnpm build
+```
+
+### الخطوة 2: تثبيت مضيف المراسلة الأصلية
+
+```bash
+cd packages/mcp-server
+./install.sh <your-extension-id>
+```
+
+<Tip>
+  اعثر على معرّف الإضافة (Extension ID) الخاص بك في `chrome://extensions` مع تفعيل وضع المطوّر (Developer Mode). ابحث عن Web2MD وانسخ سلسلة المعرّف (مثل `ijmgpkkfgpijifldbjafjiapehppcbcn`).
+</Tip>
+
+<Warning>
+  بعد التثبيت، يجب عليك **إغلاق Chrome بالكامل (Cmd+Q على Mac) وإعادة فتحه**. يقرأ Chrome ملفات manifest الخاصة بـ Native Messaging عند بدء التشغيل فقط — إعادة تحميل الإضافة وحدها لا تكفي.
+</Warning>
+
+يقوم سكريبت التثبيت بما يلي:
+- نسخ ملفات المضيف إلى `~/.web2md/` (لتجنب قيود macOS TCC على `~/Desktop`)
+- تحديد المسار المطلق لـ `node` (يُطلق Chrome بمتغير PATH محدود)
+- كتابة ملف manifest الخاص بـ NM في مجلد `NativeMessagingHosts` التابع لـ Chrome
+
+### الخطوة 3: إعداد MCP
+
+<Tabs>
+  <Tab title="Claude Code">
+    أضف إلى `~/.claude/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    أضف إلى `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Desktop">
+    أضف إلى إعدادات Claude Desktop الخاصة بك:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### الخطوة 4: التحقق
+
+في Chrome، افتح `chrome://extensions` ← انقر على رابط "Service Worker" الخاص بـ Web2MD ← تحقق من وحدة التحكم (Console):
+
+```
+[Web2MD] Service worker started
+[Web2MD] Connected to native host
+[Web2MD] Native host TCP relay ready on port 12315
+```
+
+إذا رأيت هذه الأسطر الثلاثة، فإن Agent Bridge يعمل.
+
+## الأدوات المتاحة
+
+### agent_convert
+
+تحويل رابط واحد باستخدام إضافة Chrome.
+
+| المعامل | النوع | الوصف |
+|-----------|------|-------------|
+| `url` | string | الرابط المراد تحويله |
+
+**يُرجع:** محتوى Markdown مع العنوان والرابط المصدر وعدد الكلمات وزمن القراءة.
+
+**الأنسب لـ:** خيوط Reddit، الصفحات المحمية بتسجيل الدخول، المواقع المُعالَجة بـ JS.
+
+### agent_batch_convert
+
+تحويل ما يصل إلى 50 رابطًا دفعة واحدة. تُعالَج الروابط بالتتابع — تفتح الإضافة كل صفحة في تبويب خلفي، وتستخرج المحتوى، وتغلق التبويب، ثم تنتقل إلى التالي.
+
+| المعامل | النوع | الوصف |
+|-----------|------|-------------|
+| `urls` | string[] | مصفوفة من الروابط المراد تحويلها (بحد أقصى 50) |
+
+**يُرجع:** نتائج كل رابط تُبَث فور اكتمالها، بالإضافة إلى ملخص.
+
+**الأنسب لـ:** سير عمل البحث — تحويل خيوط Reddit ومناقشات HN أو صفحات المنافسين دفعة واحدة لتحليل AI.
+
+<Info>
+  تُحفظ جميع التحويلات الناجحة تلقائيًا في [سجل لوحة التحكم](https://web2md.org/dashboard/history)، مع ملخصات ووسوم مُولَّدة بواسطة AI.
+</Info>
+
+## أمثلة على الاستخدام
+
+<AccordionGroup>
+  <Accordion title="تحويل خيط Reddit">
+    **أنت:** حوّل خيط Reddit هذا إلى Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+
+    **الوكيل:** _(يستدعي `agent_convert`)_ إليك الخيط المحوَّل مع 7 تعليقات تناقش دقة RAG للمستندات القانونية...
+  </Accordion>
+  <Accordion title="تحويل دفعي لأغراض البحث">
+    **أنت:** حوّل روابط Reddit الخمسة هذه دفعة واحدة ولخّص أهم النقاط:
+    - https://reddit.com/r/MachineLearning/comments/...
+    - https://reddit.com/r/LocalLLaMA/comments/...
+    - https://reddit.com/r/LangChain/comments/...
+    - https://reddit.com/r/artificial/comments/...
+    - https://reddit.com/r/ChatGPT/comments/...
+
+    **الوكيل:** _(يستدعي `agent_batch_convert`)_ تم تحويل 5 من أصل 5 روابط بنجاح. إليك أهم النقاط...
+  </Accordion>
+  <Accordion title="تحويل صفحات محمية بتسجيل الدخول">
+    **أنت:** حوّل صفحة الويكي الداخلية لشركتي على https://wiki.internal.com/architecture
+
+    **الوكيل:** _(يستدعي `agent_convert`)_ بما أنك مسجّل الدخول إلى هذا الموقع في Chrome، تمكّنت من استخراج المحتوى الكامل...
+  </Accordion>
+</AccordionGroup>
+
+## المواقع المدعومة
+
+يستخدم Agent Bridge نفس أدوات الاستخراج الـ 16 الخاصة بمواقع محددة التي تستخدمها الإضافة:
+
+| الموقع | الطريقة | يتطلب تبويبًا؟ |
+|------|--------|:---:|
+| Reddit | JSON API | لا |
+| Hacker News | Algolia API | لا |
+| YouTube | Transcript API | لا |
+| arXiv | استخلاص HTML | لا |
+| Twitter/X | استخراج من DOM | نعم |
+| GitHub Issues/PRs | REST API | لا |
+| Medium | استخراج من DOM | نعم |
+| Substack | استخراج من DOM | نعم |
+| Wikipedia | استخراج من DOM | نعم |
+| Stack Overflow | SE API | لا |
+| أي موقع آخر | HTML للصفحة الكاملة | نعم |
+
+المواقع المُعلَّمة بـ "لا" لمتطلب التبويب تُحوَّل عبر استدعاءات API — أسرع وأكثر موثوقية. أما البقية فتستخدم تبويبات خلفية.
+
+## استكشاف الأخطاء وإصلاحها
+
+<AccordionGroup>
+  <Accordion title="'Native host not installed' أو 'not found'">
+    لم يُحمّل Chrome ملف manifest الخاص بـ NM. **أغلق Chrome بالكامل (Cmd+Q) وأعد فتحه.** مجرد إعادة تحميل الإضافة لا تكفي.
+  </Accordion>
+  <Accordion title="ظهور 'Native host has exited' فورًا">
+    لا يستطيع Chrome تنفيذ سكريبت المضيف. الأسباب الشائعة:
+    - عدم العثور على `node` — أعد تشغيل `./install.sh` الذي يستخدم المسار المطلق لـ node
+    - المضيف موجود في مجلد محمي بـ TCC (`~/Desktop`، `~/Documents`) — أعد تشغيل التثبيت لنقله إلى `~/.web2md/`
+  </Accordion>
+  <Accordion title="'Agent connection error' من MCP">
+    خادم TCP الخاص بالمضيف الأصلي لا يعمل. تأكد من:
+    1. أن Chrome مفتوح
+    2. أن إضافة Web2MD مُحمَّلة
+    3. أن وحدة تحكم Service Worker تُظهر "TCP relay ready on port 12315"
+  </Accordion>
+  <Accordion title="'Failed to extract content from the page'">
+    الإضافة غير مسجّلة الدخول. افتح نافذة Web2MD المنبثقة في Chrome وسجّل الدخول إلى حسابك PRO.
+  </Accordion>
+  <Accordion title="'Tab load timeout'">
+    الصفحة الهدف تستغرق وقتًا طويلًا للتحميل. هذا طبيعي للمواقع البطيئة. تنتظر الإضافة حتى 15 ثانية لكل تبويب. يستخدم Reddit أداة استخراج JSON API ولا يحتاج إلى تبويب، لذا فإن انتهاء المهلة على Reddit يعني عادةً أن رابط المنشور غير صالح (404).
+  </Accordion>
+  <Accordion title="عدم ظهور التحويلات في سجل لوحة التحكم">
+    يتطلب حفظ السجل أن تكون الإضافة مسجّلة الدخول بحساب PRO. عملية الحفظ من نوع "أرسل ولا تنتظر" (fire-and-forget) — إذا فشل استدعاء API بصمت، لن تظهر التحويلات. تحقق من أن رمز المصادقة (auth token) الخاص بك صالح.
+  </Accordion>
+</AccordionGroup>
+
+## الفرق بينه وبين خادم MCP
+
+| الميزة | خادم MCP (`convert_url`) | Agent Bridge (`agent_convert`) |
+|---------|---------------------------|-------------------------------|
+| مكان التشغيل | استدعاء API من جانب الخادم | متصفح Chrome المحلي لديك |
+| دعم Reddit | ❌ محظور من قِبل Reddit | ✅ يستخدم جلسة متصفح حقيقية |
+| الصفحات المحمية بتسجيل الدخول | ❌ لا يوجد وصول | ✅ يستخدم ملفات تعريف الارتباط الخاصة بك |
+| الصفحات المُعالَجة بـ JS | ❌ لا يوجد JavaScript | ✅ عرض Chrome الكامل |
+| السرعة | أسرع (بلا عبء تبويبات) | أبطأ (يفتح تبويبات حقيقية) |
+| يتطلب فتح Chrome | لا | نعم |
+
+**قاعدة عامة:** استخدم `convert_url` للصفحات العامة. استخدم `agent_convert` / `agent_batch_convert` لـ Reddit والصفحات المُصادَق عليها والمواقع كثيفة الاستخدام لـ JS.

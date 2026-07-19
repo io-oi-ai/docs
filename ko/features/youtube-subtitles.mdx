@@ -1,0 +1,50 @@
+---
+title: "YouTube Subtitles"
+description: "YouTube 동영상 자막을 타임스탬프가 포함된 Markdown으로 추출하세요."
+---
+
+## 개요
+
+Web2MD는 YouTube 동영상에서 자막을 추출해 깔끔하고 타임스탬프가 포함된 Markdown으로 변환할 수 있습니다. 수동으로 업로드된 캡션과 자동 생성 자막(ASR) 모두 지원합니다.
+
+## 얻을 수 있는 것
+
+YouTube 동영상을 변환하면 다음이 생성됩니다:
+
+- **동영상 메타데이터** — 제목, 채널, 재생 시간, 조회수
+- **설명** — 동영상 설명 텍스트
+- **전체 스크립트** — 약 30초 단위 단락으로 그룹화되고 타임스탬프가 포함된 자막
+
+## 예시 결과
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## 지원되는 URL
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## 언어 우선순위
+
+Web2MD는 다음 순서로 가장 적합한 캡션 트랙을 선택합니다:
+1. 수동 영어 자막(최고 품질)
+2. 그 밖의 수동 자막
+3. 자동 생성 영어(ASR)
+4. 그 밖의 자동 생성 자막

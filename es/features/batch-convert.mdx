@@ -1,0 +1,71 @@
+---
+title: "Conversión por lotes"
+description: "Convierte varias páginas web a la vez a partir de URLs o pestañas abiertas del navegador."
+---
+
+## Descripción general
+
+Batch Convert te permite convertir varias páginas en una sola operación. Perfecto para sesiones de investigación, artículos guardados en marcadores o archivar varias páginas a la vez.
+
+## Dos modos de entrada
+
+### Pegar URLs
+
+Introduce varias URLs (una por línea) y conviértelas todas a la vez.
+
+<Steps>
+  <Step title="Abre la pestaña Batch">
+    Haz clic en la pestaña **Batch** del popup de Web2MD.
+  </Step>
+  <Step title="Pega tus URLs">
+    Introduce las URLs, una por línea, en el área de texto. Puedes pegarlas desde una hoja de cálculo, notas o cualquier otra fuente.
+  </Step>
+  <Step title="Inicia la conversión">
+    Haz clic en **Convert All** para empezar. Cada URL se procesa de forma secuencial.
+  </Step>
+</Steps>
+
+### Pestañas abiertas
+
+Selecciona entre las pestañas del navegador actualmente abiertas para convertir varias páginas a la vez.
+
+<Steps>
+  <Step title="Cambia al modo Open Tabs">
+    En la pestaña Batch, cambia a la vista **Open Tabs**.
+  </Step>
+  <Step title="Selecciona las pestañas">
+    Marca las pestañas que quieras convertir. Se listan todas las pestañas convertibles de la ventana actual.
+  </Step>
+  <Step title="Inicia la conversión">
+    Haz clic en **Convert All** para procesar todas las pestañas seleccionadas.
+  </Step>
+</Steps>
+
+## Seguimiento del progreso
+
+Durante la conversión por lotes, verás el progreso en tiempo real:
+
+- **Barra de progreso** con porcentaje de finalización
+- Estado individual de cada URL:
+
+| Estado | Significado |
+|--------|---------|
+| Pending | Esperando a ser procesada |
+| Converting | Convirtiéndose actualmente |
+| Success | Conversión completada |
+| Error | La conversión falló (por ejemplo, la página no es accesible) |
+| Skipped | La URL no era válida o no es compatible |
+
+## Resultados
+
+Al finalizar, verás un resumen:
+
+- Total de conversiones **exitosas**
+- Total de conversiones **fallidas** / **omitidas**
+- Acciones: **Copy All** (todos los resultados combinados) o **Download All** (archivos `.md` individuales)
+
+Haz clic en **New Batch** para iniciar otra conversión por lotes.
+
+<Tip>
+La conversión por lotes funciona mejor con páginas de artículos y entradas de blog. Las aplicaciones dinámicas de una sola página (SPA) pueden producir resultados menos consistentes.
+</Tip>

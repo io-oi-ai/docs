@@ -1,0 +1,85 @@
+---
+title: "Modelos de Prompt"
+description: "Personalize como o conteúdo é enviado para a IA com modelos de prompt reutilizáveis."
+---
+
+## Visão geral
+
+Os Modelos de Prompt permitem envolver seu Markdown convertido com instruções antes de enviá-lo para uma plataforma de IA. Em vez de digitar manualmente "Resuma este artigo..." toda vez, crie um modelo uma vez e reutilize-o.
+
+## Modelos nativos
+
+O Web2MD vem com 4 modelos prontos para uso:
+
+| Modelo | Prompt |
+|----------|--------|
+| **Summarize** | "Please summarize the following article concisely:" |
+| **Extract Key Points** | "Please extract the key points and main takeaways from this article as a bullet list:" |
+| **Tweet** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | "Please generate a list of questions and answers based on the following content:" |
+
+## Como os modelos funcionam
+
+Quando você seleciona um modelo e envia conteúdo para a IA, o modelo envolve seu conteúdo:
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+O placeholder `{content}` no seu modelo é substituído pelo Markdown convertido.
+
+## Criar um modelo personalizado
+
+<Steps>
+  <Step title="Abra a aba Convert">
+    Abra o popup do Web2MD e vá até a aba **Convert**.
+  </Step>
+  <Step title="Clique em + Custom">
+    Clique no botão **"+ Custom"** ao lado do seletor de modelos.
+  </Step>
+  <Step title="Preencha os detalhes">
+    Insira:
+    - **Name** — Um nome curto para o modelo (ex.: "Code Review")
+    - **Prompt** — O texto de instrução, usando `{content}` como placeholder
+  </Step>
+  <Step title="Salve e selecione">
+    Salve o modelo. Ele será automaticamente selecionado como o modelo ativo.
+  </Step>
+</Steps>
+
+### Exemplo de modelo personalizado
+
+**Name:** Code Review
+
+**Prompt:**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## Prévia do prompt
+
+Passe o mouse sobre qualquer modelo no seletor para ver uma prévia do prompt completo que será enviado para a IA. Isso ajuda a verificar se o modelo correto está selecionado antes de converter.
+
+## Selecionar um modelo
+
+Escolha seu modelo ativo no **seletor de modelos** na aba Convert. O modelo selecionado é aplicado automaticamente sempre que você usa **Send to AI**.
+
+## Editar ou excluir modelos
+
+No seletor de modelos da aba Convert, você pode:
+
+- **Editar** o nome ou prompt de qualquer modelo personalizado
+- **Excluir** modelos personalizados que não precisa mais
+
+<Info>
+Modelos nativos não podem ser editados ou excluídos, mas você pode criar modelos personalizados para substituí-los.
+</Info>

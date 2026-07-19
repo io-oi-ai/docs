@@ -1,0 +1,50 @@
+---
+title: "YouTube-Untertitel"
+description: "Extrahieren Sie YouTube-Videountertitel als zeitgestempeltes Markdown."
+---
+
+## Überblick
+
+Web2MD kann Untertitel aus YouTube-Videos extrahieren und in sauberes, zeitgestempeltes Markdown umwandeln. Dies funktioniert sowohl mit manuell hochgeladenen Untertiteln als auch mit automatisch generierten Untertiteln (ASR).
+
+## Was Sie erhalten
+
+Die Konvertierung eines YouTube-Videos liefert:
+
+- **Video-Metadaten** — Titel, Kanal, Dauer, Aufrufzahl
+- **Beschreibung** — den Beschreibungstext des Videos
+- **Vollständiges Transkript** — Untertitel, gruppiert in ~30-Sekunden-Absätze mit Zeitstempeln
+
+## Beispielausgabe
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## Unterstützte URLs
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## Sprachpriorität
+
+Web2MD wählt die bestmögliche verfügbare Untertitelspur:
+1. Manuelle englische Untertitel (höchste Qualität)
+2. Beliebige manuelle Untertitel
+3. Automatisch generiertes Englisch (ASR)
+4. Beliebige automatisch generierte Untertitel

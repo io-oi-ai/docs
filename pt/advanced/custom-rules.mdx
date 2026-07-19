@@ -1,0 +1,101 @@
+---
+title: "Regras de Extração Personalizadas"
+sidebarTitle: "Regras Personalizadas"
+description: "Defina seletores CSS por domínio para uma extração de conteúdo precisa."
+icon: "code"
+---
+
+## Visão geral
+
+As Regras de Extração Personalizadas (v0.7) permitem definir seletores CSS por domínio que controlam exatamente o que o Web2MD extrai. Se o conteúdo principal de um site estiver em um container incomum, ou se houver elementos que você sempre quer remover, as regras personalizadas dão a você controle total.
+
+<Note>
+Regras Personalizadas é um recurso **exclusivo do plano Pro**.
+</Note>
+
+## Criando uma regra
+
+<Steps>
+  <Step title="Abra as Configurações">
+    No popup do Web2MD, navegue até **Settings → Custom Rules**.
+  </Step>
+  <Step title="Adicione uma nova regra">
+    Clique em **New Rule** e insira o domínio (ex.: `example.com`).
+  </Step>
+  <Step title="Defina seus seletores">
+    Configure o seletor de conteúdo, os seletores de remoção e, opcionalmente, um seletor de título.
+  </Step>
+  <Step title="Salve e converta">
+    Salve a regra. Na próxima vez que você converter uma página nesse domínio, seus seletores personalizados serão aplicados automaticamente.
+  </Step>
+</Steps>
+
+## Campos da regra
+
+| Campo | Descrição | Exemplo |
+|-------|-------------|---------|
+| **Domain** | O domínio ao qual esta regra se aplica (correspondência exata) | `docs.example.com` |
+| **Content selector** | Seletor CSS para o container de conteúdo principal | `article.post-body` |
+| **Remove selectors** | Seletores CSS para elementos a remover (separados por vírgula) | `.ads, .sidebar, .related-posts` |
+| **Title selector** | Substitui a detecção automática de título | `h1.entry-title` |
+
+## Exemplo: limpando um blog
+
+Suponha que você converta regularmente artigos de um blog que envolve o conteúdo em uma div específica e inclui widgets de barra lateral que geram ruído:
+
+```
+Domain:           blog.example.com
+Content selector: div.article-content
+Remove selectors: .author-bio, .newsletter-signup, .comments-section
+Title selector:   h1.post-title
+```
+
+Com esta regra, o Web2MD irá:
+1. Extrair apenas o conteúdo dentro de `div.article-content`
+2. Remover a bio do autor, o cadastro de newsletter e os comentários
+3. Usar o elemento `h1.post-title` como título do documento
+
+## Como as regras são aplicadas
+
+<CardGroup cols={2}>
+  <Card title="Correspondência automática" icon="bullseye">
+    As regras são correspondidas por domínio. Ao converter uma página, o Web2MD verifica se existe uma regra personalizada para aquele domínio e a aplica antes do pipeline de extração padrão.
+  </Card>
+  <Card title="Comportamento de fallback" icon="shield">
+    Se o seu seletor de conteúdo não corresponder a nada na página, o Web2MD recorre à sua lógica de extração padrão. Sua regra não vai quebrar as conversões.
+  </Card>
+</CardGroup>
+
+## Gerenciando regras
+
+Todas as regras são gerenciadas em **Settings → Custom Rules** dentro do popup da extensão.
+
+| Ação | Como fazer |
+|--------|-----|
+| **Criar** | Settings → Custom Rules → New Rule |
+| **Editar** | Clique em qualquer regra existente para modificar seus seletores |
+| **Excluir** | Clique no ícone de lixeira ao lado de uma regra |
+| **Testar** | Navegue até uma página no domínio alvo e execute uma conversão |
+
+<Tip>
+Use as DevTools do seu navegador (`Cmd+Shift+I` ou `F12`) para inspecionar a página e encontrar os seletores CSS corretos antes de criar uma regra.
+</Tip>
+
+## Compartilhamento com a comunidade
+
+<Info>
+O compartilhamento de regras com a comunidade está chegando em breve. Você poderá marcar regras como públicas (flag `isPublic`) para que outros usuários possam se beneficiar dos seus seletores específicos de domínio.
+</Info>
+
+## Relação com Adaptadores de Site
+
+Regras Personalizadas e [Adaptadores de Site](/pt/advanced/site-adapters) têm propósitos diferentes:
+
+| | Adaptadores de Site | Regras Personalizadas |
+|-|---------------|-------------|
+| **Escopo** | Nativos, plataformas específicas (Reddit, GitHub, etc.) | Qualquer domínio que você definir |
+| **Método** | Usa APIs de plataforma e lógica especializada | Apenas seletores CSS |
+| **Mantido por** | Equipe do Web2MD | Você |
+| **Prioridade** | Executa primeiro | Executa se nenhum adaptador corresponder |
+
+Se existir um Adaptador de Site para um domínio, ele tem prioridade sobre as regras personalizadas. Regras personalizadas são melhores para sites sem um adaptador dedicado.

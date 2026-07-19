@@ -1,0 +1,60 @@
+---
+title: "Menu d'actions"
+description: "Un menu déroulant à bouton scindé donnant un accès instantané à Copier, Voir en Markdown et Ouvrir dans l'IA — le tout depuis un seul bouton."
+---
+
+## Aperçu
+
+Le menu d'actions est un bouton scindé situé dans le popup de l'extension. Le bouton principal copie la page en Markdown en un clic. Cliquez sur la **flèche ↑** pour déployer un menu déroulant avec toutes les actions disponibles.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Menu déroulant d'actions Web2MD" />
+</Frame>
+
+## Actions disponibles
+
+<CardGroup cols={2}>
+  <Card title="Copier la page" icon="copy">
+    Copiez la page actuelle en Markdown pour les LLM. C'est l'action principale par défaut.
+  </Card>
+  <Card title="Voir en Markdown" icon="arrow-up-right-from-square">
+    Ouvrez la page actuelle en texte brut propre dans un nouvel onglet — utile pour lire ou partager sans passer par une IA.
+  </Card>
+  <Card title="Ouvrir dans ChatGPT" icon="arrow-up-right-from-square">
+    Convertissez la page et envoyez-la directement à [chatgpt.com](https://chatgpt.com) pour poser des questions à son sujet.
+  </Card>
+  <Card title="Ouvrir dans Claude" icon="arrow-up-right-from-square">
+    Convertissez la page et envoyez-la directement à [claude.ai](https://claude.ai) pour poser des questions à son sujet.
+  </Card>
+  <Card title="Ouvrir dans Perplexity" icon="arrow-up-right-from-square">
+    Convertissez la page et envoyez-la directement à [perplexity.ai](https://perplexity.ai) pour poser des questions à son sujet.
+  </Card>
+</CardGroup>
+
+## Comment l'utiliser
+
+<Steps>
+  <Step title="Cliquez sur le bouton principal">
+    Cliquez sur **Copier la page** pour copier instantanément la page actuelle en Markdown. Aucun menu déroulant n'est nécessaire pour l'action la plus courante.
+  </Step>
+  <Step title="Ouvrez le menu déroulant">
+    Cliquez sur la **flèche ↑** à droite du bouton pour afficher toutes les actions disponibles.
+  </Step>
+  <Step title="Choisissez une action">
+    Sélectionnez une action dans le menu. « Voir en Markdown » et les options IA s'ouvrent automatiquement dans un nouvel onglet.
+  </Step>
+</Steps>
+
+## Pourquoi un bouton scindé ?
+
+Auparavant, il fallait aller dans les Paramètres pour basculer entre les modes Copier, Envoyer à l'IA ou Voir. Le menu d'actions expose toutes les actions en une seule fois — sans navigation dans les paramètres.
+
+<Tip>
+Utilisez **Copier la page** pour des workflows rapides de presse-papiers. Utilisez les raccourcis IA lorsque vous souhaitez poser immédiatement des questions sur le contenu d'une page.
+</Tip>
+
+## Voir aussi
+
+- [Envoyer à l'IA](/fr/features/send-to-ai) — configurez votre plateforme IA préférée et vos modèles de prompt
+- [Menu contextuel](/fr/features/context-menu) — raccourcis en clic droit pour les mêmes actions
+- [Convertir des pages](/fr/features/convert) — documentation complète sur le résultat de la conversion

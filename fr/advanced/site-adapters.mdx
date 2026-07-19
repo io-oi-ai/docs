@@ -1,0 +1,150 @@
+---
+title: "Adaptateurs de sites"
+description: "Extraction de contenu optimisée pour 16 plateformes populaires, dont Reddit, GitHub, YouTube, Hacker News, arXiv, Medium, et plus encore."
+---
+
+## Vue d'ensemble
+
+Bien que Web2MD fonctionne sur n'importe quelle page web, certains sites bénéficient d'une logique d'extraction spécialisée. Web2MD inclut **16 extracteurs spécifiques à des plateformes** qui utilisent l'API ou la structure DOM de chaque plateforme pour produire un meilleur résultat Markdown qu'une extraction générique.
+
+<Frame>
+  <img src="/images/site-adapters.png" alt="Adaptateurs spécifiques aux sites" />
+</Frame>
+
+## Sites pris en charge
+
+### Basés sur une API (aucun onglet requis)
+
+Ces extracteurs récupèrent les données directement via l'API de la plateforme, donc ils fonctionnent même sans onglet de navigateur actif.
+
+#### Reddit
+
+Extrait le contenu complet du post, y compris :
+- Titre du post, auteur, subreddit et score
+- Texte du post ou contenu du lien
+- Jusqu'à **200 commentaires** avec 4 niveaux d'imbrication, y compris l'auteur et le score
+- Liens d'images et de médias
+
+Utilise l'API JSON de Reddit (`/.json`) pour une extraction fiable.
+
+#### Hacker News
+
+Extrait les fils de discussion complets via l'API Algolia :
+- Titre du post, URL, points et nombre de commentaires
+- Tous les commentaires avec auteur et imbrication
+
+#### arXiv
+
+Extrait les articles de recherche :
+- Titre, auteurs et résumé de l'article
+- Contenu HTML complet des articles de recherche
+
+#### YouTube
+
+Extrait les métadonnées vidéo :
+- Titre de la vidéo et nom de la chaîne
+- Durée et nombre de vues
+- Sous-titres/légendes en anglais (si disponibles)
+
+#### Twitter / X
+
+Extrait le contenu des tweets :
+- Texte et médias du tweet
+- Informations sur l'auteur et métriques d'engagement
+
+### Basés sur le DOM (onglet de navigateur requis)
+
+Ces extracteurs analysent le DOM de la page dans l'onglet actif pour un contenu structuré.
+
+#### OpenAI Docs
+
+Extrait les pages de documentation du site de documentation d'OpenAI :
+- Blocs de code et références d'API
+- Navigation structurée et hiérarchie du contenu
+
+#### Claude Chat
+
+Extrait le contenu des conversations depuis l'interface de chat de Claude.ai.
+
+#### Notion
+
+Extrait le contenu des pages Notion publiques et connectées (notion.so, notion.site) :
+- Extraction double : analyse DOM au niveau des blocs (`data-block-id`) avec repli sur le conteneur
+- Titres, texte, blocs de code, listes, toggles, callouts, citations
+- Images, tableaux, bookmarks et embeds
+
+#### Feishu / Lark
+
+Extrait le contenu des pages Feishu Docx et Wiki (feishu.cn, larksuite.com) :
+- Extraction double : modèle de blocs PageMain avec repli sur le DOM
+- Titres, texte, blocs de code, listes, tableaux, images
+- Callouts et cases à cocher
+
+#### Medium
+
+Extrait le contenu des articles depuis le DOM de Medium :
+- Auteur, date de publication et temps de lecture
+- Contenu complet de l'article
+
+#### Substack
+
+Extrait les publications de newsletter :
+- Auteur, date et contenu complet de l'article
+
+#### Wikipedia
+
+Extrait le contenu de l'article :
+- Sections, tableaux et références
+- Supprime la navigation et les éléments de barre latérale superflus
+
+#### DEV.to
+
+Extrait les articles de blog développeurs :
+- Tags, réactions et commentaires
+
+#### Product Hunt
+
+Extrait les pages produit :
+- Descriptions du produit et informations sur le créateur
+- Fils de discussion
+
+#### Stack Overflow
+
+Extrait le contenu des questions/réponses :
+- Titre, corps, tags et nombre de votes de la question
+- Réponse acceptée (mise en évidence)
+- Meilleures réponses avec nombre de votes
+
+#### GitHub
+
+Extrait les Issues et Pull Requests, y compris :
+- Titre, statut (ouvert/fermé/fusionné) et labels
+- Description/corps original
+- Jusqu'à **30 commentaires** avec les informations sur l'auteur
+
+Utilise l'API REST de GitHub pour des données structurées.
+
+## Fonctionnement des adaptateurs
+
+Lorsque vous convertissez une page, Web2MD effectue automatiquement les actions suivantes :
+
+1. **Détecte le site** à partir de l'URL
+2. **Sélectionne le meilleur adaptateur** s'il en existe un
+3. **Extrait le contenu** en utilisant la méthode spécifique au site
+4. **Se replie** sur l'extraction générique si l'adaptateur échoue
+
+Vous n'avez besoin de rien configurer — les adaptateurs sont appliqués automatiquement.
+
+<Info>
+Les adaptateurs de sites sont disponibles pour tous les utilisateurs (Free et Pro). Ils s'exécutent avant le pipeline de conversion principal, donc ils fonctionnent quel que soit votre forfait.
+</Info>
+
+## Comparaison
+
+| Fonctionnalité | Extraction générique | Adaptateur de site |
+|---------|-------------------|--------------|
+| Précision du contenu | Bonne pour les articles | Optimisée pour la structure du site |
+| Commentaires/réponses | Non extraits | Inclus (Reddit, GitHub, SO) |
+| Métadonnées | Basiques (titre, URL) | Riches (auteur, score, statut) |
+| Médias | Images uniquement | Vidéos, légendes, embeds |
+| Fiabilité | Dépend de la structure de la page | Utilise des API stables |

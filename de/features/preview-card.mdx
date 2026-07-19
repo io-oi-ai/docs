@@ -1,0 +1,49 @@
+---
+title: "Preview-Karte"
+description: "Schwebende Karte auf der Seite für schnelles Kopieren und Senden nach der Konvertierung."
+---
+
+## Überblick
+
+Wenn Sie eine Seite über die Tastenkombination (`Alt+M`) oder das Kontextmenü konvertieren, erscheint eine schwebende Preview-Karte in der oberen rechten Ecke der Seite. So können Sie Aktionen ausführen, ohne das Popup zu öffnen.
+
+## Funktionen der Karte
+
+Jede Preview-Karte zeigt:
+
+- **Seitentitel** des konvertierten Inhalts
+- **Wortanzahl** als Zusammenfassung
+- **Checkbox** zum Auswählen/Abwählen der Karte
+- **Schließen-Button** zum Ausblenden
+
+### Aktionsleiste unten
+
+Wenn eine oder mehrere Karten ausgewählt sind:
+
+| Aktion | Beschreibung |
+|--------|-------------|
+| **Copy All** | Kopiert das Markdown aller ausgewählten Karten in die Zwischenablage |
+| **Send All** | Sendet alle ausgewählten Inhalte an Ihre bevorzugte KI-Plattform |
+
+## Mehrere Karten
+
+Sie können bis zu **5 Preview-Karten** gleichzeitig stapeln. Das ist nützlich, wenn Sie mehrere Seiten nacheinander konvertieren — jede Konvertierung fügt eine neue Karte hinzu.
+
+## Anzeigedauer
+
+Steuern Sie, wie lange Karten sichtbar bleiben, unter **Einstellungen → Preview-Karte anzeigen**:
+
+| Dauer | Verhalten |
+|----------|----------|
+| **5 Sekunden** | Karte verschwindet automatisch nach 5s |
+| **15 Sekunden** | Karte verschwindet automatisch nach 15s |
+| **30 Sekunden** | Karte verschwindet automatisch nach 30s |
+| **Immer** | Karte bleibt bestehen, bis sie manuell geschlossen wird. Übersteht einen Seiten-Refresh. |
+
+<Info>
+Im Modus **Immer** werden Karten in `chrome.storage.local` gespeichert und erscheinen nach einem Seiten-Refresh erneut. Verwenden Sie **Alle Karten löschen** in den Einstellungen, um sie zu entfernen.
+</Info>
+
+## Preview-Karte ein-/ausschalten
+
+Sie können die Preview-Karte in **Einstellungen → Preview-Karte anzeigen** vollständig deaktivieren. Ist sie deaktiviert, funktionieren Konvertierungen über Tastenkombination/Kontextmenü weiterhin, zeigen aber keinen visuellen Hinweis an.

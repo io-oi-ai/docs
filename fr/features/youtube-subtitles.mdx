@@ -1,0 +1,51 @@
+---
+title: "Sous-titres YouTube"
+description: "Extrayez les sous-titres de vidéos YouTube sous forme de Markdown horodaté."
+---
+
+## Vue d'ensemble
+
+Web2MD peut extraire les sous-titres de vidéos YouTube et les convertir en Markdown propre et horodaté. Cela fonctionne aussi bien avec les sous-titres ajoutés manuellement qu'avec les sous-titres générés automatiquement (ASR).
+
+## Ce que vous obtenez
+
+Convertir une vidéo YouTube produit :
+
+- **Les métadonnées de la vidéo** — titre, chaîne, durée, nombre de vues
+- **La description** — le texte de description de la vidéo
+- **La transcription complète** — sous-titres regroupés en paragraphes d'environ 30 secondes, avec horodatage
+
+## Exemple de résultat
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## URLs prises en charge
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## Priorité de langue
+
+Web2MD sélectionne la meilleure piste de sous-titres disponible :
+1. Sous-titres manuels en anglais (meilleure qualité)
+2. Tout sous-titre manuel
+3. Sous-titres anglais générés automatiquement (ASR)
+4. Tout sous-titre généré automatiquement
+</content>

@@ -1,0 +1,51 @@
+---
+title: "ترجمات YouTube"
+description: "استخرج ترجمات فيديوهات YouTube كملف Markdown مع طوابع زمنية."
+---
+
+## نظرة عامة
+
+يمكن لـ Web2MD استخراج الترجمات من فيديوهات YouTube وتحويلها إلى Markdown نظيف يتضمن طوابع زمنية. يعمل هذا مع الترجمات المرفوعة يدويًا وكذلك الترجمات المولَّدة تلقائيًا (ASR).
+
+## ما الذي تحصل عليه
+
+يؤدي تحويل فيديو YouTube إلى إنتاج:
+
+- **بيانات الفيديو الوصفية** — العنوان، القناة، المدة، عدد المشاهدات
+- **الوصف** — نص وصف الفيديو
+- **النص الكامل للمحادثة** — الترجمات مجمّعة في فقرات مدة كل منها حوالي 30 ثانية مع طوابع زمنية
+
+## مثال على المخرجات
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## الروابط المدعومة
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## أولوية اللغة
+
+يختار Web2MD أفضل مسار ترجمة متاح:
+1. الترجمة الإنجليزية اليدوية (الأعلى جودة)
+2. أي ترجمة يدوية أخرى
+3. الترجمة الإنجليزية المولَّدة تلقائيًا (ASR)
+4. أي ترجمة مولَّدة تلقائيًا أخرى
+</content>

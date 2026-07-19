@@ -1,0 +1,121 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Получайте уведомления о завершении преобразований"
+icon: "webhook"
+---
+
+## Обзор
+
+Webhooks позволяют получать HTTP POST-уведомление на ваш собственный эндпоинт каждый раз, когда завершается преобразование. Используйте их для запуска workflow в Zapier, Make, n8n или любом собственном бэкенде.
+
+<Note>
+  Webhooks — функция тарифа **PRO**. Каждый пользователь может зарегистрировать до **3 webhook-эндпоинтов**.
+</Note>
+
+## Настройка
+
+1. Откройте расширение Web2MD и перейдите в раздел **Settings**.
+2. Прокрутите до раздела **Webhooks**.
+3. Введите URL вашего эндпоинта и нажмите **Add Webhook**.
+4. Скопируйте **секрет подписи** — он понадобится для проверки входящих запросов.
+
+## Тело запроса
+
+Когда преобразование завершается, Web2MD отправляет `POST`-запрос на ваш эндпоинт со следующим телом в формате JSON:
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| Поле | Тип | Описание |
+|-------|------|-------------|
+| `event` | `string` | Всегда `"conversion.completed"` |
+| `data.conversionId` | `string` | Уникальный ID этого преобразования |
+| `data.url` | `string` | Исходный URL, который был преобразован |
+| `data.title` | `string` | Заголовок страницы |
+| `data.markdownLength` | `number` | Длина сгенерированного Markdown в символах |
+| `data.timestamp` | `string` | Временная метка преобразования в формате ISO 8601 |
+
+## Безопасность
+
+Каждый webhook-запрос включает заголовок `X-Web2MD-Signature` с HMAC-SHA256 подписью необработанного тела запроса, подписанной с помощью секрета подписи вашего webhook.
+
+<Warning>
+  Всегда проверяйте подпись перед обработкой webhook. Это предотвращает отправку злоумышленниками поддельных запросов на ваш эндпоинт.
+</Warning>
+
+### Пример проверки (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// В вашем обработчике запросов:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  Используйте `crypto.timingSafeEqual` вместо `===` для предотвращения атак по времени при сравнении подписей.
+</Tip>
+
+## Поведение при повторных попытках
+
+| Попытка | Время | Таймаут |
+|---------|--------|---------|
+| Первая | Немедленно | 5 секунд |
+| Повтор | Через 1 секунду после первой неудачи | 5 секунд |
+
+Если обе попытки завершаются неудачей (ответ не 2xx или таймаут), доставка отменяется. Web2MD не выполняет повторные попытки сверх одного повтора.
+
+## Сценарии использования
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    Используйте триггер Webhook в вашей платформе автоматизации, чтобы запускать workflow при каждом преобразовании страницы — публиковать сообщение в Slack, добавлять строку в таблицу или сохранять в Notion.
+  </Card>
+  <Card title="Уведомления в Slack" icon="bell">
+    Отправляйте сообщение в канал Slack каждый раз, когда участник команды преобразует страницу, чтобы держать всех в курсе.
+  </Card>
+  <Card title="Автосохранение во внешнее хранилище" icon="hard-drive">
+    Получайте полный Markdown через REST API (используя `conversionId`) и сохраняйте его в S3, Google Drive или собственную базу данных.
+  </Card>
+  <Card title="Аналитический пайплайн" icon="chart-line">
+    Отслеживайте объём преобразований и типы контента, передавая события webhook в вашу аналитическую систему.
+  </Card>
+</CardGroup>
+
+## Тестирование webhooks
+
+Во время разработки используйте такие инструменты, как [webhook.site](https://webhook.site) или [ngrok](https://ngrok.com), чтобы открыть локальный эндпоинт и проверить входящие данные перед развёртыванием обработчика в продакшене.

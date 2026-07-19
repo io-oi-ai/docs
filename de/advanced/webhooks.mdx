@@ -1,0 +1,121 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Benachrichtigt werden, wenn Konvertierungen abgeschlossen sind"
+icon: "webhook"
+---
+
+## Übersicht
+
+Webhooks ermöglichen es Ihnen, bei jedem Abschluss einer Konvertierung eine HTTP-POST-Benachrichtigung an Ihren eigenen Endpunkt zu erhalten. Nutzen Sie sie, um Workflows in Zapier, Make, n8n oder einem beliebigen benutzerdefinierten Backend auszulösen.
+
+<Note>
+  Webhooks sind eine Funktion des **PRO-Plans**. Jeder Nutzer kann bis zu **3 Webhook-Endpunkte** registrieren.
+</Note>
+
+## Einrichtung
+
+1. Öffnen Sie die Web2MD-Erweiterung und gehen Sie zu **Settings**.
+2. Scrollen Sie zum Abschnitt **Webhooks**.
+3. Geben Sie Ihre Endpunkt-URL ein und klicken Sie auf **Add Webhook**.
+4. Kopieren Sie das **Signing Secret** — Sie benötigen es, um eingehende Anfragen zu verifizieren.
+
+## Payload
+
+Wenn eine Konvertierung abgeschlossen ist, sendet Web2MD eine `POST`-Anfrage an Ihren Endpunkt mit folgendem JSON-Body:
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| Feld | Typ | Beschreibung |
+|-------|------|-------------|
+| `event` | `string` | Immer `"conversion.completed"` |
+| `data.conversionId` | `string` | Eindeutige ID für diese Konvertierung |
+| `data.url` | `string` | Die konvertierte Quell-URL |
+| `data.title` | `string` | Der Seitentitel |
+| `data.markdownLength` | `number` | Zeichenlänge des generierten Markdowns |
+| `data.timestamp` | `string` | ISO 8601 Zeitstempel der Konvertierung |
+
+## Sicherheit
+
+Jede Webhook-Anfrage enthält einen `X-Web2MD-Signature`-Header mit einer HMAC-SHA256-Signatur des rohen Request-Bodys, signiert mit dem Signing Secret Ihres Webhooks.
+
+<Warning>
+  Überprüfen Sie die Signatur immer, bevor Sie einen Webhook verarbeiten. Dies verhindert, dass Angreifer gefälschte Anfragen an Ihren Endpunkt senden können.
+</Warning>
+
+### Verifizierungsbeispiel (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// In Ihrem Request-Handler:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  Verwenden Sie `crypto.timingSafeEqual` anstelle von `===`, um Timing-Angriffe beim Vergleich von Signaturen zu verhindern.
+</Tip>
+
+## Wiederholungsverhalten
+
+| Versuch | Zeitpunkt | Timeout |
+|---------|--------|---------|
+| Erster | Sofort | 5 Sekunden |
+| Wiederholung | 1 Sekunde nach dem ersten Fehlschlag | 5 Sekunden |
+
+Wenn beide Versuche fehlschlagen (Nicht-2xx-Antwort oder Timeout), wird die Zustellung verworfen. Web2MD wiederholt die Zustellung nicht über diesen einen Wiederholungsversuch hinaus.
+
+## Anwendungsfälle
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    Verwenden Sie einen Webhook-Trigger in Ihrer Automatisierungsplattform, um einen Workflow zu starten, sobald eine Seite konvertiert wird — posten Sie in Slack, fügen Sie eine Zeile zu einer Tabelle hinzu oder speichern Sie in Notion.
+  </Card>
+  <Card title="Slack-Benachrichtigungen" icon="bell">
+    Senden Sie eine Nachricht an einen Slack-Kanal, jedes Mal wenn ein Teammitglied eine Seite konvertiert, damit alle auf dem Laufenden bleiben.
+  </Card>
+  <Card title="Automatisches Speichern in externem Speicher" icon="hard-drive">
+    Rufen Sie das vollständige Markdown über die REST API ab (mithilfe der `conversionId`) und speichern Sie es in S3, Google Drive oder Ihrer eigenen Datenbank.
+  </Card>
+  <Card title="Analytics-Pipeline" icon="chart-line">
+    Verfolgen Sie Konvertierungsvolumen und Inhaltstypen, indem Sie Webhook-Ereignisse an Ihr Analytics-Backend weiterleiten.
+  </Card>
+</CardGroup>
+
+## Webhooks testen
+
+Verwenden Sie während der Entwicklung ein Tool wie [webhook.site](https://webhook.site) oder [ngrok](https://ngrok.com), um einen lokalen Endpunkt bereitzustellen und eingehende Payloads zu prüfen, bevor Sie Ihren Handler in Produktion nehmen.

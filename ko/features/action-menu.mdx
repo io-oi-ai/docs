@@ -1,0 +1,60 @@
+---
+title: "액션 메뉴"
+description: "Copy, View as Markdown, Open in AI에 즉시 접근할 수 있는 스플릿 버튼 드롭다운 — 버튼 하나로 모두 해결하세요."
+---
+
+## 개요
+
+액션 메뉴(Action Menu)는 확장 프로그램 팝업에 있는 스플릿 버튼입니다. 기본 버튼을 클릭하면 클릭 한 번으로 페이지가 Markdown으로 복사됩니다. **↑ 화살표**를 클릭하면 사용 가능한 모든 액션이 담긴 드롭다운이 펼쳐집니다.
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## 사용 가능한 액션
+
+<CardGroup cols={2}>
+  <Card title="Copy page" icon="copy">
+    현재 페이지를 LLM용 Markdown으로 복사합니다. 기본 액션으로 설정되어 있습니다.
+  </Card>
+  <Card title="View as Markdown" icon="arrow-up-right-from-square">
+    현재 페이지를 새 탭에서 깔끔한 일반 텍스트로 엽니다 — AI 없이 읽거나 공유할 때 유용합니다.
+  </Card>
+  <Card title="Open in ChatGPT" icon="arrow-up-right-from-square">
+    페이지를 변환해 [chatgpt.com](https://chatgpt.com)으로 바로 전송하고 관련 질문을 할 수 있습니다.
+  </Card>
+  <Card title="Open in Claude" icon="arrow-up-right-from-square">
+    페이지를 변환해 [claude.ai](https://claude.ai)로 바로 전송하고 관련 질문을 할 수 있습니다.
+  </Card>
+  <Card title="Open in Perplexity" icon="arrow-up-right-from-square">
+    페이지를 변환해 [perplexity.ai](https://perplexity.ai)로 바로 전송하고 관련 질문을 할 수 있습니다.
+  </Card>
+</CardGroup>
+
+## 사용 방법
+
+<Steps>
+  <Step title="기본 버튼을 클릭하세요">
+    **Copy page**를 클릭하면 현재 페이지가 즉시 Markdown으로 복사됩니다. 가장 자주 쓰는 액션이라 드롭다운을 열 필요가 없습니다.
+  </Step>
+  <Step title="드롭다운을 여세요">
+    버튼 오른쪽의 **↑ 화살표**를 클릭하면 사용 가능한 모든 액션이 표시됩니다.
+  </Step>
+  <Step title="액션을 선택하세요">
+    메뉴에서 원하는 액션을 선택합니다. "View as Markdown"과 AI 옵션은 자동으로 새 탭에서 열립니다.
+  </Step>
+</Steps>
+
+## 왜 스플릿 버튼인가요?
+
+이전에는 Copy, Send to AI, View 모드를 전환하려면 설정으로 들어가야 했습니다. 액션 메뉴는 모든 액션을 한 번에 노출시켜, 설정 화면으로 이동할 필요가 없습니다.
+
+<Tip>
+빠르게 클립보드에 복사하려면 **Copy page**를 사용하세요. 페이지 콘텐츠에 대해 바로 질문하고 싶다면 AI 바로가기를 사용하세요.
+</Tip>
+
+## 관련 문서
+
+- [Send to AI](/ko/features/send-to-ai) — 선호하는 AI 플랫폼과 프롬프트 템플릿을 설정하세요
+- [Context Menu](/ko/features/context-menu) — 같은 액션을 마우스 오른쪽 버튼으로 실행하는 방법
+- [Convert Pages](/ko/features/convert) — 변환 결과에 대한 전체 문서

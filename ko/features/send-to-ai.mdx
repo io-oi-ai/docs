@@ -1,0 +1,83 @@
+---
+title: "AI로 전송"
+description: "변환된 Markdown을 Claude, ChatGPT, Gemini, Perplexity, Grok, DeepSeek로 바로 전송하세요."
+---
+
+## 개요
+
+AI 플랫폼 선택기는 Convert 탭 상단 중앙에 있습니다. 원하는 플랫폼과 템플릿을 선택한 뒤 클릭 한 번으로 변환과 전송을 동시에 처리할 수 있습니다 — 수동으로 복사·붙여넣기 할 필요가 없습니다.
+
+<Frame>
+  <img src="/images/send-to-ai.png" alt="Send to AI feature" />
+</Frame>
+
+## 지원 플랫폼
+
+<CardGroup cols={3}>
+  <Card title="Claude" icon="message">
+    [claude.ai](https://claude.ai) — Anthropic의 AI 어시스턴트. ProseMirror 에디터에 직접 입력됩니다.
+  </Card>
+  <Card title="ChatGPT" icon="comment">
+    [chatgpt.com](https://chatgpt.com) — OpenAI의 GPT 모델. textarea에 직접 입력됩니다.
+  </Card>
+  <Card title="Gemini" icon="sparkles">
+    [gemini.google.com](https://gemini.google.com) — Google의 AI. contenteditable 요소에 직접 입력됩니다.
+  </Card>
+  <Card title="Perplexity" icon="magnifying-glass">
+    [perplexity.ai](https://www.perplexity.ai) — AI 기반 검색 엔진입니다.
+  </Card>
+  <Card title="Grok" icon="bolt">
+    [grok.com](https://grok.com) — xAI의 대화형 AI입니다.
+  </Card>
+  <Card title="DeepSeek" icon="brain">
+    [chat.deepseek.com](https://chat.deepseek.com) — DeepSeek의 AI 어시스턴트입니다.
+  </Card>
+</CardGroup>
+
+## 작동 방식
+
+<Steps>
+  <Step title="AI 플랫폼을 선택하세요">
+    **Convert** 탭 상단의 플랫폼 선택기에서 원하는 AI 플랫폼을 선택합니다.
+  </Step>
+  <Step title="프롬프트 템플릿을 고르세요">
+    필요하다면 프롬프트 템플릿을 선택해 콘텐츠에 지시문을 덧붙일 수 있습니다.
+  </Step>
+  <Step title="변환 후 전송하세요">
+    **Convert**를 클릭하면 페이지가 Markdown으로 변환되고, 템플릿이 적용된 뒤, 새 탭에서 선택한 AI 플랫폼의 채팅 입력창에 콘텐츠가 자동 입력됩니다.
+  </Step>
+</Steps>
+
+### 대체 동작
+
+입력이 실패하는 경우(예: AI 플랫폼의 인터페이스가 변경된 경우), Web2MD는 다음과 같이 자연스럽게 대체 동작을 수행합니다.
+
+1. 콘텐츠를 클립보드에 복사합니다
+2. AI 플랫폼을 새 탭에서 엽니다
+3. **"Content copied! Press Ctrl+V to paste"** 알림을 표시합니다
+
+## 프롬프트 템플릿
+
+Send to AI와 [Prompt Templates](/ko/advanced/prompt-templates)를 함께 사용하면 "이 기사를 요약해줘"나 "핵심 내용을 추출해줘" 같은 지시문을 콘텐츠에 자동으로 덧붙일 수 있습니다.
+
+템플릿을 선택하면 전송 전에 콘텐츠가 프롬프트로 감싸집니다.
+
+```
+Please summarize the following article concisely:
+
+[converted Markdown content here]
+```
+
+## 자동 전송
+
+**Auto send to AI**를 켜면 변환할 때마다 선호하는 플랫폼으로 콘텐츠가 자동 전송됩니다 — 추가 클릭이 필요 없습니다.
+
+## 설정
+
+| 설정 | 설명 |
+|---------|-------------|
+| **Preferred AI platform** | Send to AI의 기본 플랫폼(Claude, ChatGPT, Gemini, Perplexity, Grok, DeepSeek) |
+| **Prompt template** | AI로 전송할 때 적용할 템플릿 |
+| **Auto send to AI** | 변환 후 자동으로 전송 |
+
+이 설정들은 **Convert** 탭의 플랫폼 선택기와 템플릿 선택기에서 직접 구성합니다. [모든 설정 보기 →](/ko/advanced/settings)

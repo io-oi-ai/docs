@@ -1,0 +1,49 @@
+---
+title: "Preview Card"
+description: "Cartão flutuante na página para ações rápidas de copiar e enviar após a conversão."
+---
+
+## Visão geral
+
+Quando você converte uma página usando o atalho de teclado (`Alt+M`) ou o menu de contexto, um cartão de pré-visualização flutuante aparece no canto superior direito da página. Isso permite realizar ações sem precisar abrir o popup.
+
+## Recursos do cartão
+
+Cada preview card exibe:
+
+- **Título da página** do conteúdo convertido
+- Resumo da **contagem de palavras**
+- **Checkbox** para selecionar/desmarcar o cartão
+- **Botão de fechar** para dispensar o cartão
+
+### Barra de ações inferior
+
+Quando um ou mais cartões estão selecionados:
+
+| Ação | Descrição |
+|--------|-------------|
+| **Copy All** | Copia o Markdown de todos os cartões selecionados para a área de transferência |
+| **Send All** | Envia todo o conteúdo selecionado para a sua plataforma de IA preferida |
+
+## Múltiplos cartões
+
+Você pode empilhar até **5 preview cards** ao mesmo tempo. Isso é útil ao converter várias páginas em sequência — cada conversão adiciona um novo cartão.
+
+## Duração de exibição
+
+Controle por quanto tempo os cartões ficam visíveis em **Settings → Show preview card**:
+
+| Duração | Comportamento |
+|----------|----------|
+| **5 seconds** | O cartão desaparece automaticamente após 5s |
+| **15 seconds** | O cartão desaparece automaticamente após 15s |
+| **30 seconds** | O cartão desaparece automaticamente após 30s |
+| **Always** | O cartão permanece até ser fechado manualmente. Sobrevive a atualizações da página. |
+
+<Info>
+No modo **Always**, os cartões são persistidos em `chrome.storage.local` e reaparecem após uma atualização da página. Use **Clear all cards** nas Configurações para removê-los.
+</Info>
+
+## Ativar/desativar o preview card
+
+Você pode desativar completamente o preview card em **Settings → Show preview card**. Quando desativado, as conversões via atalho/menu de contexto continuam funcionando, mas sem exibir um indicador visual.

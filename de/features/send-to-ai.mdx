@@ -1,0 +1,83 @@
+---
+title: "An KI senden"
+description: "Senden Sie konvertiertes Markdown direkt an Claude, ChatGPT, Gemini, Perplexity, Grok oder DeepSeek."
+---
+
+## Überblick
+
+Der KI-Plattform-Selektor steht ganz oben im Convert-Tab im Mittelpunkt. Wählen Sie Ihre Plattform und Vorlage, dann konvertieren und senden Sie mit einem Klick — kein manuelles Kopieren und Einfügen nötig.
+
+<Frame>
+  <img src="/images/send-to-ai.png" alt="Send to AI feature" />
+</Frame>
+
+## Unterstützte Plattformen
+
+<CardGroup cols={3}>
+  <Card title="Claude" icon="message">
+    [claude.ai](https://claude.ai) — Anthropics KI-Assistent. Nutzt die Injektion in den ProseMirror-Editor.
+  </Card>
+  <Card title="ChatGPT" icon="comment">
+    [chatgpt.com](https://chatgpt.com) — OpenAIs GPT-Modelle. Nutzt die Injektion in die Textarea.
+  </Card>
+  <Card title="Gemini" icon="sparkles">
+    [gemini.google.com](https://gemini.google.com) — Googles KI. Nutzt die Injektion in ein contenteditable-Element.
+  </Card>
+  <Card title="Perplexity" icon="magnifying-glass">
+    [perplexity.ai](https://www.perplexity.ai) — KI-gestützte Suchmaschine.
+  </Card>
+  <Card title="Grok" icon="bolt">
+    [grok.com](https://grok.com) — xAIs konversationelle KI.
+  </Card>
+  <Card title="DeepSeek" icon="brain">
+    [chat.deepseek.com](https://chat.deepseek.com) — DeepSeeks KI-Assistent.
+  </Card>
+</CardGroup>
+
+## So funktioniert es
+
+<Steps>
+  <Step title="KI-Plattform auswählen">
+    Wählen Sie oben im **Convert**-Tab Ihre bevorzugte KI-Plattform im Plattform-Selektor aus.
+  </Step>
+  <Step title="Prompt-Vorlage auswählen">
+    Wählen Sie optional eine Prompt-Vorlage, um Ihren Inhalt mit Anweisungen zu versehen.
+  </Step>
+  <Step title="Konvertieren & senden">
+    Klicken Sie auf **Convert** — die Seite wird in Markdown umgewandelt, die Vorlage wird angewendet, und der Inhalt wird in einem neuen Tab in das Chat-Eingabefeld Ihrer KI-Plattform eingefügt.
+  </Step>
+</Steps>
+
+### Fallback-Verhalten
+
+Falls die Injektion fehlschlägt (z. B. weil die KI-Plattform ihre Oberfläche geändert hat), greift Web2MD auf einen sanften Fallback zurück:
+
+1. Kopiert den Inhalt in Ihre Zwischenablage
+2. Öffnet die KI-Plattform in einem neuen Tab
+3. Zeigt eine Benachrichtigung: **"Content copied! Press Ctrl+V to paste"**
+
+## Prompt-Vorlagen
+
+Kombinieren Sie Send to AI mit [Prompt Templates](/de/advanced/prompt-templates), um Ihren Inhalt automatisch mit Anweisungen wie "Fasse diesen Artikel zusammen" oder "Extrahiere die wichtigsten Punkte" zu versehen.
+
+Wenn eine Vorlage ausgewählt ist, wird der Inhalt vor dem Senden mit Ihrem Prompt umschlossen:
+
+```
+Please summarize the following article concisely:
+
+[converted Markdown content here]
+```
+
+## Automatisches Senden
+
+Aktivieren Sie **Auto send to AI**, um Inhalte nach jeder Konvertierung automatisch an Ihre bevorzugte Plattform zu senden — ganz ohne zusätzlichen Klick.
+
+## Einstellungen
+
+| Einstellung | Beschreibung |
+|---------|-------------|
+| **Preferred AI platform** | Standardplattform für Send to AI (Claude, ChatGPT, Gemini, Perplexity, Grok oder DeepSeek) |
+| **Prompt template** | Vorlage, die beim Senden an die KI angewendet wird |
+| **Auto send to AI** | Sendet automatisch nach der Konvertierung |
+
+Diese Einstellungen werden direkt im **Convert**-Tab über den Plattform-Selektor und die Vorlagenauswahl konfiguriert. [Alle Einstellungen ansehen →](/de/advanced/settings)

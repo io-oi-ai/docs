@@ -1,0 +1,74 @@
+---
+title: "Barre d'outils de sélection"
+sidebarTitle: "Barre d'outils de sélection"
+description: "Sélectionnez du texte sur n'importe quelle page et obtenez une barre d'outils Markdown flottante."
+icon: "text-slash"
+---
+
+## Aperçu
+
+La barre d'outils de sélection (v0.6) affiche une barre d'actions flottante dès que vous surlignez du texte sur une page web. Sélectionnez un paragraphe, un extrait de code ou une section entière — puis copiez-le en Markdown, ajoutez-le à un tampon, ou envoyez-le directement à l'IA.
+
+## Comment ça marche
+
+<Steps>
+  <Step title="Sélectionnez du texte sur n'importe quelle page">
+    Surlignez n'importe quel texte sur une page web avec votre souris ou votre clavier. La barre d'outils flottante apparaît près de votre sélection.
+  </Step>
+  <Step title="Choisissez une action">
+    Choisissez l'une des trois actions de la barre d'outils : **Copier en Markdown**, **Ajouter au tampon**, ou **Envoyer à l'IA**.
+  </Step>
+  <Step title="Obtenez un résultat propre">
+    Web2MD convertit votre sélection en Markdown bien structuré, en préservant la mise en forme, les liens et les blocs de code.
+  </Step>
+</Steps>
+
+## Actions de la barre d'outils
+
+<CardGroup cols={3}>
+  <Card title="Copier en Markdown" icon="copy">
+    Convertit instantanément le texte sélectionné en Markdown et le copie dans votre presse-papiers.
+  </Card>
+  <Card title="Ajouter au tampon" icon="layer-plus">
+    Ajoute la sélection à un tampon cumulatif. Sélectionnez plusieurs fragments sur la page et combinez-les en un seul document Markdown.
+  </Card>
+  <Card title="Envoyer à l'IA" icon="paper-plane">
+    Envoie le contenu sélectionné directement à votre plateforme IA préférée (Claude, ChatGPT ou Gemini).
+  </Card>
+</CardGroup>
+
+## Mode Ajout
+
+Le mode Ajout est utile lorsque vous avez besoin d'extraits provenant de différentes parties d'une page — voire de pages différentes.
+
+1. Sélectionnez une section et cliquez sur **Ajouter au tampon**
+2. Faites défiler vers une autre section et ajoutez-la à nouveau
+3. Répétez autant de fois que nécessaire
+4. Ouvrez le popup Web2MD pour voir le document Markdown combiné
+
+Chaque fragment ajouté est séparé par une ligne horizontale (`---`) dans le résultat final.
+
+<Tip>
+Le mode Ajout est idéal pour ne retenir que les sections pertinentes de longues pages de documentation ou d'articles de recherche.
+</Tip>
+
+## Expansion intelligente de la sélection
+
+Web2MD élargit automatiquement votre sélection pour inclure des éléments structurels complets :
+
+| Vous sélectionnez... | Web2MD étend à... |
+|---------------|---------------------|
+| Une partie d'un paragraphe | Le paragraphe complet |
+| Une partie d'un bloc de code | Le bloc de code entier avec l'indicateur de langage |
+| Un élément de liste partiel | L'élément de liste complet |
+| Un texte s'étendant sur plusieurs éléments | Tous les blocs entièrement ou partiellement sélectionnés |
+
+Cela garantit que votre résultat Markdown est toujours bien formé — sans paragraphes cassés ni blocs de code à moitié rendus.
+
+## Compatibilité
+
+La barre d'outils de sélection fonctionne sur tous les sites web. Elle s'injecte comme un élément flottant léger qui n'interfère pas avec l'interface propre de la page.
+
+<Info>
+La barre d'outils n'apparaît que lorsque vous sélectionnez du texte. Elle disparaît automatiquement lorsque vous cliquez ailleurs ou effacez votre sélection.
+</Info>

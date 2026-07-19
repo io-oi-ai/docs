@@ -1,0 +1,154 @@
+---
+title: "MCP Server"
+sidebarTitle: "MCP Server"
+description: "استخدم Web2MD من Claude Desktop وCursor وWindsurf"
+icon: "robot"
+---
+
+## نظرة عامة
+
+يُتيح خادم Web2MD MCP استخدام Web2MD كمجموعة أدوات يمكن لمساعدات AI استدعاءها مباشرة، باستخدام [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — وهو معيار مفتوح لربط نماذج AI بالأدوات ومصادر البيانات الخارجية.
+
+بعد الإعداد، يمكنك أن تطلب من Claude أو Cursor أو Windsurf تحويل الصفحات، أو البحث في سجل تحويلاتك، أو استرجاع Markdown المحفوظ دون مغادرة المحادثة.
+
+<Note>
+  يتطلب خادم MCP **مفتاح API لـ Web2MD** (خطة PRO). أنشئ واحدًا من [لوحة التحكم](https://web2md.org/dashboard/api-keys).
+</Note>
+
+## الأدوات المتاحة
+
+يوفر خادم MCP ثلاث أدوات:
+
+| الأداة | الوصف |
+|------|-------------|
+| `convert_url` | تحويل أي رابط إلى Markdown نظيف |
+| `semantic_search` | البحث في تحويلاتك المحفوظة بلغة طبيعية |
+| `get_conversion` | استرجاع محتوى Markdown الكامل لتحويل محفوظ عبر المُعرِّف (ID) |
+
+### convert_url
+
+يجلب رابطًا ويُرجع محتوى الصفحة كـ Markdown. يدعم نفس خيارات التحويل المتوفرة في REST API.
+
+**مثال على طلب:** _"حوّل هذا الرابط إلى markdown: https://docs.example.com/getting-started"_
+
+### semantic_search
+
+يبحث في جميع تحويلاتك المحفوظة سابقًا باستخدام استعلام بلغة طبيعية. يُرجع قائمة بالتحويلات المطابقة مع العناوين والروابط ودرجات الصلة.
+
+**مثال على طلب:** _"ابحث في صفحاتي المحفوظة عن مقالات حول فهرسة قواعد البيانات"_
+
+### get_conversion
+
+يسترجع محتوى Markdown الكامل لتحويل محفوظ محدد عبر مُعرِّفه (ID). مفيد لسحب مستند كامل إلى السياق بعد العثور عليه باستخدام `semantic_search`.
+
+**مثال على طلب:** _"احصل على المحتوى الكامل للتحويل abc123"_
+
+## الإعداد
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    افتح ملف إعدادات Claude Desktop:
+
+    - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+    أضف إدخال `web2md` ضمن `mcpServers`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    أعد تشغيل Claude Desktop. يجب أن تظهر أدوات Web2MD في قائمة اختيار الأدوات.
+  </Tab>
+  <Tab title="Cursor">
+    افتح ملف إعدادات MCP الخاص بـ Cursor في `~/.cursor/mcp.json` وأضف:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    أعد تشغيل Cursor لتحميل الخادم الجديد.
+  </Tab>
+  <Tab title="Windsurf">
+    افتح ملف إعدادات MCP الخاص بـ Windsurf في `~/.windsurf/mcp.json` وأضف:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    أعد تشغيل Windsurf لتحميل الخادم الجديد.
+  </Tab>
+</Tabs>
+
+## أمثلة على الاستخدام
+
+بعد تشغيل خادم MCP، يمكنك استخدام اللغة الطبيعية في مساعد AI الخاص بك:
+
+<AccordionGroup>
+  <Accordion title="تحويل صفحة إلى Markdown">
+    **أنت:** حوّل هذا الرابط إلى markdown: https://react.dev/learn/thinking-in-react
+
+    **المساعد:** _(يستدعي `convert_url`)_ إليك Markdown المحوَّل لصفحة "Thinking in React"...
+  </Accordion>
+  <Accordion title="البحث في التحويلات المحفوظة">
+    **أنت:** ابحث في صفحاتي المحفوظة عن أي شيء متعلق بالمصادقة (authentication)
+
+    **المساعد:** _(يستدعي `semantic_search`)_ وجدت 3 تحويلات محفوظة متعلقة بالمصادقة:
+    1. "OAuth 2.0 Guide" — محفوظ منذ يومين
+    2. "JWT Best Practices" — محفوظ الأسبوع الماضي
+    3. ...
+  </Accordion>
+  <Accordion title="استرجاع تحويل كامل">
+    **أنت:** احصل على المحتوى الكامل للتحويل abc123
+
+    **المساعد:** _(يستدعي `get_conversion`)_ إليك محتوى Markdown الكامل...
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  اجمع بين الأدوات في محادثة واحدة. على سبيل المثال: _"ابحث في تحويلاتي عن وثائق React، ثم احصل على المحتوى الكامل لأحدثها."_
+</Tip>
+
+## استكشاف الأخطاء وإصلاحها
+
+<AccordionGroup>
+  <Accordion title="الأدوات لا تظهر بعد الإعداد">
+    تأكد من أنك أعدت تشغيل التطبيق بعد تعديل ملف الإعدادات. تحقق من أن الأمر `npx web2md-mcp` يعمل بنجاح في الطرفية (terminal).
+  </Accordion>
+  <Accordion title="أخطاء المصادقة">
+    تحقق مرة أخرى من أن `WEB2MD_API_KEY` صحيح وأن اشتراك PRO الخاص بك نشط. يمكنك التحقق من مفتاحك على [صفحة مفاتيح API](https://web2md.org/dashboard/api-keys).
+  </Accordion>
+  <Accordion title="فشل npx في تحديد موقع الحزمة">
+    جرّب تثبيت الحزمة عالميًا أولًا: `npm install -g web2md-mcp`، ثم غيّر `command` إلى `web2md-mcp` واحذف حقل `args`.
+  </Accordion>
+</AccordionGroup>

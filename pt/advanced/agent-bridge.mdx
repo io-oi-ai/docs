@@ -1,0 +1,244 @@
+---
+title: "Agent Bridge"
+sidebarTitle: "Agent Bridge"
+description: "Deixe agentes de IA converterem em lote o Reddit e qualquer site via sua extensão do Chrome"
+icon: "microchip"
+---
+
+## Visão geral
+
+O Agent Bridge permite que agentes de IA (Claude Code, Cursor, Cowork, etc.) controlem remotamente a extensão do Web2MD para Chrome e convertam URLs em lote — especialmente páginas do Reddit, renderizadas via JS, ou protegidas por login, que bloqueiam o acesso via API server-side.
+
+Em vez de chamar a API do Web2MD (que o Reddit bloqueia), o agente de IA envia comandos para sua extensão local do Chrome via [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). A extensão abre cada página em uma aba em segundo plano usando **sua sessão real do navegador** — com seus cookies e estado de login —, extrai o conteúdo, converte para Markdown e retorna o resultado.
+
+<Note>
+  O Agent Bridge requer um plano **PRO** e o **host de native messaging** instalado na sua máquina. A extensão precisa estar aberta no Chrome.
+</Note>
+
+## Arquitetura
+
+```
+AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome Extension → Any Website
+```
+
+| Componente | Papel |
+|-----------|------|
+| **Agente de IA** | Claude Code, Cursor, Cowork — chama as ferramentas MCP |
+| **MCP Server** | Traduz chamadas de ferramentas MCP em mensagens TCP |
+| **Native Host** | Faz o intermédio entre TCP e o Chrome Native Messaging |
+| **Extensão do Chrome** | Abre abas, extrai HTML, converte para Markdown |
+
+Toda a comunicação é **local** — nada sai da sua máquina. O Native Host escuta apenas em `localhost:12315`.
+
+## Configuração
+
+### Passo 1: Compile o MCP Server
+
+```bash
+cd packages/mcp-server
+pnpm build
+```
+
+### Passo 2: Instale o Native Messaging Host
+
+```bash
+cd packages/mcp-server
+./install.sh <your-extension-id>
+```
+
+<Tip>
+  Encontre o ID da sua extensão em `chrome://extensions` com o Modo Desenvolvedor ativado. Procure pelo Web2MD e copie a string do ID (ex.: `ijmgpkkfgpijifldbjafjiapehppcbcn`).
+</Tip>
+
+<Warning>
+  Após a instalação, você precisa **fechar completamente o Chrome (Cmd+Q no Mac) e reabri-lo**. O Chrome só lê os manifestos de Native Messaging na inicialização — apenas recarregar a extensão não é suficiente.
+</Warning>
+
+O script de instalação:
+- Copia os arquivos do host para `~/.web2md/` (evita restrições de TCC do macOS em `~/Desktop`)
+- Resolve o caminho absoluto do `node` (o Chrome inicia com um PATH mínimo)
+- Escreve o manifesto NM no diretório `NativeMessagingHosts` do Chrome
+
+### Passo 3: Configure o MCP
+
+<Tabs>
+  <Tab title="Claude Code">
+    Adicione em `~/.claude/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    Adicione em `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Desktop">
+    Adicione na sua configuração do Claude Desktop:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Passo 4: Verifique
+
+No Chrome, abra `chrome://extensions` → clique no link "Service Worker" do Web2MD → verifique o Console:
+
+```
+[Web2MD] Service worker started
+[Web2MD] Connected to native host
+[Web2MD] Native host TCP relay ready on port 12315
+```
+
+Se você ver essas três linhas, o Agent Bridge está funcionando.
+
+## Ferramentas disponíveis
+
+### agent_convert
+
+Converte uma única URL usando a extensão do Chrome.
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|-------------|
+| `url` | string | A URL a ser convertida |
+
+**Retorna:** Conteúdo em Markdown com título, URL de origem, contagem de palavras e tempo de leitura.
+
+**Ideal para:** Threads do Reddit, páginas protegidas por login, sites renderizados via JS.
+
+### agent_batch_convert
+
+Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a extensão abre cada página em uma aba em segundo plano, extrai o conteúdo, fecha a aba e passa para a próxima.
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|-------------|
+| `urls` | string[] | Array de URLs a converter (máx. 50) |
+
+**Retorna:** Resultados por URL transmitidos conforme são concluídos, mais um resumo.
+
+**Ideal para:** Fluxos de pesquisa — converter em lote threads do Reddit, discussões do HN ou páginas de concorrentes para análise por IA.
+
+<Info>
+  Todas as conversões bem-sucedidas são salvas automaticamente no [Histórico do Dashboard](https://web2md.org/dashboard/history), com resumos e tags gerados por IA.
+</Info>
+
+## Exemplos de uso
+
+<AccordionGroup>
+  <Accordion title="Converter uma thread do Reddit">
+    **Você:** Convert this Reddit thread to Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+
+    **Agente:** _(chama `agent_convert`)_ Aqui está a thread convertida com 7 comentários discutindo precisão de RAG para documentos jurídicos...
+  </Accordion>
+  <Accordion title="Converter em lote para pesquisa">
+    **Você:** Batch convert these 5 Reddit URLs and summarize the key takeaways:
+    - https://reddit.com/r/MachineLearning/comments/...
+    - https://reddit.com/r/LocalLLaMA/comments/...
+    - https://reddit.com/r/LangChain/comments/...
+    - https://reddit.com/r/artificial/comments/...
+    - https://reddit.com/r/ChatGPT/comments/...
+
+    **Agente:** _(chama `agent_batch_convert`)_ Converti 5/5 URLs com sucesso. Aqui estão os principais pontos...
+  </Accordion>
+  <Accordion title="Converter páginas protegidas por login">
+    **Você:** Convert my company's internal wiki page at https://wiki.internal.com/architecture
+
+    **Agente:** _(chama `agent_convert`)_ Como você está logado nesse site no Chrome, consegui extrair o conteúdo completo...
+  </Accordion>
+</AccordionGroup>
+
+## Sites suportados
+
+O Agent Bridge usa os mesmos 16 extratores específicos por site que a extensão:
+
+| Site | Método | Requer aba? |
+|------|--------|:---:|
+| Reddit | JSON API | Não |
+| Hacker News | Algolia API | Não |
+| YouTube | Transcript API | Não |
+| arXiv | HTML scraping | Não |
+| Twitter/X | Extração via DOM | Sim |
+| GitHub Issues/PRs | REST API | Não |
+| Medium | Extração via DOM | Sim |
+| Substack | Extração via DOM | Sim |
+| Wikipedia | Extração via DOM | Sim |
+| Stack Overflow | SE API | Não |
+| Qualquer outro site | HTML da página completa | Sim |
+
+Sites marcados como "Não" na exigência de aba são convertidos via chamadas de API — mais rápido e confiável. Os demais usam abas em segundo plano.
+
+## Solução de problemas
+
+<AccordionGroup>
+  <Accordion title="'Native host not installed' ou 'not found'">
+    O Chrome não carregou o manifesto NM. **Feche completamente o Chrome (Cmd+Q) e reabra.** Apenas recarregar a extensão não é suficiente.
+  </Accordion>
+  <Accordion title="'Native host has exited' imediatamente">
+    O Chrome não consegue executar o script do host. Causas comuns:
+    - `node` não encontrado — rode novamente `./install.sh`, que usa o caminho absoluto do node
+    - O host está em um diretório protegido por TCC (`~/Desktop`, `~/Documents`) — rode a instalação novamente para mover para `~/.web2md/`
+  </Accordion>
+  <Accordion title="'Agent connection error' no MCP">
+    O servidor TCP do Native Host não está em execução. Verifique se:
+    1. O Chrome está aberto
+    2. A extensão do Web2MD está carregada
+    3. O console do Service Worker mostra "TCP relay ready on port 12315"
+  </Accordion>
+  <Accordion title="'Failed to extract content from the page'">
+    A extensão não está logada. Abra o popup do Web2MD no Chrome e faça login na sua conta PRO.
+  </Accordion>
+  <Accordion title="'Tab load timeout'">
+    A página de destino demora demais para carregar. Isso é normal em sites lentos. A extensão espera até 15 segundos por aba. O Reddit usa o extrator via JSON API e não precisa de aba, então timeouts no Reddit geralmente significam que a URL do post é inválida (404).
+  </Accordion>
+  <Accordion title="Conversões não aparecem no Histórico do Dashboard">
+    Salvar o histórico requer que a extensão esteja logada com uma conta PRO. O salvamento é "fire-and-forget" — se a chamada de API falhar silenciosamente, as conversões não aparecerão. Verifique se seu token de autenticação é válido.
+  </Accordion>
+</AccordionGroup>
+
+## Em que difere do MCP Server
+
+| Recurso | MCP Server (`convert_url`) | Agent Bridge (`agent_convert`) |
+|---------|---------------------------|-------------------------------|
+| Onde roda | Chamada de API server-side | Seu navegador Chrome local |
+| Suporte a Reddit | ❌ Bloqueado pelo Reddit | ✅ Usa sua sessão real do navegador |
+| Páginas protegidas por login | ❌ Sem acesso | ✅ Usa seus cookies |
+| Páginas renderizadas via JS | ❌ Sem JavaScript | ✅ Renderização completa do Chrome |
+| Velocidade | Mais rápido (sem overhead de aba) | Mais lento (abre abas reais) |
+| Requer Chrome aberto | Não | Sim |
+
+**Regra prática:** Use `convert_url` para páginas públicas. Use `agent_convert` / `agent_batch_convert` para Reddit, páginas autenticadas e sites com muito JS.

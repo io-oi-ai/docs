@@ -1,0 +1,121 @@
+---
+title: "Collections"
+sidebarTitle: "Collections"
+description: "Organisieren Sie Ihre Konvertierungen in durchsuchbaren Wissensordnern."
+icon: "folder-open"
+---
+
+## Überblick
+
+Mit Collections können Sie Ihre Konvertierungen in Ordnern organisieren — zum Beispiel "React Research", "Wettbewerbsanalyse" oder "Wöchentliche Lektüre". Gruppieren Sie verwandte Inhalte, durchstöbern Sie sie später und exportieren Sie ganze Collections als eine einzige zusammengeführte Markdown-Datei.
+
+<Note>
+Collections ist eine reine **Pro-Funktion**.
+</Note>
+
+## Eine Collection erstellen
+
+<Steps>
+  <Step title="Öffnen Sie den Collections-Tab">
+    Navigieren Sie im Web2MD-Popup zum Tab **Collections**.
+  </Step>
+  <Step title="Erstellen Sie eine neue Collection">
+    Klicken Sie auf **New Collection**, geben Sie einen Namen ein und wählen Sie optional eine übergeordnete Collection zur Verschachtelung.
+  </Step>
+  <Step title="Beginnen Sie, Konvertierungen hinzuzufügen">
+    Fügen Sie Konvertierungen aus dem History-Tab hinzu oder weisen Sie sie während der Konvertierung zu.
+  </Step>
+</Steps>
+
+## Konvertierungen zu einer Collection hinzufügen
+
+Es gibt zwei Möglichkeiten, Inhalte hinzuzufügen:
+
+<CardGroup cols={2}>
+  <Card title="Aus History" icon="clock-rotate-left">
+    Öffnen Sie den History-Tab, suchen Sie eine Konvertierung und verwenden Sie das **Ordner-Dropdown**, um sie einer Collection zuzuweisen.
+  </Card>
+  <Card title="Verschachtelte Collections" icon="folder-tree">
+    Erstellen Sie Unter-Collections innerhalb jeder Collection für eine tiefere Organisation. Zum Beispiel: **Research → Frontend → React**.
+  </Card>
+</CardGroup>
+
+## Collections durchstöbern
+
+Der Collections-Tab zeigt alle Ihre Ordner in einer Baumansicht. Klicken Sie auf eine Collection, um ihren Inhalt zu sehen:
+
+- Titel, URL und Datum der Konvertierung
+- KI-Zusammenfassung und Tags (sofern verfügbar)
+- Schnellaktionen: Originalseite öffnen, erneut konvertieren, aus der Collection entfernen
+
+## Eine Collection exportieren
+
+Klicken Sie auf **Export** bei einer beliebigen Collection, um eine einzige zusammengeführte Markdown-Datei mit allen Elementen dieser Collection zu erstellen.
+
+Der Export enthält:
+
+- Ein Inhaltsverzeichnis mit Links zu jedem Abschnitt
+- Jede Konvertierung, getrennt durch eine Überschrift und eine horizontale Linie
+- Erhaltene Quell-URLs und Metadaten
+
+<Tip>
+Der Export einer Collection ist ein schneller Weg, um aus mehreren Quellen ein Rechercheddokument oder einen Lernleitfaden zu erstellen.
+</Tip>
+
+## Compile Wiki
+
+Verwandeln Sie jede Collection in eine KI-generierte Wissensdatenbank — herunterladbar als Obsidian-fertiges ZIP-Archiv.
+
+<Note>
+  Compile Wiki erfordert einen **Pro-Plan**.
+</Note>
+
+### So funktioniert es
+
+<Steps>
+  <Step title="Öffnen Sie eine Collection">
+    Navigieren Sie zum Collections-Tab und öffnen Sie die Collection, die Sie kompilieren möchten.
+  </Step>
+  <Step title="Klicken Sie auf das Gehirn-Symbol">
+    Fahren Sie mit der Maus über die Collection-Kopfzeile, um den Button **Compile Wiki** (Gehirn-Symbol) anzuzeigen.
+  </Step>
+  <Step title="KI generiert Konzeptartikel">
+    Web2MD analysiert alle Konvertierungen in der Collection und generiert miteinander verknüpfte Konzeptartikel mit Wikilinks.
+  </Step>
+  <Step title="Laden Sie das ZIP herunter">
+    Das Ergebnis ist ein Obsidian-fertiges ZIP-Archiv mit:
+    - Einzelnen Konzept-`.md`-Dateien mit Wikilinks (`[[Related Concept]]`)
+    - Einer `INDEX.md` mit Links zu allen Artikeln
+    - YAML-Frontmatter in jeder Datei
+  </Step>
+</Steps>
+
+### Beispiel
+
+Wenn Ihre Collection 10 Artikel über "React Server Components" enthält, könnte Compile Wiki Folgendes generieren:
+
+- `Server Components.md` — Überblick mit Links zu [[Streaming]], [[Suspense]], [[Data Fetching]]
+- `Streaming.md` — Wie Streaming funktioniert, mit Rückverweisen zu [[Server Components]]
+- `Data Fetching.md` — Muster für das Laden von Daten in RSC
+- `INDEX.md` — Hauptliste aller generierten Artikel
+
+<Tip>
+  Compile Wiki funktioniert am besten mit Collections aus 5-20 verwandten Artikeln zu einem bestimmten Thema. Die KI nutzt den Inhalt, um Schlüsselkonzepte zu identifizieren und querverlinkte Artikel zu erstellen.
+</Tip>
+
+## Collections verwalten
+
+| Aktion | Vorgehen |
+|--------|-----|
+| **Erstellen** | Collections-Tab → New Collection |
+| **Umbenennen** | Klicken Sie auf den Collection-Namen → Edit |
+| **Verschachteln** | Ziehen Sie eine Collection in eine andere, oder legen Sie beim Erstellen ein übergeordnetes Element fest |
+| **Löschen** | Klicken Sie auf das Papierkorb-Symbol einer beliebigen Collection (Konvertierungen werden nicht gelöscht, nur die Zuordnung aufgehoben) |
+
+<Warning>
+Das Löschen einer Collection entfernt nur den Ordner. Ihre Konvertierungen bleiben in History erhalten und können anderen Collections zugewiesen werden.
+</Warning>
+
+## Datenspeicherung
+
+Alle Collection-Daten werden in Ihrem Web2MD-Konto gespeichert und geräteübergreifend synchronisiert. Ihr organisiertes Wissen bleibt Ihnen erhalten, solange Sie ein aktives Pro-Abonnement haben.

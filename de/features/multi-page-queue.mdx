@@ -1,0 +1,51 @@
+---
+title: "Mehrseiten-Warteschlange"
+description: "Konvertieren Sie mehrere Seiten und senden Sie sie in einer zusammengeführten Anfrage an die KI."
+---
+
+## Überblick
+
+Mit der Mehrseiten-Warteschlange können Sie Markdown von mehreren Seiten sammeln, bevor Sie alles auf einmal an Ihren KI-Assistenten senden. Ideal für Recherche, Wettbewerbsanalyse oder das Zusammenstellen von Informationen aus mehreren Quellen.
+
+## So funktioniert es
+
+<Steps>
+  <Step title="Konvertieren Sie eine Seite">
+    Konvertieren Sie eine beliebige Webseite wie gewohnt.
+  </Step>
+  <Step title="Zur Warteschlange hinzufügen">
+    Klicken Sie unterhalb des Ergebnisses auf **"Add to queue & convert next page"**.
+  </Step>
+  <Step title="Navigieren & wiederholen">
+    Gehen Sie zur nächsten Seite, konvertieren Sie sie und fügen Sie sie der Warteschlange hinzu.
+  </Step>
+  <Step title="Alle an KI senden">
+    Wenn Sie bereit sind, klicken Sie im Warteschlangen-Panel auf **"Send all → Claude"** (oder Ihre bevorzugte Plattform).
+  </Step>
+</Steps>
+
+## Warteschlangen-Panel
+
+Das Warteschlangen-Panel zeigt:
+- Seitentitel und Wortanzahlen
+- Einzelne Einträge mit × entfernen
+- **Send all** an Ihre ausgewählte KI-Plattform
+- **Clear**, um die Warteschlange zu leeren
+
+## Zusammengeführtes Format
+
+Beim Senden der Warteschlange an die KI werden alle Seiten zu einem Dokument zusammengeführt:
+
+```markdown
+# Page 1 Title
+
+[Page 1 Markdown content]
+
+---
+
+# Page 2 Title
+
+[Page 2 Markdown content]
+```
+
+Prompt-Vorlagen werden vor dem Senden auf den zusammengeführten Inhalt angewendet.

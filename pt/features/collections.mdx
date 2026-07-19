@@ -1,0 +1,121 @@
+---
+title: "Coleções"
+sidebarTitle: "Coleções"
+description: "Organize suas conversões em pastas de conhecimento pesquisáveis."
+icon: "folder-open"
+---
+
+## Visão geral
+
+As Coleções permitem organizar suas conversões em pastas — como "Pesquisa sobre React", "Análise da Concorrência" ou "Leituras da Semana". Agrupe conteúdos relacionados, navegue por eles depois e exporte coleções inteiras como um único arquivo Markdown mesclado.
+
+<Note>
+Coleções é um recurso **exclusivo do plano Pro**.
+</Note>
+
+## Criando uma coleção
+
+<Steps>
+  <Step title="Abra a aba Coleções">
+    No popup do Web2MD, navegue até a aba **Coleções**.
+  </Step>
+  <Step title="Crie uma nova coleção">
+    Clique em **Nova Coleção**, digite um nome e, opcionalmente, escolha uma coleção pai para aninhamento.
+  </Step>
+  <Step title="Comece a adicionar conversões">
+    Adicione conversões a partir da aba Histórico ou atribua-as durante a conversão.
+  </Step>
+</Steps>
+
+## Adicionando conversões a uma coleção
+
+Há duas formas de adicionar conteúdo:
+
+<CardGroup cols={2}>
+  <Card title="A partir do Histórico" icon="clock-rotate-left">
+    Abra a aba Histórico, encontre uma conversão e use o **menu suspenso de pasta** para atribuí-la a uma coleção.
+  </Card>
+  <Card title="Coleções aninhadas" icon="folder-tree">
+    Crie subcoleções dentro de qualquer coleção para uma organização mais profunda. Por exemplo: **Pesquisa → Frontend → React**.
+  </Card>
+</CardGroup>
+
+## Navegando pelas coleções
+
+A aba Coleções mostra todas as suas pastas em uma visualização em árvore. Clique em qualquer coleção para ver seu conteúdo:
+
+- Título da conversão, URL e data
+- Resumo e tags gerados por IA (se disponíveis)
+- Ações rápidas: abrir página original, converter novamente, remover da coleção
+
+## Exportando uma coleção
+
+Clique em **Exportar** em qualquer coleção para gerar um único arquivo Markdown mesclado contendo todos os itens dessa coleção.
+
+A exportação inclui:
+
+- Um sumário com links para cada seção
+- Cada conversão separada por um título e uma linha horizontal
+- URLs de origem e metadados preservados
+
+<Tip>
+Exportar uma coleção é uma forma rápida de montar um documento de pesquisa ou um guia de estudos a partir de várias fontes.
+</Tip>
+
+## Compilar Wiki
+
+Transforme qualquer coleção em uma base de conhecimento gerada por IA — disponível para download como um arquivo ZIP pronto para o Obsidian.
+
+<Note>
+  Compilar Wiki requer um **plano Pro**.
+</Note>
+
+### Como funciona
+
+<Steps>
+  <Step title="Abra uma coleção">
+    Navegue até a aba Coleções e abra a coleção que deseja compilar.
+  </Step>
+  <Step title="Clique no ícone de cérebro">
+    Passe o mouse sobre o cabeçalho da coleção para revelar o botão **Compilar Wiki** (ícone de cérebro).
+  </Step>
+  <Step title="A IA gera artigos de conceitos">
+    O Web2MD analisa todas as conversões da coleção e gera artigos de conceitos interligados com wikilinks.
+  </Step>
+  <Step title="Baixe o ZIP">
+    O resultado é um ZIP pronto para o Obsidian contendo:
+    - Arquivos `.md` individuais de conceitos com wikilinks (`[[Conceito Relacionado]]`)
+    - Um `INDEX.md` com links para todos os artigos
+    - Frontmatter YAML em cada arquivo
+  </Step>
+</Steps>
+
+### Exemplo
+
+Se sua coleção contiver 10 artigos sobre "React Server Components", o Compilar Wiki pode gerar:
+
+- `Server Components.md` — Visão geral com links para [[Streaming]], [[Suspense]], [[Data Fetching]]
+- `Streaming.md` — Como o streaming funciona, com links de volta para [[Server Components]]
+- `Data Fetching.md` — Padrões de carregamento de dados em RSC
+- `INDEX.md` — Lista mestra de todos os artigos gerados
+
+<Tip>
+  O Compilar Wiki funciona melhor com coleções de 5 a 20 artigos relacionados sobre um tema específico. A IA usa o conteúdo para identificar conceitos-chave e criar artigos interligados.
+</Tip>
+
+## Gerenciando coleções
+
+| Ação | Como fazer |
+|--------|-----|
+| **Criar** | Aba Coleções → Nova Coleção |
+| **Renomear** | Clique no nome da coleção → Editar |
+| **Aninhar** | Arraste uma coleção para dentro de outra, ou defina a pai na criação |
+| **Excluir** | Clique no ícone de lixeira em qualquer coleção (as conversões não são excluídas, apenas desvinculadas) |
+
+<Warning>
+Excluir uma coleção remove apenas a pasta. Suas conversões permanecem no Histórico e podem ser reatribuídas a outras coleções.
+</Warning>
+
+## Armazenamento de dados
+
+Todos os dados das coleções são armazenados na sua conta Web2MD e sincronizados entre dispositivos. Seu conhecimento organizado permanece com você enquanto tiver uma assinatura Pro ativa.

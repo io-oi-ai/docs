@@ -1,0 +1,121 @@
+---
+title: "Collections"
+sidebarTitle: "Collections"
+description: "변환 결과를 검색 가능한 지식 폴더로 정리하세요."
+icon: "folder-open"
+---
+
+## 개요
+
+Collections를 사용하면 변환 결과를 "React Research", "Competitor Analysis", "Weekly Reading"과 같은 폴더로 정리할 수 있습니다. 관련 콘텐츠를 그룹화하고 나중에 둘러보거나, 전체 컬렉션을 하나의 병합된 Markdown 파일로 내보낼 수 있습니다.
+
+<Note>
+Collections는 **Pro 전용** 기능입니다.
+</Note>
+
+## 컬렉션 만들기
+
+<Steps>
+  <Step title="Collections 탭 열기">
+    Web2MD 팝업에서 **Collections** 탭으로 이동합니다.
+  </Step>
+  <Step title="새 컬렉션 만들기">
+    **New Collection**을 클릭하고 이름을 입력한 뒤, 필요하다면 중첩을 위한 상위 컬렉션을 선택합니다.
+  </Step>
+  <Step title="변환 결과 추가 시작">
+    History 탭에서 변환 결과를 추가하거나, 변환하는 동안 바로 할당할 수 있습니다.
+  </Step>
+</Steps>
+
+## 컬렉션에 변환 결과 추가하기
+
+콘텐츠를 추가하는 방법은 두 가지입니다:
+
+<CardGroup cols={2}>
+  <Card title="From History" icon="clock-rotate-left">
+    History 탭을 열고 변환 결과를 찾은 뒤, **폴더 드롭다운**을 사용해 컬렉션에 할당합니다.
+  </Card>
+  <Card title="Nested collections" icon="folder-tree">
+    더 세부적인 정리를 위해 컬렉션 안에 하위 컬렉션을 만들 수 있습니다. 예: **Research → Frontend → React**.
+  </Card>
+</CardGroup>
+
+## 컬렉션 둘러보기
+
+Collections 탭은 모든 폴더를 트리 뷰로 보여줍니다. 컬렉션을 클릭하면 내용을 확인할 수 있습니다:
+
+- 변환 제목, URL, 날짜
+- AI 요약 및 태그(있는 경우)
+- 빠른 작업: 원본 페이지 열기, 재변환, 컬렉션에서 제거
+
+## 컬렉션 내보내기
+
+컬렉션에서 **Export**를 클릭하면 해당 컬렉션의 모든 항목을 포함한 하나의 병합된 Markdown 파일이 생성됩니다.
+
+내보내기에는 다음이 포함됩니다:
+
+- 각 섹션으로 연결되는 링크가 있는 목차
+- 제목과 구분선으로 구분된 각 변환 결과
+- 원본 URL 및 메타데이터 보존
+
+<Tip>
+컬렉션 내보내기는 여러 소스로부터 리서치 문서나 스터디 가이드를 빠르게 만드는 방법입니다.
+</Tip>
+
+## Compile Wiki
+
+컬렉션을 AI가 생성한 지식 베이스로 변환하여, Obsidian에서 바로 사용할 수 있는 ZIP 파일로 다운로드할 수 있습니다.
+
+<Note>
+  Compile Wiki는 **Pro 플랜**이 필요합니다.
+</Note>
+
+### 작동 방식
+
+<Steps>
+  <Step title="컬렉션 열기">
+    Collections 탭으로 이동해 컴파일하려는 컬렉션을 엽니다.
+  </Step>
+  <Step title="브레인 아이콘 클릭">
+    컬렉션 헤더에 마우스를 올리면 **Compile Wiki** 버튼(브레인 아이콘)이 나타납니다.
+  </Step>
+  <Step title="AI가 개념 아티클 생성">
+    Web2MD는 컬렉션 내 모든 변환 결과를 분석해 위키링크로 연결된 개념 아티클을 생성합니다.
+  </Step>
+  <Step title="ZIP 다운로드">
+    결과물은 다음을 포함한 Obsidian 호환 ZIP 파일입니다:
+    - 위키링크(`[[Related Concept]]`)가 포함된 개별 개념 `.md` 파일
+    - 모든 아티클로 연결되는 링크가 담긴 `INDEX.md`
+    - 각 파일의 YAML frontmatter
+  </Step>
+</Steps>
+
+### 예시
+
+컬렉션에 "React Server Components"에 관한 아티클 10개가 있다면, Compile Wiki는 다음과 같이 생성할 수 있습니다:
+
+- `Server Components.md` — [[Streaming]], [[Suspense]], [[Data Fetching]]로 연결되는 개요
+- `Streaming.md` — [[Server Components]]로 다시 연결되는 스트리밍 작동 방식
+- `Data Fetching.md` — RSC에서의 데이터 로딩 패턴
+- `INDEX.md` — 생성된 모든 아티클의 마스터 목록
+
+<Tip>
+  Compile Wiki는 특정 주제에 관한 5~20개의 관련 아티클로 구성된 컬렉션에서 가장 잘 작동합니다. AI는 콘텐츠를 활용해 핵심 개념을 파악하고 서로 연결된 아티클을 만듭니다.
+</Tip>
+
+## 컬렉션 관리
+
+| 작업 | 방법 |
+|--------|-----|
+| **생성** | Collections 탭 → New Collection |
+| **이름 변경** | 컬렉션 이름 클릭 → Edit |
+| **중첩** | 컬렉션을 다른 컬렉션으로 드래그하거나, 생성 시 상위 컬렉션을 지정 |
+| **삭제** | 컬렉션의 휴지통 아이콘 클릭(변환 결과는 삭제되지 않고 할당만 해제됨) |
+
+<Warning>
+컬렉션을 삭제하면 폴더만 제거됩니다. 변환 결과는 History에 그대로 남으며 다른 컬렉션에 다시 할당할 수 있습니다.
+</Warning>
+
+## 데이터 저장
+
+모든 컬렉션 데이터는 Web2MD 계정에 저장되며 기기 간 동기화됩니다. Pro 구독이 활성화되어 있는 한 정리된 지식은 계속 유지됩니다.

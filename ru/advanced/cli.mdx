@@ -1,0 +1,236 @@
+---
+title: "CLI"
+sidebarTitle: "CLI (npx web2md)"
+description: "Конвертируйте URL в Markdown прямо из командной строки — передавайте результат в LLM, обрабатывайте пакетно или сохраняйте в Obsidian"
+icon: "terminal"
+---
+
+## Обзор
+
+Web2MD CLI позволяет конвертировать любой URL в чистый Markdown прямо из терминала. Передавайте вывод в LLM, обрабатывайте списки URL пакетно или загружайте контент в свой Obsidian-хранилище — и всё это без открытия браузера.
+
+```bash
+npx web2md https://example.com/article
+```
+
+<Note>
+  Для работы CLI требуется **Node.js 18+**. Выполните `node -v`, чтобы проверить версию.
+</Note>
+
+## Установка
+
+Устанавливать ничего не нужно — просто запустите через `npx`:
+
+```bash
+npx web2md <url> [options]
+```
+
+Или установите глобально для более быстрого запуска:
+
+```bash
+npm install -g web2md
+web2md <url> [options]
+```
+
+## Режимы
+
+Web2MD CLI работает в трёх режимах в зависимости от конфигурации:
+
+<CardGroup cols={3}>
+  <Card title="Локальный" icon="laptop">
+    **Режим по умолчанию.** API-ключ не требуется. Загружает страницы и конвертирует их локально. Работает для большинства публичных сайтов.
+  </Card>
+  <Card title="Серверный" icon="server">
+    **С API-ключом.** Задайте `WEB2MD_API_KEY`, чтобы получить доступ к Reddit, Fandom/Wikia и другим ограниченным сайтам, требующим серверной обработки.
+  </Card>
+  <Card title="Bridge" icon="bridge">
+    **С флагом `--bridge`.** Использует ваше расширение Chrome для загрузки страниц с JS-рендерингом или защищённых авторизацией, которые статическая загрузка обработать не может.
+  </Card>
+</CardGroup>
+
+## Флаги
+
+| Флаг | Описание |
+|------|-------------|
+| `--no-images` | Убрать ссылки на изображения из результата |
+| `--no-links` | Убрать гиперссылки из результата |
+| `--meta` | Добавить YAML-фронтматтер (title, source, wordCount, tokenCount, readingTime, date) |
+| `--json` | Вывести результат в формате JSON `{ markdown, metadata }` |
+| `-o, --output <file>` | Записать результат в файл |
+| `--output-dir <dir>` | Записать каждый URL в отдельный файл `.md` |
+| `--batch <file>` | Прочитать URL из файла (по одному на строку, `#` — комментарий) |
+| `--vault <dir>` | Режим хранилища Obsidian: сохраняет в `<dir>/raw/` и обновляет `<dir>/INDEX.md` |
+| `--concurrency <n>` | Максимум параллельных загрузок (по умолчанию: 3, максимум: 20) |
+| `--bridge` | Использовать расширение Chrome для сайтов с JS-рендерингом или авторизацией |
+| `-q, --quiet` | Не выводить сообщения о прогрессе |
+
+## Переменные окружения
+
+| Переменная | Описание |
+|----------|-------------|
+| `WEB2MD_API_KEY` | API-ключ (`w2m_xxx`) для Reddit и ограниченных сайтов |
+| `WEB2MD_API_URL` | Переопределить базовый URL API |
+| `WEB2MD_EXTENSION_ID` | Переопределить ID расширения Chrome для режима `--bridge` |
+
+<Tip>
+  Добавьте их в профиль вашей оболочки (`~/.zshrc` или `~/.bashrc`), чтобы они сохранялись между сессиями:
+  ```bash
+  export WEB2MD_API_KEY="w2m_your_key_here"
+  ```
+</Tip>
+
+## Примеры использования
+
+### Базовая конвертация
+
+```bash
+npx web2md https://example.com/article
+```
+
+Выводит Markdown в stdout.
+
+### Передача в LLM
+
+```bash
+npx web2md https://react.dev/learn/thinking-in-react | llm "Summarize this page"
+```
+
+```bash
+npx web2md https://docs.python.org/3/tutorial/classes.html | claude "Explain the key concepts"
+```
+
+### Сохранение в файл
+
+```bash
+npx web2md https://example.com/article -o article.md
+```
+
+```bash
+npx web2md https://example.com/article --meta -o article.md
+```
+
+Флаг `--meta` добавляет в начало YAML-фронтматтер с заголовком, исходным URL, количеством слов, количеством токенов, временем чтения и датой.
+
+### Пакетная обработка из файла
+
+Создайте файл `urls.txt`:
+
+```text
+# Research papers
+https://arxiv.org/abs/2301.00001
+https://arxiv.org/abs/2301.00002
+
+# Blog posts
+https://example.com/blog/post-1
+https://example.com/blog/post-2
+```
+
+Затем выполните:
+
+```bash
+npx web2md --batch urls.txt --output-dir ./research --concurrency 5
+```
+
+Каждый URL сохраняется как отдельный файл `.md` в директории `./research`.
+
+### Загрузка в хранилище Obsidian
+
+```bash
+npx web2md --batch urls.txt --vault ~/Documents/MyVault
+```
+
+Это сохраняет каждую страницу в `~/Documents/MyVault/raw/` и обновляет `~/Documents/MyVault/INDEX.md` ссылками на все конвертированные страницы.
+
+### Reddit с API-ключом
+
+```bash
+export WEB2MD_API_KEY="w2m_your_key_here"
+npx web2md https://www.reddit.com/r/LocalLLaMA/comments/example
+```
+
+<Warning>
+  Для Reddit требуется действующий API-ключ. Без него URL Reddit не будут обработаны из-за ограничений Reddit на ботов.
+</Warning>
+
+### Режим Bridge
+
+Используйте расширение Chrome для обработки страниц с JS-рендерингом или защищённых авторизацией:
+
+```bash
+npx web2md --bridge https://app.example.com/dashboard
+```
+
+<Note>
+  Для режима Bridge требуется установленное расширение Web2MD для Chrome и запущенный Chrome. CLI взаимодействует с расширением через протокол нативных сообщений (native messaging) Chrome.
+</Note>
+
+### Вывод в JSON
+
+```bash
+npx web2md --json https://example.com/article
+```
+
+Возвращает структурированный результат:
+
+```json
+{
+  "markdown": "# Article Title\n\nContent here...",
+  "metadata": {
+    "title": "Article Title",
+    "source": "https://example.com/article",
+    "wordCount": 1250,
+    "tokenCount": 1680,
+    "readingTime": 5,
+    "date": "2026-04-11T10:30:00.000Z"
+  }
+}
+```
+
+Полезно для программной обработки или передачи в `jq`:
+
+```bash
+npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
+```
+
+## Оптимизированные сайты
+
+Web2MD включает встроенные адаптеры для следующих сайтов, обеспечивая более чистый результат по сравнению с обычной конвертацией:
+
+<AccordionGroup>
+  <Accordion title="Сайты с оптимизированной поддержкой">
+    - **Wikipedia** — чистое извлечение статей, обработка инфобоксов
+    - **arXiv** — аннотации статей и метаданные
+    - **Hacker News** — треды с комментариями
+    - **GitHub** — Issues и Pull Requests
+    - **Stack Overflow** — вопросы и ответы
+    - **dev.to** — записи блога
+    - **Medium** — статьи (обходит превью пейвола)
+    - **Substack** — рассылки
+    - **OpenAI Docs** — страницы документации
+    - **Mintlify-based docs** — сайты документации на базе Mintlify
+    - **Reddit** — посты и комментарии (требуется API-ключ)
+  </Accordion>
+</AccordionGroup>
+
+## Типовые сценарии
+
+<AccordionGroup>
+  <Accordion title="Передать документацию AI-агенту">
+    ```bash
+    npx web2md --batch docs-urls.txt --output-dir ./context --quiet
+    ```
+    Укажите директорию `./context` в качестве контекста для вашего AI-агента, чтобы получать обоснованные ответы.
+  </Accordion>
+  <Accordion title="Собрать исследовательский корпус">
+    ```bash
+    npx web2md --batch papers.txt --vault ~/Obsidian/Research --meta --concurrency 10
+    ```
+    Создаёт индексированное, доступное для поиска исследовательское хранилище в Obsidian.
+  </Accordion>
+  <Accordion title="Убрать форматирование для ввода в LLM">
+    ```bash
+    npx web2md --no-images --no-links https://example.com/article | llm "Analyze this"
+    ```
+    Удаляет изображения и ссылки, чтобы сократить расход токенов при передаче в LLM.
+  </Accordion>
+</AccordionGroup>

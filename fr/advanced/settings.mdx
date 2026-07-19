@@ -1,0 +1,86 @@
+---
+title: "Paramètres"
+description: "Référence complète de tous les paramètres et options de Web2MD."
+---
+
+## Vue d'ensemble
+
+Accédez aux paramètres depuis l'onglet **Settings** du popup Web2MD, ou depuis la page Options (clic droit sur l'icône de l'extension → Options).
+
+## Options de conversion
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Include images** | Activé | Conserve les liens d'images avec texte alternatif dans le résultat Markdown |
+| **Include links** | Activé | Conserve les hyperliens dans le résultat. Désactivez pour du texte brut |
+| **Add metadata** | Activé | Ajoute un en-tête YAML (titre, URL source, horodatage) au résultat |
+| **Detect code language** | Activé | Détecte automatiquement le langage de programmation pour les blocs de code |
+| **Auto copy** | Désactivé | Copie automatiquement le Markdown dans le presse-papiers après conversion |
+
+## Options de la carte d'aperçu
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Show preview card** | Activé | Affiche une carte d'aperçu flottante après une conversion via raccourci ou menu contextuel |
+| **Card duration** | 15s | Durée d'affichage des cartes : 5s, 15s, 30s, ou Always |
+| **Clear all cards** | — | Supprime toutes les cartes persistantes (visibles en mode Always) |
+
+## Paramètres IA
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Preferred AI platform** | Claude | Plateforme par défaut pour Send to AI : Claude, ChatGPT, ou Gemini |
+| **Prompt template** | Aucun | Modèle actif appliqué lors de l'envoi à l'IA. [En savoir plus →](/fr/advanced/prompt-templates) |
+| **Auto send to AI** | Désactivé | Envoie automatiquement à l'IA après chaque conversion |
+
+## Paramètres Obsidian
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Enable Obsidian export** | Désactivé | Affiche le bouton « Save to Obsidian ». [En savoir plus →](/fr/advanced/obsidian) |
+| **Vault name** | (vide) | Nom du coffre Obsidian cible |
+
+## Modèle IA cible
+
+<Note>Ajouté dans la v0.6</Note>
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Target AI model** | Aucun | Choisissez Claude 200K, GPT-4 128K, Gemini 1M, ou None. Une fois défini, Web2MD compresse automatiquement le contenu pour l'adapter à la fenêtre de contexte du modèle sélectionné. |
+
+## Règles d'extraction personnalisées
+
+<Note>Ajouté dans la v0.7 — PRO uniquement</Note>
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Custom rules** | (vide) | Créez des règles de sélecteur CSS par domaine pour un contrôle fin de l'extraction. [En savoir plus →](/fr/advanced/custom-rules) |
+
+## Clés API
+
+<Note>Ajouté dans la v0.8 — PRO uniquement</Note>
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **API keys** | (aucune) | Créez et gérez des clés API pour l'API REST et le serveur MCP. Jusqu'à 5 clés par compte. [En savoir plus →](/fr/advanced/api) |
+
+## Webhooks
+
+<Note>Ajouté dans la v0.8 — PRO uniquement</Note>
+
+| Paramètre | Par défaut | Description |
+|---------|---------|-------------|
+| **Webhook endpoints** | (aucun) | Configurez des URL de webhook pour recevoir automatiquement les événements de conversion. [En savoir plus →](/fr/advanced/webhooks) |
+
+## Aide et retours
+
+| Lien | Description |
+|------|-------------|
+| **Documentation** | Ouvre le site de documentation Web2MD |
+| **Send feedback** | Ouvre un e-mail vers le support |
+
+## Stockage des données
+
+Web2MD stocke vos paramètres localement via `chrome.storage.local`. Vos paramètres se synchronisent entre les sessions du navigateur mais **ne sont pas** synchronisés entre les appareils.
+
+Aucune donnée personnelle ni aucun contenu converti n'est envoyé aux serveurs de Web2MD, sauf si vous êtes un utilisateur Free utilisant l'API de conversion côté serveur.

@@ -1,0 +1,87 @@
+---
+title: "Prompt Templates"
+description: "재사용 가능한 프롬프트 템플릿으로 AI에 콘텐츠를 전달하는 방식을 커스터마이즈하세요."
+---
+
+## 개요
+
+Prompt Templates를 사용하면 변환된 Markdown을 AI 플랫폼에 전송하기 전에 지시문으로 감쌀 수 있습니다. 매번 "이 기사를 요약해줘..."라고 직접 입력하는 대신, 템플릿을 한 번 만들어두고 재사용할 수 있습니다.
+
+## 내장 템플릿
+
+Web2MD에는 바로 사용할 수 있는 4개의 템플릿이 기본 제공됩니다.
+
+| 템플릿 | 프롬프트 |
+|----------|--------|
+| **Summarize** | "Please summarize the following article concisely:" |
+| **Extract Key Points** | "Please extract the key points and main takeaways from this article as a bullet list:" |
+| **Tweet** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | "Please generate a list of questions and answers based on the following content:" |
+
+## 템플릿 작동 방식
+
+템플릿을 선택하고 콘텐츠를 AI에 전송하면, 템플릿이 콘텐츠를 다음과 같이 감쌉니다.
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+템플릿 안의 `{content}` 플레이스홀더는 변환된 Markdown으로 대체됩니다.
+
+## 커스텀 템플릿 만들기
+
+<Steps>
+  <Step title="Convert 탭 열기">
+    Web2MD 팝업을 열고 **Convert** 탭으로 이동합니다.
+  </Step>
+  <Step title="+ Custom 클릭">
+    템플릿 선택기 옆의 **"+ Custom"** 버튼을 클릭합니다.
+  </Step>
+  <Step title="세부 정보 입력">
+    다음을 입력합니다.
+    - **Name** — 템플릿의 짧은 이름 (예: "Code Review")
+    - **Prompt** — `{content}`를 플레이스홀더로 사용하는 지시문 텍스트
+  </Step>
+  <Step title="저장 및 선택">
+    템플릿을 저장합니다. 저장하면 자동으로 활성 템플릿으로 선택됩니다.
+  </Step>
+</Steps>
+
+### 커스텀 템플릿 예시
+
+**Name:** Code Review
+
+**Prompt:**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## 프롬프트 미리보기
+
+템플릿 선택기에서 아무 템플릿에나 마우스를 올리면 AI로 전송될 전체 프롬프트의 미리보기를 볼 수 있습니다. 변환하기 전에 올바른 템플릿이 선택되었는지 확인하는 데 도움이 됩니다.
+
+## 템플릿 선택하기
+
+Convert 탭의 **템플릿 선택기**에서 활성 템플릿을 선택하세요. 선택한 템플릿은 **Send to AI**를 사용할 때마다 자동으로 적용됩니다.
+
+## 템플릿 수정 또는 삭제
+
+Convert 탭의 템플릿 선택기에서 다음을 수행할 수 있습니다.
+
+- 커스텀 템플릿의 이름이나 프롬프트를 **수정(Edit)**
+- 더 이상 필요 없는 커스텀 템플릿을 **삭제(Delete)**
+
+<Info>
+내장 템플릿은 수정하거나 삭제할 수 없지만, 커스텀 템플릿을 만들어 이를 재정의할 수 있습니다.
+</Info>
+</content>
+</invoke>

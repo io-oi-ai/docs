@@ -1,0 +1,87 @@
+---
+title: "Configuración"
+description: "Referencia completa de todas las configuraciones y opciones de Web2MD."
+---
+
+## Descripción general
+
+Accede a la configuración desde la pestaña **Settings** en el popup de Web2MD, o desde la página de opciones (clic derecho en el icono de la extensión → Options).
+
+## Opciones de conversión
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Include images** | Activado | Conserva los enlaces de imágenes con texto alternativo en la salida Markdown |
+| **Include links** | Activado | Mantiene los hipervínculos en la salida. Desactívalo para texto plano |
+| **Add metadata** | Activado | Agrega frontmatter YAML (título, URL de origen, marca de tiempo) a la salida |
+| **Detect code language** | Activado | Detecta automáticamente el lenguaje de programación para los bloques de código |
+| **Auto copy** | Desactivado | Copia automáticamente el Markdown al portapapeles después de la conversión |
+
+## Opciones de tarjeta de vista previa
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Show preview card** | Activado | Muestra una tarjeta de vista previa flotante después de la conversión por atajo o menú contextual |
+| **Card duration** | 15s | Cuánto tiempo permanecen visibles las tarjetas: 5s, 15s, 30s o Always |
+| **Clear all cards** | — | Elimina todas las tarjetas persistentes (visibles en el modo Always) |
+
+## Configuración de IA
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Preferred AI platform** | Claude | Plataforma predeterminada para Send to AI: Claude, ChatGPT o Gemini |
+| **Prompt template** | Ninguna | Plantilla activa aplicada al enviar a la IA. [Más información →](/es/advanced/prompt-templates) |
+| **Auto send to AI** | Desactivado | Envía automáticamente a la IA después de cada conversión |
+
+## Configuración de Obsidian
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Enable Obsidian export** | Desactivado | Muestra el botón "Save to Obsidian". [Más información →](/es/advanced/obsidian) |
+| **Vault name** | (en blanco) | Nombre del vault de Obsidian de destino |
+
+## Modelo de IA de destino
+
+<Note>Añadido en v0.6</Note>
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Target AI model** | Ninguno | Elige Claude 200K, GPT-4 128K, Gemini 1M o None. Cuando está configurado, Web2MD comprime automáticamente el contenido para ajustarse a la ventana de contexto del modelo seleccionado. |
+
+## Reglas de extracción personalizadas
+
+<Note>Añadido en v0.7 — solo PRO</Note>
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Custom rules** | (vacío) | Crea reglas de selectores CSS por dominio para un control de extracción detallado. [Más información →](/es/advanced/custom-rules) |
+
+## Claves de API
+
+<Note>Añadido en v0.8 — solo PRO</Note>
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **API keys** | (ninguna) | Crea y administra claves de API para la REST API y el MCP Server. Hasta 5 claves por cuenta. [Más información →](/es/advanced/api) |
+
+## Webhooks
+
+<Note>Añadido en v0.8 — solo PRO</Note>
+
+| Configuración | Predeterminado | Descripción |
+|---------|---------|-------------|
+| **Webhook endpoints** | (ninguno) | Configura URLs de webhook para recibir eventos de conversión automáticamente. [Más información →](/es/advanced/webhooks) |
+
+## Ayuda y comentarios
+
+| Enlace | Descripción |
+|------|-------------|
+| **Documentation** | Abre el sitio de documentación de Web2MD |
+| **Send feedback** | Abre un correo electrónico al soporte |
+
+## Almacenamiento de datos
+
+Web2MD almacena tu configuración localmente usando `chrome.storage.local`. Tu configuración se sincroniza entre sesiones del navegador pero **no** se sincroniza entre dispositivos.
+
+Ningún dato personal ni contenido convertido se envía a los servidores de Web2MD a menos que seas un usuario Free utilizando la API de conversión del lado del servidor.
+</content>

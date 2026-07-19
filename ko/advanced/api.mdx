@@ -1,0 +1,184 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "URL이나 HTML을 프로그래밍 방식으로 Markdown으로 변환하세요"
+icon: "code"
+---
+
+## 개요
+
+Web2MD REST API를 사용하면 웹페이지나 raw HTML을 깔끔한 Markdown으로 프로그래밍 방식으로 변환할 수 있습니다. 파이프라인을 구축하거나, 콘텐츠 수집을 자동화하거나, Web2MD를 여러분의 도구에 통합하는 데 활용해보세요.
+
+<Note>
+  REST API를 사용하려면 **PRO 플랜**이 필요합니다. [Web2MD 대시보드](https://web2md.org/dashboard/api-keys)에서 API 키를 발급받으세요.
+</Note>
+
+### 머신 판독용 스펙
+
+| 리소스 | URL | 설명 |
+|----------|-----|-------------|
+| OpenAPI 3.1 스펙 | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | 코드 생성 및 툴링을 위한 전체 API 스키마 |
+| AI 플러그인 매니페스트 | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | 에이전트 탐색용 (ChatGPT Plugins / AI 어시스턴트) |
+
+OpenAPI 스펙을 사용하면 클라이언트 SDK를 자동 생성하거나 Postman, Swagger UI, AI 에이전트 프레임워크 등에 가져올 수 있습니다.
+
+## 인증
+
+모든 요청에는 `Authorization` 헤더에 API 키를 포함해야 합니다.
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+API 키는 `w2m_` 접두사가 붙으며 계정에 연결됩니다.
+
+## 엔드포인트
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### 요청 본문
+
+| 필드 | 타입 | 필수 여부 | 설명 |
+|-------|------|----------|-------------|
+| `url` | `string` | `url` 또는 `html` 중 하나 | 변환할 페이지의 URL |
+| `html` | `string` | `url` 또는 `html` 중 하나 | 변환할 raw HTML 문자열 |
+| `options` | `object` | 아니오 | 변환 옵션 (아래 참고) |
+
+<Warning>
+  `url`과 `html` 중 하나만 제공해야 합니다. 둘 다 제공되거나 둘 다 없으면 요청은 `400` 에러로 실패합니다.
+</Warning>
+
+### 옵션
+
+| 필드 | 타입 | 기본값 | 설명 |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | 출력에 이미지 참조 포함 |
+| `includeLinks` | `boolean` | `true` | 출력에 하이퍼링크 유지 |
+| `includeMeta` | `boolean` | `true` | 페이지 메타데이터를 YAML front matter로 앞에 추가 |
+
+### 응답
+
+성공적인 응답은 다음과 같은 형태로 반환됩니다.
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
+    }
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|-------|------|-------------|
+| `title` | `string` | `<title>`에서 추출한 페이지 제목 |
+| `url` | `string` | 소스 URL (제공된 경우) |
+| `extractedAt` | `string` | 변환 시각의 ISO 8601 타임스탬프 |
+| `wordCount` | `integer` | 총 단어 수 (영어 단어 + CJK 문자) |
+| `tokenCount` | `integer` | 추정 LLM 토큰 수 |
+| `readingTime` | `integer` | 추정 읽기 시간(분) |
+| `author` | `string?` | 메타 태그 또는 JSON-LD에서 추출한 저자명 |
+| `publishedDate` | `string?` | 발행일 (YYYY-MM-DD) |
+| `description` | `string?` | Open Graph 또는 메타 태그의 페이지 설명 |
+
+## 요청 제한
+
+API 요청은 API 키당 **분당 60회**로 제한됩니다. 제한을 초과하면 API는 `429` 상태 코드를 반환합니다. 재시도하기 전에 리셋 시간을 기다려주세요.
+
+## 에러 응답
+
+| 상태 코드 | 의미 | 예시 |
+|--------|---------|---------|
+| `400` | 잘못된 요청 — 입력값 누락 또는 충돌 | `url`과 `html`이 둘 다 제공되었거나 둘 다 없음 |
+| `401` | 인증 실패 — API 키가 유효하지 않거나 없음 | `Authorization` 헤더 누락 |
+| `422` | 처리 불가 — URL을 가져올 수 없음 | 대상 사이트가 에러를 반환했거나 타임아웃됨 |
+| `429` | 요청 제한 초과 | 1분 내 60회 초과 요청 |
+| `500` | 내부 서버 오류 | 서버 측의 예기치 못한 오류 |
+
+모든 에러 응답은 다음과 같은 형태를 따릅니다.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## 예제
+
+### curl로 URL 변환하기
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### curl로 raw HTML 변환하기
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  API 키는 하드코딩하지 말고 환경 변수에 저장하세요. 예를 들어 Node.js에서는 `process.env.WEB2MD_API_KEY`를 사용합니다.
+</Tip>
+</content>
+</invoke>

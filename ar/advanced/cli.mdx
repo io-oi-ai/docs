@@ -1,0 +1,236 @@
+---
+title: "سطر الأوامر (CLI)"
+sidebarTitle: "CLI (npx web2md)"
+description: "حوّل الروابط إلى Markdown مباشرة من سطر الأوامر — مرّرها إلى نماذج LLM، أو عالجها دفعة واحدة، أو احفظها في Obsidian"
+icon: "terminal"
+---
+
+## نظرة عامة
+
+يتيح لك CLI الخاص بـ Web2MD تحويل أي رابط إلى Markdown نظيف مباشرة من الطرفية (Terminal). مرّر المخرجات إلى نماذج LLM، أو عالج قوائم روابط دفعة واحدة، أو أدرج المحتوى في مخزن Obsidian الخاص بك — كل ذلك دون فتح متصفح.
+
+```bash
+npx web2md https://example.com/article
+```
+
+<Note>
+  يتطلب CLI إصدار **Node.js 18** أو أحدث. شغّل `node -v` للتحقق من إصدارك.
+</Note>
+
+## التثبيت
+
+لا حاجة لأي تثبيت — فقط شغّله باستخدام `npx`:
+
+```bash
+npx web2md <url> [options]
+```
+
+أو ثبّته بشكل عام لبدء تشغيل أسرع:
+
+```bash
+npm install -g web2md
+web2md <url> [options]
+```
+
+## أوضاع التشغيل
+
+يعمل CLI الخاص بـ Web2MD بثلاثة أوضاع حسب إعداداتك:
+
+<CardGroup cols={3}>
+  <Card title="محلي" icon="laptop">
+    **الوضع الافتراضي.** لا يتطلب مفتاح API. يجلب الصفحات ويحوّلها محليًا. يعمل مع معظم المواقع العامة.
+  </Card>
+  <Card title="خادم (Server)" icon="server">
+    **مع مفتاح API.** اضبط `WEB2MD_API_KEY` لفتح دعم Reddit وFandom/Wikia وغيرها من المواقع المقيَّدة التي تتطلب معالجة من جهة الخادم.
+  </Card>
+  <Card title="جسر (Bridge)" icon="bridge">
+    **مع علامة `--bridge`.** يستخدم إضافة Chrome لجلب الصفحات التي تُعرَض عبر JS أو المحمية بتسجيل دخول والتي لا يمكن للجلب الثابت الوصول إليها.
+  </Card>
+</CardGroup>
+
+## العلامات (Flags)
+
+| العلامة | الوصف |
+|------|-------------|
+| `--no-images` | إزالة مراجع الصور من المخرجات |
+| `--no-links` | إزالة الروابط التشعبية من المخرجات |
+| `--meta` | إضافة ترويسة YAML (العنوان، المصدر، عدد الكلمات، عدد الرموز، وقت القراءة، التاريخ) |
+| `--json` | إخراج بصيغة JSON `{ markdown, metadata }` |
+| `-o, --output <file>` | كتابة المخرجات إلى ملف |
+| `--output-dir <dir>` | كتابة كل رابط إلى ملف `.md` منفصل |
+| `--batch <file>` | قراءة الروابط من ملف (رابط واحد في كل سطر، `#` للتعليقات) |
+| `--vault <dir>` | وضع مخزن Obsidian: يحفظ في `<dir>/raw/` ويحدّث `<dir>/INDEX.md` |
+| `--concurrency <n>` | الحد الأقصى لعمليات الجلب المتوازية (الافتراضي: 3، الحد الأقصى: 20) |
+| `--bridge` | استخدام إضافة Chrome للمواقع المعروضة عبر JS أو المحمية بتسجيل دخول |
+| `-q, --quiet` | إخفاء رسائل التقدّم |
+
+## متغيرات البيئة
+
+| المتغير | الوصف |
+|----------|-------------|
+| `WEB2MD_API_KEY` | مفتاح API (`w2m_xxx`) لـ Reddit والمواقع المقيَّدة |
+| `WEB2MD_API_URL` | تجاوز عنوان API الأساسي |
+| `WEB2MD_EXTENSION_ID` | تجاوز معرّف إضافة Chrome لوضع `--bridge` |
+
+<Tip>
+  أضف هذه المتغيرات إلى ملف تهيئة الصدفة الخاص بك (`~/.zshrc` أو `~/.bashrc`) لتبقى ثابتة بين الجلسات:
+  ```bash
+  export WEB2MD_API_KEY="w2m_your_key_here"
+  ```
+</Tip>
+
+## أمثلة على الاستخدام
+
+### تحويل أساسي
+
+```bash
+npx web2md https://example.com/article
+```
+
+يطبع Markdown إلى الإخراج القياسي (stdout).
+
+### التمرير إلى نموذج LLM
+
+```bash
+npx web2md https://react.dev/learn/thinking-in-react | llm "Summarize this page"
+```
+
+```bash
+npx web2md https://docs.python.org/3/tutorial/classes.html | claude "Explain the key concepts"
+```
+
+### الحفظ في ملف
+
+```bash
+npx web2md https://example.com/article -o article.md
+```
+
+```bash
+npx web2md https://example.com/article --meta -o article.md
+```
+
+تضيف علامة `--meta` ترويسة YAML تتضمن العنوان، رابط المصدر، عدد الكلمات، عدد الرموز، وقت القراءة، والتاريخ.
+
+### المعالجة الدفعية من ملف
+
+أنشئ ملفًا باسم `urls.txt`:
+
+```text
+# Research papers
+https://arxiv.org/abs/2301.00001
+https://arxiv.org/abs/2301.00002
+
+# Blog posts
+https://example.com/blog/post-1
+https://example.com/blog/post-2
+```
+
+ثم شغّل:
+
+```bash
+npx web2md --batch urls.txt --output-dir ./research --concurrency 5
+```
+
+يُحفظ كل رابط كملف `.md` منفصل داخل مجلد `./research`.
+
+### الإدراج في مخزن Obsidian
+
+```bash
+npx web2md --batch urls.txt --vault ~/Documents/MyVault
+```
+
+يحفظ هذا كل صفحة في `~/Documents/MyVault/raw/` ويحدّث `~/Documents/MyVault/INDEX.md` بروابط لجميع الصفحات المحوَّلة.
+
+### Reddit بمفتاح API
+
+```bash
+export WEB2MD_API_KEY="w2m_your_key_here"
+npx web2md https://www.reddit.com/r/LocalLLaMA/comments/example
+```
+
+<Warning>
+  يتطلب Reddit مفتاح API صالحًا. بدونه، ستفشل روابط Reddit بسبب قيود Reddit المضادة للبوتات.
+</Warning>
+
+### وضع Bridge
+
+استخدم إضافة Chrome للتعامل مع الصفحات المعروضة عبر JS أو المحمية بتسجيل دخول:
+
+```bash
+npx web2md --bridge https://app.example.com/dashboard
+```
+
+<Note>
+  يتطلب وضع Bridge تثبيت إضافة Web2MD لمتصفح Chrome وتشغيل Chrome. يتواصل CLI مع الإضافة عبر بروتوكول المراسلة الأصلي (native messaging) الخاص بـ Chrome.
+</Note>
+
+### إخراج JSON
+
+```bash
+npx web2md --json https://example.com/article
+```
+
+يُرجع مخرجات منظَّمة:
+
+```json
+{
+  "markdown": "# Article Title\n\nContent here...",
+  "metadata": {
+    "title": "Article Title",
+    "source": "https://example.com/article",
+    "wordCount": 1250,
+    "tokenCount": 1680,
+    "readingTime": 5,
+    "date": "2026-04-11T10:30:00.000Z"
+  }
+}
+```
+
+مفيدة للاستهلاك البرمجي أو للتمرير إلى `jq`:
+
+```bash
+npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
+```
+
+## المواقع المُحسَّنة
+
+يتضمن Web2MD محوّلات مدمجة لهذه المواقع، ما ينتج مخرجات أنظف من التحويل العام:
+
+<AccordionGroup>
+  <Accordion title="المواقع ذات الدعم المُحسَّن">
+    - **Wikipedia** — استخراج نظيف للمقالات، ومعالجة صناديق المعلومات (infobox)
+    - **arXiv** — ملخصات الأبحاث وبياناتها الوصفية
+    - **Hacker News** — المواضيع مع التعليقات
+    - **GitHub** — الـ Issues والـ Pull Requests
+    - **Stack Overflow** — الأسئلة والأجوبة
+    - **dev.to** — تدوينات المطورين
+    - **Medium** — المقالات (يتجاوز معاينة الاشتراك المدفوع)
+    - **Substack** — منشورات النشرات البريدية
+    - **OpenAI Docs** — صفحات التوثيق
+    - **مواقع التوثيق المبنية على Mintlify** — مواقع التوثيق المبنية على Mintlify
+    - **Reddit** — المنشورات والتعليقات (يتطلب مفتاح API)
+  </Accordion>
+</AccordionGroup>
+
+## سير عمل شائعة
+
+<AccordionGroup>
+  <Accordion title="تغذية وكيل الذكاء الاصطناعي بالتوثيق">
+    ```bash
+    npx web2md --batch docs-urls.txt --output-dir ./context --quiet
+    ```
+    وجّه دليل سياق (context) وكيل الذكاء الاصطناعي الخاص بك إلى `./context` للحصول على إجابات مبنية على مصادر موثوقة.
+  </Accordion>
+  <Accordion title="بناء مجموعة بحثية">
+    ```bash
+    npx web2md --batch papers.txt --vault ~/Obsidian/Research --meta --concurrency 10
+    ```
+    ينشئ مخزن أبحاث مفهرسًا وقابلًا للبحث في Obsidian.
+  </Accordion>
+  <Accordion title="إزالة التنسيق لإدخال LLM">
+    ```bash
+    npx web2md --no-images --no-links https://example.com/article | llm "Analyze this"
+    ```
+    يزيل الصور والروابط لتقليل استهلاك الرموز (tokens) عند التمرير إلى نماذج LLM.
+  </Accordion>
+</AccordionGroup>

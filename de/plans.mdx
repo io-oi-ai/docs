@@ -1,0 +1,105 @@
+---
+title: "Pläne & Preise"
+description: "Vergleichen Sie Free- und Pro-Pläne, um die richtige Wahl für Ihren Workflow zu finden."
+---
+
+## Überblick
+
+Web2MD bietet eine großzügige kostenlose Stufe und einen Pro-Plan für Power-User.
+
+<Frame>
+  <img src="/images/screenshot-4.png" alt="Web2MD pricing page" />
+</Frame>
+
+## Plan-Vergleich
+
+| Funktion | Free | Pro |
+|---------|------|-----|
+| **Preis** | \$0 | \$9/Monat |
+| **Umwandlungen** | 3/Tag | Unbegrenzt |
+| **Umwandlungsmethode** | Server-seitige API | Client-seitig (schneller, privat) |
+| **Intelligente Extraktion** | Ja | Ja |
+| **Site-Adapter** | Ja | Ja |
+| **An KI senden** | Ja | Ja |
+| **Mehrseiten-Warteschlange** | Ja | Ja |
+| **Vorschaukarte** | Ja | Ja |
+| **Kontextmenü** | Ja | Ja |
+| **Prompt-Vorlagen** | Ja | Ja |
+| **Obsidian-Integration** | Ja | Ja |
+| **KI Auto-Tags & Zusammenfassung** | — | Ja |
+| **Markdown-Dateien herunterladen** | — | Ja |
+| **Automatische Plattform-Sammlungen** | — | Ja |
+| **Token-Zählung** | — | Ja |
+| **Intelligente Inhaltsaufteilung** | — | Ja |
+| **KI-Zusammenfassung & Tags** | — | Ja |
+| **Sammlungen & semantische Suche** | — | Ja |
+| **Benutzerdefinierte Extraktionsregeln** | — | Ja |
+| **REST-API-Zugriff** (60 Anfragen/Min.) | — | Ja |
+| **MCP Server** | — | Ja |
+| **Webhook-Automatisierung** | — | Ja |
+| **CLI-Tool** (`npx web2md`) | Ja | Ja |
+| **Agent Bridge** (KI-Agenten-Steuerung) | — | Ja |
+| **Als Bild exportieren** | Wasserzeichen | Kein Wasserzeichen |
+| **Watch Mode** (Seitenüberwachung) | — | Ja |
+| **Compile Wiki** (Sammlung → Obsidian-ZIP) | — | Ja |
+| **API-Schlüssel-Verwaltung** (bis zu 5) | — | Ja |
+| **Priorisierter Support** | — | Ja |
+| **Früher Zugriff auf neue Funktionen** | — | Ja |
+
+## Free-Plan
+
+Der Free-Plan umfasst **3 Umwandlungen pro Tag** — genug, um Web2MD auszuprobieren und zu sehen, ob es zu Ihrem Workflow passt.
+
+- Umwandlungen werden serverseitig über die Web2MD-API verarbeitet
+- Alle Kernfunktionen sind verfügbar (An KI senden, Batch-Umwandlung, Prompt-Vorlagen usw.)
+- Keine Kreditkarte erforderlich
+
+<Info>
+Wenn Sie das kostenlose Limit erreichen, sehen Sie folgende Meldung: **"Free limit reached, please upgrade to Pro."**
+</Info>
+
+## Pro-Plan
+
+Pro schaltet **unbegrenzte Umwandlungen** mit **client-seitiger Verarbeitung** frei – Ihre Inhalte verlassen niemals Ihren Browser.
+
+Weitere Pro-Funktionen:
+
+- **KI Auto-Tags & Zusammenfassung** — Jede Umwandlung generiert automatisch semantische Tags und eine prägnante Zusammenfassung
+- **Markdown-Dateien herunterladen** — Speichern Sie Umwandlungen als `.md`-Dateien auf Ihrem Computer
+- **Automatische Plattform-Sammlungen** — Umwandlungen werden automatisch nach Quellplattform sortiert
+- **Token-Zählung** — Sehen Sie exakte Token-Anzahlen für die KI-Kontextplanung
+- **Intelligente Inhaltsaufteilung** — Teilt lange Inhalte automatisch in KI-freundliche Abschnitte auf
+- **KI-Zusammenfassung & Tags** — Generiert automatisch Zusammenfassungen und Themen-Tags für umgewandelte Inhalte
+- **Sammlungen & semantische Suche** — Organisieren Sie gespeicherte Inhalte in Sammlungen und suchen Sie nach Bedeutung
+- **Benutzerdefinierte Extraktionsregeln** — Erstellen Sie domänenspezifische CSS-Selektor-Regeln für präzise Inhaltsextraktion
+- **REST-API-Zugriff** — Nutzen Sie die Konvertierungs-API von Web2MD programmatisch (60 Anfragen/Min.)
+- **MCP-Server-Integration** — Verbinden Sie Web2MD mit KI-Agenten und Automatisierungstools
+- **Webhook-Automatisierung** — Übertragen Sie Umwandlungsereignisse an externe Dienste
+- **CLI-Tool** — Wandeln Sie URLs über die Kommandozeile mit `npx web2md` um, inklusive Batch-Modus und Obsidian-Vault-Export
+- **Agent Bridge** — Lassen Sie KI-Agenten URLs über Ihre Chrome-Erweiterung per Native Messaging im Batch umwandeln
+- **Als Bild exportieren** — Speichern Sie umgewandeltes Markdown als gestylte Bilder ohne Wasserzeichen
+- **Watch Mode** — Überwachen Sie Seiten auf Änderungen mit automatisierter Umwandlung oder Webhook-Triggern
+- **Compile Wiki** — Erstellen Sie KI-gestützte, Obsidian-fertige Wissensdatenbanken aus Sammlungen
+- **API-Schlüssel-Verwaltung** — Erstellen und verwalten Sie bis zu 5 API-Schlüssel
+
+<Card title="Auf Pro upgraden" icon="star" href="https://web2md.org/pricing">
+  Erhalten Sie unbegrenzte Umwandlungen für \$9/Monat (40% Rabatt auf den regulären Preis von \$15/Monat).
+</Card>
+
+## So funktioniert die Umwandlung je nach Plan
+
+<AccordionGroup>
+  <Accordion title="Free-Nutzer" icon="user">
+    1. Site-Adapter wird ausgeführt (falls verfügbar) — dies ist kostenlos und unbegrenzt
+    2. Falls kein Adapter vorhanden ist, wird das Seiten-HTML an die Web2MD-Server-API gesendet
+    3. Der Server wandelt HTML in Markdown um und liefert das Ergebnis zurück
+    4. Der Nutzungszähler wird erhöht
+  </Accordion>
+
+  <Accordion title="Pro-Nutzer" icon="crown">
+    1. Site-Adapter wird ausgeführt (falls verfügbar)
+    2. Falls kein Adapter vorhanden ist, erfolgt die Umwandlung **vollständig im Browser** (client-seitig)
+    3. Es werden keine Daten an einen Server gesendet
+    4. Keine Nutzungslimits
+  </Accordion>
+</AccordionGroup>

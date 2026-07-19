@@ -1,0 +1,71 @@
+---
+title: "Conversão em Lote"
+description: "Converta várias páginas da web de uma só vez, a partir de URLs ou de abas abertas no navegador."
+---
+
+## Visão geral
+
+O Batch Convert permite converter várias páginas em uma única operação. Perfeito para sessões de pesquisa, artigos salvos como favoritos ou para arquivar várias páginas de uma vez.
+
+## Dois modos de entrada
+
+### Colar URLs
+
+Digite várias URLs (uma por linha) e converta todas de uma vez.
+
+<Steps>
+  <Step title="Abra a aba Batch">
+    Clique na aba **Batch** no popup do Web2MD.
+  </Step>
+  <Step title="Cole suas URLs">
+    Digite as URLs, uma por linha, na área de texto. Você pode colar de uma planilha, de anotações ou de qualquer outra fonte.
+  </Step>
+  <Step title="Inicie a conversão">
+    Clique em **Convert All** para começar. Cada URL é processada sequencialmente.
+  </Step>
+</Steps>
+
+### Open Tabs
+
+Selecione entre as abas atualmente abertas no navegador para converter várias páginas de uma vez.
+
+<Steps>
+  <Step title="Mude para o modo Open Tabs">
+    Na aba Batch, mude para a visualização **Open Tabs**.
+  </Step>
+  <Step title="Selecione as abas">
+    Marque as abas que você quer converter. Todas as abas conversíveis na janela atual são listadas.
+  </Step>
+  <Step title="Inicie a conversão">
+    Clique em **Convert All** para processar todas as abas selecionadas.
+  </Step>
+</Steps>
+
+## Acompanhamento do progresso
+
+Durante a conversão em lote, você verá o progresso em tempo real:
+
+- **Barra de progresso** com percentual de conclusão
+- Status individual para cada URL:
+
+| Status | Significado |
+|--------|---------|
+| Pending | Aguardando processamento |
+| Converting | Sendo convertida no momento |
+| Success | Conversão concluída |
+| Error | A conversão falhou (por exemplo, página inacessível) |
+| Skipped | A URL era inválida ou não é suportada |
+
+## Resultados
+
+Ao final, você verá um resumo:
+
+- Total de conversões **bem-sucedidas**
+- Total de conversões **com falha** / **ignoradas**
+- Ações: **Copy All** (todos os resultados combinados) ou **Download All** (arquivos `.md` individuais)
+
+Clique em **New Batch** para iniciar uma nova conversão em lote.
+
+<Tip>
+A conversão em lote funciona melhor com páginas de artigos e posts de blog. Aplicações de página única (SPAs) dinâmicas podem produzir resultados menos consistentes.
+</Tip>

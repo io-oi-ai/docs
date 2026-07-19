@@ -1,0 +1,121 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "تلقَّ إشعارًا عند اكتمال التحويلات"
+icon: "webhook"
+---
+
+## نظرة عامة
+
+تتيح لك Webhooks استقبال إشعار HTTP POST على نقطة النهاية (endpoint) الخاصة بك في كل مرة يكتمل فيها تحويل. استخدمها لتشغيل سير عمل في Zapier أو Make أو n8n أو أي خادم خلفي مخصص.
+
+<Note>
+  Webhooks ميزة متاحة في خطة **PRO**. يمكن لكل مستخدم تسجيل ما يصل إلى **3 نقاط نهاية Webhook**.
+</Note>
+
+## الإعداد
+
+1. افتح إضافة Web2MD وانتقل إلى **الإعدادات (Settings)**.
+2. مرّر إلى قسم **Webhooks**.
+3. أدخل رابط نقطة النهاية الخاصة بك وانقر على **إضافة Webhook**.
+4. انسخ **مفتاح التوقيع السري (signing secret)** — ستحتاجه للتحقق من الطلبات الواردة.
+
+## الحمولة (Payload)
+
+عند اكتمال تحويل، يرسل Web2MD طلب `POST` إلى نقطة النهاية الخاصة بك مع محتوى JSON التالي:
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| الحقل | النوع | الوصف |
+|-------|------|-------------|
+| `event` | `string` | دائمًا `"conversion.completed"` |
+| `data.conversionId` | `string` | معرّف فريد لهذا التحويل |
+| `data.url` | `string` | الرابط المصدر الذي تم تحويله |
+| `data.title` | `string` | عنوان الصفحة |
+| `data.markdownLength` | `number` | طول Markdown المُولَّد بالأحرف |
+| `data.timestamp` | `string` | طابع زمني بصيغة ISO 8601 لوقت التحويل |
+
+## الأمان
+
+يتضمن كل طلب webhook ترويسة `X-Web2MD-Signature` تحتوي على توقيع HMAC-SHA256 لجسم الطلب الخام، موقَّع بمفتاح التوقيع السري الخاص بـ webhook الخاص بك.
+
+<Warning>
+  تحقّق دائمًا من التوقيع قبل معالجة أي webhook. هذا يمنع المهاجمين من إرسال طلبات مزوَّرة إلى نقطة النهاية الخاصة بك.
+</Warning>
+
+### مثال على التحقق (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// في معالج الطلب الخاص بك:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  استخدم `crypto.timingSafeEqual` بدلًا من `===` لمنع هجمات التوقيت (timing attacks) عند مقارنة التوقيعات.
+</Tip>
+
+## سلوك إعادة المحاولة
+
+| المحاولة | التوقيت | المهلة (Timeout) |
+|---------|--------|---------|
+| الأولى | فورية | 5 ثوانٍ |
+| إعادة المحاولة | بعد ثانية واحدة من الفشل الأول | 5 ثوانٍ |
+
+إذا فشلت كلتا المحاولتين (استجابة غير 2xx أو انتهاء مهلة)، يُسقط التسليم. لا يعيد Web2MD المحاولة بعد محاولة إعادة المحاولة الواحدة.
+
+## حالات الاستخدام
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    استخدم مشغّل Webhook في منصة الأتمتة الخاصة بك لبدء سير عمل كلما تم تحويل صفحة — أرسل إلى Slack، أضف صفًا إلى جدول بيانات، أو احفظ إلى Notion.
+  </Card>
+  <Card title="إشعارات Slack" icon="bell">
+    أرسل رسالة إلى قناة Slack في كل مرة يحوّل فيها أحد أعضاء الفريق صفحة، مما يبقي الجميع على اطّلاع.
+  </Card>
+  <Card title="حفظ تلقائي في تخزين خارجي" icon="hard-drive">
+    اجلب Markdown الكامل عبر REST API (باستخدام `conversionId`) واحفظه في S3 أو Google Drive أو قاعدة بياناتك الخاصة.
+  </Card>
+  <Card title="خط معالجة التحليلات" icon="chart-line">
+    تتبّع حجم التحويلات وأنواع المحتوى عن طريق إعادة توجيه أحداث webhook إلى الخادم الخلفي للتحليلات الخاص بك.
+  </Card>
+</CardGroup>
+
+## اختبار Webhooks
+
+أثناء التطوير، استخدم أداة مثل [webhook.site](https://webhook.site) أو [ngrok](https://ngrok.com) لكشف نقطة نهاية محلية ومعاينة الحمولات الواردة قبل نشر معالجك في بيئة الإنتاج.

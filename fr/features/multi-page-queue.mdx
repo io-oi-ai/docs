@@ -1,0 +1,52 @@
+---
+title: "File d'attente multi-pages"
+description: "Convertissez plusieurs pages et envoyez-les toutes à l'IA en une seule requête fusionnée."
+---
+
+## Vue d'ensemble
+
+La file d'attente multi-pages vous permet de rassembler le Markdown de plusieurs pages avant de tout envoyer d'un coup à votre assistant IA. Idéal pour la recherche, l'analyse concurrentielle, ou la compilation d'informations issues de plusieurs sources.
+
+## Comment ça marche
+
+<Steps>
+  <Step title="Convertir une page">
+    Convertissez n'importe quelle page web comme d'habitude.
+  </Step>
+  <Step title="Ajouter à la file d'attente">
+    Cliquez sur **"Add to queue & convert next page"** sous le résultat.
+  </Step>
+  <Step title="Naviguer et répéter">
+    Allez sur la page suivante, convertissez-la, et ajoutez-la à la file d'attente.
+  </Step>
+  <Step title="Tout envoyer à l'IA">
+    Une fois prêt, cliquez sur **"Send all → Claude"** (ou votre plateforme préférée) dans le panneau de file d'attente.
+  </Step>
+</Steps>
+
+## Panneau de file d'attente
+
+Le panneau de file d'attente affiche :
+- Les titres des pages et le nombre de mots
+- La suppression d'éléments individuels avec ×
+- **Send all** vers votre plateforme d'IA sélectionnée
+- **Clear** pour vider la file d'attente
+
+## Format fusionné
+
+Lors de l'envoi de la file d'attente à l'IA, toutes les pages sont fusionnées en un seul document :
+
+```markdown
+# Page 1 Title
+
+[Page 1 Markdown content]
+
+---
+
+# Page 2 Title
+
+[Page 2 Markdown content]
+```
+
+Les modèles de prompt sont appliqués au contenu fusionné avant l'envoi.
+</content>

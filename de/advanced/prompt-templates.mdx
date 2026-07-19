@@ -1,0 +1,85 @@
+---
+title: "Prompt-Vorlagen"
+description: "Passen Sie an, wie Inhalte mit wiederverwendbaren Prompt-Vorlagen an KI gesendet werden."
+---
+
+## Überblick
+
+Mit Prompt-Vorlagen können Sie Ihr konvertiertes Markdown mit Anweisungen umhüllen, bevor Sie es an eine KI-Plattform senden. Anstatt jedes Mal manuell „Fasse diesen Artikel zusammen ..." einzutippen, erstellen Sie einmal eine Vorlage und nutzen sie immer wieder.
+
+## Integrierte Vorlagen
+
+Web2MD wird mit 4 fertigen Vorlagen geliefert:
+
+| Vorlage | Prompt |
+|----------|--------|
+| **Zusammenfassen** | „Please summarize the following article concisely:" |
+| **Kernpunkte extrahieren** | „Please extract the key points and main takeaways from this article as a bullet list:" |
+| **Tweet** | „Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | „Please generate a list of questions and answers based on the following content:" |
+
+## Wie Vorlagen funktionieren
+
+Wenn Sie eine Vorlage auswählen und Inhalte an die KI senden, umhüllt die Vorlage Ihren Inhalt:
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+Der Platzhalter `{content}` in Ihrer Vorlage wird durch das konvertierte Markdown ersetzt.
+
+## Eine eigene Vorlage erstellen
+
+<Steps>
+  <Step title="Öffnen Sie den Convert-Tab">
+    Öffnen Sie das Web2MD-Popup und wechseln Sie zum Tab **Convert**.
+  </Step>
+  <Step title="Klicken Sie auf + Custom">
+    Klicken Sie auf die Schaltfläche **„+ Custom"** neben der Vorlagenauswahl.
+  </Step>
+  <Step title="Details eingeben">
+    Geben Sie Folgendes ein:
+    - **Name** — Ein kurzer Name für die Vorlage (z. B. „Code Review")
+    - **Prompt** — Der Anweisungstext, wobei `{content}` als Platzhalter dient
+  </Step>
+  <Step title="Speichern und auswählen">
+    Speichern Sie die Vorlage. Sie wird automatisch als aktive Vorlage ausgewählt.
+  </Step>
+</Steps>
+
+### Beispiel für eine eigene Vorlage
+
+**Name:** Code Review
+
+**Prompt:**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## Prompt-Vorschau
+
+Bewegen Sie den Mauszeiger über eine Vorlage in der Vorlagenauswahl, um eine Vorschau des vollständigen Prompts zu sehen, der an die KI gesendet wird. So können Sie vor der Konvertierung prüfen, ob die richtige Vorlage ausgewählt ist.
+
+## Eine Vorlage auswählen
+
+Wählen Sie Ihre aktive Vorlage über die **Vorlagenauswahl** im Convert-Tab. Die ausgewählte Vorlage wird automatisch angewendet, sobald Sie **Send to AI** verwenden.
+
+## Vorlagen bearbeiten oder löschen
+
+In der Vorlagenauswahl des Convert-Tabs können Sie:
+
+- Name oder Prompt jeder eigenen Vorlage **bearbeiten**
+- Eigene Vorlagen, die Sie nicht mehr benötigen, **löschen**
+
+<Info>
+Integrierte Vorlagen können nicht bearbeitet oder gelöscht werden, aber Sie können eigene Vorlagen erstellen, um sie zu überschreiben.
+</Info>

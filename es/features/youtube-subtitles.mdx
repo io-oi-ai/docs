@@ -1,0 +1,51 @@
+---
+title: "Subtítulos de YouTube"
+description: "Extrae los subtítulos de videos de YouTube como Markdown con marcas de tiempo."
+---
+
+## Descripción general
+
+Web2MD puede extraer subtítulos de videos de YouTube y convertirlos en Markdown limpio y con marcas de tiempo. Esto funciona tanto con subtítulos subidos manualmente como con subtítulos generados automáticamente (ASR).
+
+## Qué obtienes
+
+Convertir un video de YouTube produce:
+
+- **Metadatos del video** — título, canal, duración, número de visualizaciones
+- **Descripción** — el texto de la descripción del video
+- **Transcripción completa** — subtítulos agrupados en párrafos de ~30 segundos con marcas de tiempo
+
+## Ejemplo de resultado
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## URLs compatibles
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## Prioridad de idioma
+
+Web2MD elige la mejor pista de subtítulos disponible:
+1. Subtítulos manuales en inglés (la mayor calidad)
+2. Cualquier subtítulo manual
+3. Subtítulos automáticos en inglés (ASR)
+4. Cualquier subtítulo automático
+</content>

@@ -1,0 +1,50 @@
+---
+title: "Tarjeta de vista previa"
+description: "Tarjeta flotante en la página para copiar y enviar rápidamente después de la conversión."
+---
+
+## Descripción general
+
+Cuando conviertes una página con el atajo de teclado (`Alt+M`) o el menú contextual, aparece una tarjeta de vista previa flotante en la esquina superior derecha de la página. Esto te permite actuar sin abrir el popup.
+
+## Funciones de la tarjeta
+
+Cada tarjeta de vista previa muestra:
+
+- **Título de la página** del contenido convertido
+- Resumen del **conteo de palabras**
+- **Casilla de verificación** para seleccionar/deseleccionar la tarjeta
+- **Botón de cierre** para descartarla
+
+### Barra de acciones inferior
+
+Cuando hay una o más tarjetas seleccionadas:
+
+| Acción | Descripción |
+|--------|-------------|
+| **Copy All** | Copia el Markdown de todas las tarjetas seleccionadas al portapapeles |
+| **Send All** | Envía todo el contenido seleccionado a tu plataforma de IA preferida |
+
+## Múltiples tarjetas
+
+Puedes apilar hasta **5 tarjetas de vista previa** a la vez. Esto es útil al convertir varias páginas en secuencia — cada conversión añade una nueva tarjeta.
+
+## Duración en pantalla
+
+Controla cuánto tiempo permanecen visibles las tarjetas en **Settings → Show preview card**:
+
+| Duración | Comportamiento |
+|----------|-----------------|
+| **5 seconds** | La tarjeta se cierra automáticamente tras 5s |
+| **15 seconds** | La tarjeta se cierra automáticamente tras 15s |
+| **30 seconds** | La tarjeta se cierra automáticamente tras 30s |
+| **Always** | La tarjeta permanece hasta que se cierre manualmente. Sobrevive a la actualización de la página. |
+
+<Info>
+En el modo **Always**, las tarjetas se guardan en `chrome.storage.local` y reaparecerán tras actualizar la página. Usa **Clear all cards** en Settings para eliminarlas.
+</Info>
+
+## Activar o desactivar la tarjeta de vista previa
+
+Puedes desactivar la tarjeta de vista previa por completo en **Settings → Show preview card**. Cuando está desactivada, las conversiones mediante atajo/menú contextual seguirán funcionando, pero no se mostrará ningún indicador visual.
+</content>

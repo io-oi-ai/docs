@@ -1,0 +1,50 @@
+---
+title: "Legendas do YouTube"
+description: "Extraia legendas de vídeos do YouTube como Markdown com marcação de tempo."
+---
+
+## Visão geral
+
+O Web2MD pode extrair legendas de vídeos do YouTube e convertê-las em Markdown limpo e com marcação de tempo. Isso funciona tanto com legendas enviadas manualmente quanto com legendas geradas automaticamente (ASR).
+
+## O que você recebe
+
+Converter um vídeo do YouTube produz:
+
+- **Metadados do vídeo** — título, canal, duração, número de visualizações
+- **Descrição** — o texto de descrição do vídeo
+- **Transcrição completa** — legendas agrupadas em parágrafos de ~30 segundos com marcação de tempo
+
+## Exemplo de saída
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## URLs compatíveis
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## Prioridade de idioma
+
+O Web2MD escolhe a melhor faixa de legendas disponível:
+1. Legendas manuais em inglês (maior qualidade)
+2. Quaisquer legendas manuais
+3. Legendas em inglês geradas automaticamente (ASR)
+4. Quaisquer legendas geradas automaticamente

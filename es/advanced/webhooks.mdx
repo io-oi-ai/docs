@@ -1,0 +1,122 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Recibe notificaciones cuando se completen las conversiones"
+icon: "webhook"
+---
+
+## Descripción general
+
+Los webhooks te permiten recibir una notificación HTTP POST en tu propio endpoint cada vez que se completa una conversión. Úsalos para activar flujos de trabajo en Zapier, Make, n8n o cualquier backend personalizado.
+
+<Note>
+  Los webhooks son una función del **plan PRO**. Cada usuario puede registrar hasta **3 endpoints de webhook**.
+</Note>
+
+## Configuración
+
+1. Abre la extensión de Web2MD y ve a **Settings**.
+2. Desplázate hasta la sección **Webhooks**.
+3. Ingresa la URL de tu endpoint y haz clic en **Add Webhook**.
+4. Copia el **signing secret** (secreto de firma) — lo necesitarás para verificar las solicitudes entrantes.
+
+## Payload
+
+Cuando una conversión se completa, Web2MD envía una solicitud `POST` a tu endpoint con el siguiente cuerpo JSON:
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `event` | `string` | Siempre `"conversion.completed"` |
+| `data.conversionId` | `string` | ID único de esta conversión |
+| `data.url` | `string` | La URL de origen que fue convertida |
+| `data.title` | `string` | El título de la página |
+| `data.markdownLength` | `number` | Longitud en caracteres del Markdown generado |
+| `data.timestamp` | `string` | Marca de tiempo ISO 8601 de la conversión |
+
+## Seguridad
+
+Cada solicitud de webhook incluye un encabezado `X-Web2MD-Signature` que contiene una firma HMAC-SHA256 del cuerpo bruto de la solicitud, firmada con el signing secret de tu webhook.
+
+<Warning>
+  Verifica siempre la firma antes de procesar un webhook. Esto evita que atacantes envíen solicitudes falsificadas a tu endpoint.
+</Warning>
+
+### Ejemplo de verificación (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// En tu manejador de solicitudes:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  Usa `crypto.timingSafeEqual` en lugar de `===` para prevenir ataques de temporización al comparar firmas.
+</Tip>
+
+## Comportamiento de reintentos
+
+| Intento | Tiempo | Timeout |
+|---------|--------|---------|
+| Primero | Inmediato | 5 segundos |
+| Reintento | 1 segundo después del primer fallo | 5 segundos |
+
+Si ambos intentos fallan (respuesta no-2xx o timeout), la entrega se descarta. Web2MD no reintenta más allá de ese único reintento.
+
+## Casos de uso
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    Usa un disparador de Webhook en tu plataforma de automatización para iniciar un flujo de trabajo cada vez que se convierte una página — publica en Slack, agrega una fila a una hoja de cálculo o guarda en Notion.
+  </Card>
+  <Card title="Notificaciones de Slack" icon="bell">
+    Envía un mensaje a un canal de Slack cada vez que un miembro del equipo convierte una página, manteniendo a todos informados.
+  </Card>
+  <Card title="Guardado automático en almacenamiento externo" icon="hard-drive">
+    Obtén el Markdown completo mediante la REST API (usando `conversionId`) y guárdalo en S3, Google Drive o tu propia base de datos.
+  </Card>
+  <Card title="Pipeline de analítica" icon="chart-line">
+    Rastrea el volumen de conversiones y los tipos de contenido reenviando los eventos de webhook a tu backend de analítica.
+  </Card>
+</CardGroup>
+
+## Probar webhooks
+
+Durante el desarrollo, usa una herramienta como [webhook.site](https://webhook.site) o [ngrok](https://ngrok.com) para exponer un endpoint local e inspeccionar los payloads entrantes antes de desplegar tu manejador en producción.
+</content>

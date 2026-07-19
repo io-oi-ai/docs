@@ -1,0 +1,85 @@
+---
+title: "Plantillas de prompt"
+description: "Personaliza cómo se envía el contenido a la IA con plantillas de prompt reutilizables."
+---
+
+## Descripción general
+
+Las plantillas de prompt te permiten envolver tu Markdown convertido con instrucciones antes de enviarlo a una plataforma de IA. En lugar de escribir manualmente "Resume este artículo..." cada vez, crea una plantilla una sola vez y reutilízala.
+
+## Plantillas integradas
+
+Web2MD incluye 4 plantillas listas para usar:
+
+| Plantilla | Prompt |
+|----------|--------|
+| **Summarize** | "Please summarize the following article concisely:" |
+| **Extract Key Points** | "Please extract the key points and main takeaways from this article as a bullet list:" |
+| **Tweet** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | "Please generate a list of questions and answers based on the following content:" |
+
+## Cómo funcionan las plantillas
+
+Cuando seleccionas una plantilla y envías contenido a la IA, la plantilla envuelve tu contenido:
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+El marcador `{content}` en tu plantilla se reemplaza con el Markdown convertido.
+
+## Crear una plantilla personalizada
+
+<Steps>
+  <Step title="Abre la pestaña Convert">
+    Abre el popup de Web2MD y ve a la pestaña **Convert**.
+  </Step>
+  <Step title="Haz clic en + Custom">
+    Haz clic en el botón **"+ Custom"** junto al selector de plantillas.
+  </Step>
+  <Step title="Completa los detalles">
+    Introduce:
+    - **Name** — Un nombre breve para la plantilla (p. ej. "Code Review")
+    - **Prompt** — El texto de instrucción, usando `{content}` como marcador
+  </Step>
+  <Step title="Guarda y selecciona">
+    Guarda la plantilla. Se seleccionará automáticamente como la plantilla activa.
+  </Step>
+</Steps>
+
+### Ejemplo de plantilla personalizada
+
+**Nombre:** Code Review
+
+**Prompt:**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## Vista previa del prompt
+
+Pasa el cursor sobre cualquier plantilla en el selector de plantillas para ver una vista previa del prompt completo que se enviará a la IA. Esto te ayuda a verificar que la plantilla correcta esté seleccionada antes de convertir.
+
+## Seleccionar una plantilla
+
+Elige tu plantilla activa desde el **selector de plantillas** en la pestaña Convert. La plantilla seleccionada se aplica automáticamente cada vez que usas **Send to AI**.
+
+## Editar o eliminar plantillas
+
+En el selector de plantillas de la pestaña Convert, puedes:
+
+- **Editar** el nombre o el prompt de cualquier plantilla personalizada
+- **Eliminar** las plantillas personalizadas que ya no necesites
+
+<Info>
+Las plantillas integradas no se pueden editar ni eliminar, pero puedes crear plantillas personalizadas para reemplazarlas.
+</Info>

@@ -1,0 +1,150 @@
+---
+title: "Site-Adapter"
+description: "Optimierte Inhaltsextraktion für 16 beliebte Plattformen, darunter Reddit, GitHub, YouTube, Hacker News, arXiv, Medium und mehr."
+---
+
+## Überblick
+
+Web2MD funktioniert zwar auf jeder Webseite, doch bei bestimmten Websites profitiert die Extraktion von spezialisierter Logik. Web2MD enthält **16 plattformspezifische Extraktoren**, die die API oder DOM-Struktur der jeweiligen Plattform nutzen, um ein besseres Markdown-Ergebnis zu liefern als die generische Extraktion.
+
+<Frame>
+  <img src="/images/site-adapters.png" alt="Site-specific adapters" />
+</Frame>
+
+## Unterstützte Websites
+
+### API-basiert (kein Tab nötig)
+
+Diese Extraktoren rufen Daten direkt über die API der Plattform ab und funktionieren daher auch ohne aktiven Browser-Tab.
+
+#### Reddit
+
+Extrahiert den vollständigen Beitragsinhalt, einschließlich:
+- Titel, Autor, Subreddit und Score des Beitrags
+- Selbsttext- oder Link-Inhalt
+- Bis zu **200 Kommentare** mit 4 Verschachtelungsebenen, inklusive Autor und Score
+- Bild- und Medienlinks
+
+Nutzt die JSON-API von Reddit (`/.json`) für zuverlässige Extraktion.
+
+#### Hacker News
+
+Extrahiert vollständige Diskussions-Threads über die Algolia-API:
+- Titel, URL, Punkte und Kommentaranzahl des Beitrags
+- Alle Kommentare mit Autor und Verschachtelung
+
+#### arXiv
+
+Extrahiert wissenschaftliche Paper:
+- Titel, Autoren und Abstract des Papers
+- Vollständiger HTML-Inhalt wissenschaftlicher Paper
+
+#### YouTube
+
+Extrahiert Video-Metadaten:
+- Videotitel und Kanalname
+- Dauer und Aufrufzahl
+- Englische Untertitel/Captions (sofern verfügbar)
+
+#### Twitter / X
+
+Extrahiert Tweet-Inhalte:
+- Tweet-Text und Medien
+- Autoreninformationen und Engagement-Kennzahlen
+
+### DOM-basiert (erfordert Browser-Tab)
+
+Diese Extraktoren analysieren das DOM der Seite im aktiven Tab, um strukturierte Inhalte zu erhalten.
+
+#### OpenAI Docs
+
+Extrahiert Dokumentationsseiten von der Dokumentations-Website von OpenAI:
+- Code-Blöcke und API-Referenzen
+- Strukturierte Navigation und Inhaltshierarchie
+
+#### Claude Chat
+
+Extrahiert Gesprächsinhalte aus der Chat-Oberfläche von Claude.ai.
+
+#### Notion
+
+Extrahiert Inhalte von öffentlichen und angemeldeten Notion-Seiten (notion.so, notion.site):
+- Duale Extraktion: block-basiertes DOM-Parsing (`data-block-id`) mit Container-Fallback
+- Überschriften, Text, Code-Blöcke, Listen, Toggles, Callouts, Zitate
+- Bilder, Tabellen, Lesezeichen und Einbettungen
+
+#### Feishu / Lark
+
+Extrahiert Inhalte von Feishu-Docx- und Wiki-Seiten (feishu.cn, larksuite.com):
+- Duale Extraktion: PageMain-Blockmodell mit DOM-Fallback
+- Überschriften, Text, Code-Blöcke, Listen, Tabellen, Bilder
+- Callouts und Checkboxen
+
+#### Medium
+
+Extrahiert Artikelinhalte aus dem DOM von Medium:
+- Autor, Veröffentlichungsdatum und Lesezeit
+- Vollständiger Artikelinhalt
+
+#### Substack
+
+Extrahiert Newsletter-Beiträge:
+- Autor, Datum und vollständiger Artikelinhalt
+
+#### Wikipedia
+
+Extrahiert Artikelinhalte:
+- Abschnitte, Tabellen und Quellenangaben
+- Entfernt Navigation und Sidebar-Ballast
+
+#### DEV.to
+
+Extrahiert Entwickler-Blogbeiträge:
+- Tags, Reaktionen und Kommentare
+
+#### Product Hunt
+
+Extrahiert Produktseiten:
+- Produktbeschreibungen und Informationen zum Ersteller
+- Diskussions-Threads
+
+#### Stack Overflow
+
+Extrahiert Q&A-Inhalte:
+- Titel, Text, Tags und Stimmenanzahl der Frage
+- Akzeptierte Antwort (hervorgehoben)
+- Top-Antworten mit Stimmenanzahl
+
+#### GitHub
+
+Extrahiert Issues und Pull Requests, einschließlich:
+- Titel, Status (offen/geschlossen/gemerged) und Labels
+- Ursprüngliche Beschreibung/Text
+- Bis zu **30 Kommentare** mit Autoreninformationen
+
+Nutzt die REST-API von GitHub für strukturierte Daten.
+
+## Wie Adapter funktionieren
+
+Beim Konvertieren einer Seite geht Web2MD automatisch wie folgt vor:
+
+1. **Erkennt die Website** anhand der URL
+2. **Wählt den passenden Adapter** aus, sofern vorhanden
+3. **Extrahiert den Inhalt** mit der site-spezifischen Methode
+4. **Greift auf die generische Extraktion zurück**, falls der Adapter fehlschlägt
+
+Sie müssen nichts konfigurieren — Adapter werden automatisch angewendet.
+
+<Info>
+Site-Adapter stehen allen Nutzern zur Verfügung (Free und Pro). Sie laufen vor der eigentlichen Konvertierungs-Pipeline und funktionieren daher unabhängig von Ihrem Plan.
+</Info>
+
+## Vergleich
+
+| Merkmal | Generische Extraktion | Site-Adapter |
+|---------|-------------------|--------------|
+| Genauigkeit des Inhalts | Gut für Artikel | Optimiert für die Struktur der Website |
+| Kommentare/Antworten | Nicht extrahiert | Enthalten (Reddit, GitHub, SO) |
+| Metadaten | Grundlegend (Titel, URL) | Umfangreich (Autor, Score, Status) |
+| Medien | Nur Bilder | Videos, Untertitel, Einbettungen |
+| Zuverlässigkeit | Abhängig von der Seitenstruktur | Nutzt stabile APIs |

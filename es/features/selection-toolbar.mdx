@@ -1,0 +1,74 @@
+---
+title: "Barra de herramientas de selección"
+sidebarTitle: "Selection Toolbar"
+description: "Selecciona texto en cualquier página y obtén una barra de herramientas Markdown flotante."
+icon: "text-slash"
+---
+
+## Descripción general
+
+La Barra de herramientas de selección (v0.6) te ofrece una barra de acciones flotante cada vez que resaltas texto en cualquier página web. Selecciona un párrafo, un fragmento de código o una sección completa, y luego cópialo como Markdown, añádelo a un buffer o envíalo directamente a la IA.
+
+## Cómo funciona
+
+<Steps>
+  <Step title="Selecciona texto en cualquier página">
+    Resalta cualquier texto de una página web con el ratón o el teclado. La barra flotante aparece cerca de tu selección.
+  </Step>
+  <Step title="Elige una acción">
+    Elige una de las tres acciones de la barra: **Copy as Markdown**, **Append to buffer** o **Send to AI**.
+  </Step>
+  <Step title="Obtén un resultado limpio">
+    Web2MD convierte tu selección en Markdown bien estructurado, conservando el formato, los enlaces y los bloques de código.
+  </Step>
+</Steps>
+
+## Acciones de la barra
+
+<CardGroup cols={3}>
+  <Card title="Copy as Markdown" icon="copy">
+    Convierte al instante el texto seleccionado a Markdown y lo copia a tu portapapeles.
+  </Card>
+  <Card title="Append to Buffer" icon="layer-plus">
+    Añade la selección a un buffer acumulativo. Selecciona varios fragmentos de distintas partes de la página y combínalos en un solo documento Markdown.
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    Envía el contenido seleccionado directamente a tu plataforma de IA preferida (Claude, ChatGPT o Gemini).
+  </Card>
+</CardGroup>
+
+## Modo de acumulación (Append Mode)
+
+El modo de acumulación es útil cuando necesitas fragmentos de distintas partes de una página, o incluso de varias páginas.
+
+1. Selecciona una sección y haz clic en **Append to buffer**
+2. Desplázate a otra sección y acumula de nuevo
+3. Repite las veces que necesites
+4. Abre el popup de Web2MD para ver el documento Markdown combinado
+
+Cada fragmento acumulado se separa mediante una línea horizontal (`---`) en el resultado final.
+
+<Tip>
+El modo de acumulación es ideal para seleccionar secciones relevantes de páginas de documentación largas o artículos de investigación.
+</Tip>
+
+## Expansión inteligente de la selección
+
+Web2MD expande automáticamente tu selección para incluir elementos estructurales completos:
+
+| Si seleccionas... | Web2MD expande a... |
+|---------------|---------------------|
+| Parte de un párrafo | El párrafo completo |
+| Parte de un bloque de código | El bloque de código completo con su etiqueta de lenguaje |
+| Un elemento de lista parcial | El elemento de lista completo |
+| Texto que abarca varios elementos | Todos los bloques total o parcialmente seleccionados |
+
+Esto garantiza que tu resultado en Markdown esté siempre bien formado, sin párrafos rotos ni bloques de código a medio renderizar.
+
+## Compatibilidad
+
+La Barra de herramientas de selección funciona en todos los sitios web. Se inyecta como un elemento flotante ligero que no interfiere con la interfaz propia de la página.
+
+<Info>
+La barra solo aparece cuando seleccionas texto. Desaparece automáticamente al hacer clic en otro lugar o al eliminar la selección.
+</Info>
