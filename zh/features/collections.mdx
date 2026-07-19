@@ -1,0 +1,121 @@
+---
+title: "收藏夹"
+sidebarTitle: "收藏夹"
+description: "把转换结果整理成可检索的知识文件夹。"
+icon: "folder-open"
+---
+
+## 概述
+
+收藏夹（Collections）让你把转换结果整理成一个个文件夹——比如"React 调研"、"竞品分析"或"每周阅读"。把相关内容归到一起，随时回来翻阅，还能把整个收藏夹导出为一份合并的 Markdown 文件。
+
+<Note>
+收藏夹是 **Pro 专属**功能。
+</Note>
+
+## 创建收藏夹
+
+<Steps>
+  <Step title="打开 Collections 标签页">
+    在 Web2MD 弹窗中，进入 **Collections** 标签页。
+  </Step>
+  <Step title="新建收藏夹">
+    点击 **New Collection**，输入名称，也可以选择一个父级收藏夹来实现嵌套。
+  </Step>
+  <Step title="开始添加转换记录">
+    从 History 标签页添加转换记录，或在转换时直接归入收藏夹。
+  </Step>
+</Steps>
+
+## 向收藏夹添加内容
+
+有两种添加方式：
+
+<CardGroup cols={2}>
+  <Card title="从历史记录添加" icon="clock-rotate-left">
+    打开 History 标签页，找到一条转换记录，用**文件夹下拉菜单**把它归入某个收藏夹。
+  </Card>
+  <Card title="嵌套收藏夹" icon="folder-tree">
+    在任意收藏夹内创建子收藏夹，实现更细的组织层级。例如：**调研 → 前端 → React**。
+  </Card>
+</CardGroup>
+
+## 浏览收藏夹
+
+Collections 标签页以树状视图展示你的所有文件夹。点进任意收藏夹即可查看其中内容：
+
+- 转换记录的标题、URL 和日期
+- AI 摘要和标签（如有）
+- 快捷操作：打开原始页面、重新转换、从收藏夹移除
+
+## 导出收藏夹
+
+在任意收藏夹上点击 **Export**，即可生成一份包含该收藏夹全部内容的合并 Markdown 文件。
+
+导出内容包括：
+
+- 带各节链接的目录
+- 每条转换记录之间以标题和分隔线区分
+- 保留来源 URL 和元数据
+
+<Tip>
+导出收藏夹是从多个来源快速整理出调研文档或学习资料的好办法。
+</Tip>
+
+## 编译 Wiki
+
+把任意收藏夹变成一座 AI 生成的知识库——可下载为 Obsidian 可直接使用的 ZIP 文件。
+
+<Note>
+  编译 Wiki 需要 **Pro 套餐**。
+</Note>
+
+### 工作方式
+
+<Steps>
+  <Step title="打开收藏夹">
+    进入 Collections 标签页，打开想要编译的收藏夹。
+  </Step>
+  <Step title="点击大脑图标">
+    将鼠标悬停在收藏夹标题上，会出现 **Compile Wiki** 按钮（大脑图标）。
+  </Step>
+  <Step title="AI 生成概念文章">
+    Web2MD 会分析收藏夹中的所有转换记录，生成带 wikilink、彼此关联的概念文章。
+  </Step>
+  <Step title="下载 ZIP">
+    结果是一个 Obsidian 可直接使用的 ZIP，包含：
+    - 带 wikilink（`[[Related Concept]]`）的各个概念 `.md` 文件
+    - 一份链接到所有文章的 `INDEX.md`
+    - 每个文件都带 YAML frontmatter
+  </Step>
+</Steps>
+
+### 示例
+
+如果你的收藏夹里有 10 篇关于"React Server Components"的文章，编译 Wiki 可能会生成：
+
+- `Server Components.md` —— 总览，链接到 [[Streaming]]、[[Suspense]]、[[Data Fetching]]
+- `Streaming.md` —— 流式渲染原理，回链到 [[Server Components]]
+- `Data Fetching.md` —— RSC 中的数据加载模式
+- `INDEX.md` —— 所有生成文章的总目录
+
+<Tip>
+  编译 Wiki 最适合围绕某个具体主题、包含 5-20 篇相关文章的收藏夹。AI 会从内容中识别关键概念，生成相互交叉链接的文章。
+</Tip>
+
+## 管理收藏夹
+
+| 操作 | 方法 |
+|--------|-----|
+| **创建** | Collections 标签页 → New Collection |
+| **重命名** | 点击收藏夹名称 → Edit |
+| **嵌套** | 将一个收藏夹拖入另一个，或在创建时设置父级 |
+| **删除** | 点击收藏夹上的垃圾桶图标（转换记录不会被删除，只是解除归属） |
+
+<Warning>
+删除收藏夹只会移除文件夹本身。你的转换记录仍保留在历史记录中，可以重新归入其他收藏夹。
+</Warning>
+
+## 数据存储
+
+所有收藏夹数据都存储在你的 Web2MD 账户中，并在多设备间同步。只要你的 Pro 订阅有效，你整理好的知识就始终跟随你。

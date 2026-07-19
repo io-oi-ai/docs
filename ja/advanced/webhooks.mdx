@@ -1,0 +1,121 @@
+---
+title: "Webhook"
+sidebarTitle: "Webhook"
+description: "変換の完了を通知で受け取る"
+icon: "webhook"
+---
+
+## 概要
+
+Webhook を使うと、変換が完了するたびに、指定したエンドポイントへ HTTP POST の通知を受け取れます。Zapier、Make、n8n、または独自のバックエンドでワークフローをトリガーするのに活用できます。
+
+<Note>
+  Webhook は **PRO プラン**の機能です。ユーザーごとに最大 **3 つの Webhook エンドポイント**を登録できます。
+</Note>
+
+## セットアップ
+
+1. Web2MD 拡張機能を開き、**Settings** に移動します。
+2. **Webhooks** セクションまでスクロールします。
+3. エンドポイント URL を入力し、**Add Webhook** をクリックします。
+4. **署名シークレット**をコピーします — 受信リクエストの検証に必要です。
+
+## ペイロード
+
+変換が完了すると、Web2MD は次の JSON ボディを含む `POST` リクエストをエンドポイントに送信します。
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| フィールド | 型 | 説明 |
+|-------|------|-------------|
+| `event` | `string` | 常に `"conversion.completed"` |
+| `data.conversionId` | `string` | この変換の一意な ID |
+| `data.url` | `string` | 変換されたソース URL |
+| `data.title` | `string` | ページタイトル |
+| `data.markdownLength` | `number` | 生成された Markdown の文字数 |
+| `data.timestamp` | `string` | 変換時刻の ISO 8601 タイムスタンプ |
+
+## セキュリティ
+
+すべての Webhook リクエストには `X-Web2MD-Signature` ヘッダーが含まれ、Webhook の署名シークレットでリクエストボディ(生データ)に署名した HMAC-SHA256 署名が入っています。
+
+<Warning>
+  Webhook を処理する前に、必ず署名を検証してください。これにより、攻撃者が偽造リクエストをエンドポイントに送るのを防げます。
+</Warning>
+
+### 検証例 (Node.js)
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// リクエストハンドラー内:
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  署名の比較には、タイミング攻撃を防ぐため `===` ではなく `crypto.timingSafeEqual` を使用してください。
+</Tip>
+
+## リトライの挙動
+
+| 試行 | タイミング | タイムアウト |
+|---------|--------|---------|
+| 初回 | 即時 | 5 秒 |
+| リトライ | 初回失敗の 1 秒後 | 5 秒 |
+
+両方の試行が失敗した場合(2xx 以外のレスポンスまたはタイムアウト)、その配信は破棄されます。Web2MD は 1 回のリトライ以上の再送は行いません。
+
+## ユースケース
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    自動化プラットフォームの Webhook トリガーを使い、ページが変換されるたびにワークフローを開始できます — Slack への投稿、スプレッドシートへの行追加、Notion への保存など。
+  </Card>
+  <Card title="Slack 通知" icon="bell">
+    チームメンバーがページを変換するたびに Slack チャンネルにメッセージを送り、全員が状況を把握できるようにします。
+  </Card>
+  <Card title="外部ストレージへの自動保存" icon="hard-drive">
+    REST API(`conversionId` を使用)で Markdown 全文を取得し、S3、Google Drive、または独自のデータベースに保存します。
+  </Card>
+  <Card title="分析パイプライン" icon="chart-line">
+    Webhook イベントを分析バックエンドに転送して、変換ボリュームやコンテンツの種類を追跡します。
+  </Card>
+</CardGroup>
+
+## Webhook のテスト
+
+開発中は、[webhook.site](https://webhook.site) や [ngrok](https://ngrok.com) などのツールでローカルエンドポイントを公開し、ハンドラーを本番にデプロイする前に受信ペイロードを確認してください。

@@ -1,0 +1,60 @@
+---
+title: "操作菜单"
+description: "分体按钮下拉菜单，一个按钮直达复制、以 Markdown 查看、在 AI 中打开等所有操作。"
+---
+
+## 概览
+
+操作菜单是扩展弹窗里的一个分体按钮（split-button）。主按钮一键把页面复制为 Markdown；点击 **↑ 箭头** 可展开下拉菜单，查看全部可用操作。
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## 可用操作
+
+<CardGroup cols={2}>
+  <Card title="复制页面" icon="copy">
+    把当前页面复制为适合 LLM 的 Markdown。这是默认主操作。
+  </Card>
+  <Card title="以 Markdown 查看" icon="arrow-up-right-from-square">
+    在新标签页中以干净的纯文本形式打开当前页面——适合直接阅读或分享，不经过 AI。
+  </Card>
+  <Card title="在 ChatGPT 中打开" icon="arrow-up-right-from-square">
+    转换页面并直接发送到 [chatgpt.com](https://chatgpt.com)，就页面内容提问。
+  </Card>
+  <Card title="在 Claude 中打开" icon="arrow-up-right-from-square">
+    转换页面并直接发送到 [claude.ai](https://claude.ai)，就页面内容提问。
+  </Card>
+  <Card title="在 Perplexity 中打开" icon="arrow-up-right-from-square">
+    转换页面并直接发送到 [perplexity.ai](https://perplexity.ai)，就页面内容提问。
+  </Card>
+</CardGroup>
+
+## 使用方式
+
+<Steps>
+  <Step title="点击主按钮">
+    点击 **Copy page** 即刻把当前页面复制为 Markdown。最常用的操作不需要打开下拉菜单。
+  </Step>
+  <Step title="展开下拉菜单">
+    点击按钮右侧的 **↑ 箭头**，查看全部可用操作。
+  </Step>
+  <Step title="选择操作">
+    从菜单中选择一个操作。"View as Markdown" 和各 AI 选项会自动在新标签页中打开。
+  </Step>
+</Steps>
+
+## 为什么用分体按钮？
+
+以前要在复制、发送到 AI、查看这几种模式之间切换，得进设置里改。操作菜单把所有操作一次性摆出来——不用再去翻设置。
+
+<Tip>
+需要快速走剪贴板流程时用 **Copy page**；想立刻就页面内容向 AI 提问时用 AI 快捷入口。
+</Tip>
+
+## 相关文档
+
+- [发送到 AI](/zh/features/send-to-ai) —— 配置你偏好的 AI 平台和提示词模板
+- [右键菜单](/zh/features/context-menu) —— 同样这些操作的右键快捷入口
+- [转换页面](/zh/features/convert) —— 转换输出的完整文档

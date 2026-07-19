@@ -1,0 +1,154 @@
+---
+title: "MCP サーバー"
+sidebarTitle: "MCP サーバー"
+description: "Claude Desktop、Cursor、Windsurf から Web2MD を利用"
+icon: "robot"
+---
+
+## 概要
+
+Web2MD MCP サーバーは、AI モデルを外部ツールやデータソースに接続するためのオープン標準である [Model Context Protocol (MCP)](https://modelcontextprotocol.io) を使って、AI アシスタントが直接呼び出せるツール群として Web2MD を公開します。
+
+設定が完了すると、Claude、Cursor、Windsurf との会話を離れることなく、ページの変換、変換履歴の検索、保存済み Markdown の取得を依頼できます。
+
+<Note>
+  MCP サーバーには **Web2MD API キー**(PRO プラン)が必要です。[ダッシュボード](https://web2md.org/dashboard/api-keys)から生成してください。
+</Note>
+
+## 利用可能なツール
+
+MCP サーバーは 3 つのツールを提供します。
+
+| ツール | 説明 |
+|------|-------------|
+| `convert_url` | 任意の URL をクリーンな Markdown に変換 |
+| `semantic_search` | 保存済みの変換を自然言語で検索 |
+| `get_conversion` | 保存済みの変換の Markdown 全文を ID で取得 |
+
+### convert_url
+
+URL を取得し、ページ内容を Markdown として返します。REST API と同じ変換オプションに対応しています。
+
+**プロンプト例:** _"Convert this URL to markdown: https://docs.example.com/getting-started"_
+
+### semantic_search
+
+自然言語クエリを使って、これまでに保存したすべての変換を横断検索します。タイトル、URL、関連度スコア付きのマッチした変換のリストを返します。
+
+**プロンプト例:** _"Search my saved pages for articles about database indexing"_
+
+### get_conversion
+
+指定した ID の保存済み変換の Markdown 全文を取得します。`semantic_search` で見つけた後、ドキュメント全体をコンテキストに取り込むのに便利です。
+
+**プロンプト例:** _"Get the full content of conversion abc123"_
+
+## セットアップ
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Claude Desktop の設定ファイルを開きます:
+
+    - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+    `mcpServers` の下に `web2md` エントリを追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Claude Desktop を再起動します。ツールピッカーに Web2MD のツールが表示されるはずです。
+  </Tab>
+  <Tab title="Cursor">
+    Cursor の MCP 設定ファイル `~/.cursor/mcp.json` を開き、次を追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Cursor を再起動して新しいサーバーを読み込みます。
+  </Tab>
+  <Tab title="Windsurf">
+    Windsurf の MCP 設定ファイル `~/.windsurf/mcp.json` を開き、次を追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    Windsurf を再起動して新しいサーバーを読み込みます。
+  </Tab>
+</Tabs>
+
+## 使用例
+
+MCP サーバーが起動したら、AI アシスタントに自然言語で依頼できます。
+
+<AccordionGroup>
+  <Accordion title="ページを Markdown に変換する">
+    **あなた:** Convert this URL to markdown: https://react.dev/learn/thinking-in-react
+
+    **アシスタント:** _(`convert_url` を呼び出し)_ 「Thinking in React」の変換済み Markdown はこちらです…
+  </Accordion>
+  <Accordion title="保存済みの変換を検索する">
+    **あなた:** Search my saved pages for anything about authentication
+
+    **アシスタント:** _(`semantic_search` を呼び出し)_ 認証に関連する保存済み変換が 3 件見つかりました:
+    1. "OAuth 2.0 Guide" — 2 日前に保存
+    2. "JWT Best Practices" — 先週保存
+    3. ...
+  </Accordion>
+  <Accordion title="変換の全文を取得する">
+    **あなた:** Get the full content of conversion abc123
+
+    **アシスタント:** _(`get_conversion` を呼び出し)_ Markdown の全文はこちらです…
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  1 つの会話の中でツールを組み合わせられます。例:_"Search my conversions for React docs, then get the full content of the most recent one."_
+</Tip>
+
+## トラブルシューティング
+
+<AccordionGroup>
+  <Accordion title="セットアップ後にツールが表示されない">
+    設定ファイルを編集した後、アプリケーションを再起動したか確認してください。ターミナルで `npx web2md-mcp` が正常に実行できるかも確認してください。
+  </Accordion>
+  <Accordion title="認証エラー">
+    `WEB2MD_API_KEY` が正しいこと、PRO サブスクリプションが有効であることを再確認してください。キーは [API キーページ](https://web2md.org/dashboard/api-keys)で確認できます。
+  </Accordion>
+  <Accordion title="npx がパッケージを解決できない">
+    まずパッケージをグローバルにインストールしてみてください:`npm install -g web2md-mcp`。その後、`command` を `web2md-mcp` に変更し、`args` フィールドを削除します。
+  </Accordion>
+</AccordionGroup>

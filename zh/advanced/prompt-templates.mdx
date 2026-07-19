@@ -1,0 +1,85 @@
+---
+title: "提示词模板"
+description: "用可复用的提示词模板，自定义内容发送给 AI 的方式。"
+---
+
+## 概览
+
+提示词模板可以在把转换好的 Markdown 发给 AI 平台之前，先套上一层指令。不用每次都手动敲一遍「帮我总结这篇文章……」，创建一次模板即可反复使用。
+
+## 内置模板
+
+Web2MD 自带 4 个开箱即用的模板：
+
+| 模板 | 提示词 |
+|----------|--------|
+| **总结** | "Please summarize the following article concisely:" |
+| **提取要点** | "Please extract the key points and main takeaways from this article as a bullet list:" |
+| **写推文** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **问答** | "Please generate a list of questions and answers based on the following content:" |
+
+## 模板的工作方式
+
+当你选中一个模板并把内容发送给 AI 时，模板会包裹住你的内容：
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+模板中的 `{content}` 占位符会被替换成转换后的 Markdown。
+
+## 创建自定义模板
+
+<Steps>
+  <Step title="打开 Convert 标签页">
+    打开 Web2MD 弹窗，切换到 **Convert** 标签页。
+  </Step>
+  <Step title="点击 + Custom">
+    点击模板选择器旁边的 **「+ Custom」** 按钮。
+  </Step>
+  <Step title="填写信息">
+    输入：
+    - **名称** —— 模板的简短名字（比如 "Code Review"）
+    - **提示词** —— 指令文本，用 `{content}` 作为占位符
+  </Step>
+  <Step title="保存并选用">
+    保存模板后，它会自动被设为当前使用的模板。
+  </Step>
+</Steps>
+
+### 自定义模板示例
+
+**名称：** Code Review
+
+**提示词：**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## 提示词预览
+
+把鼠标悬停在模板选择器中的任意模板上，即可预览将发送给 AI 的完整提示词。在转换前确认选对了模板。
+
+## 选择模板
+
+在 Convert 标签页的**模板选择器**中选择当前模板。之后每次使用 **Send to AI** 时，选中的模板都会自动生效。
+
+## 编辑或删除模板
+
+在 Convert 标签页的模板选择器中，你可以：
+
+- **编辑**任意自定义模板的名称或提示词
+- **删除**不再需要的自定义模板
+
+<Info>
+内置模板不能编辑或删除，但你可以创建自定义模板来替代它们。
+</Info>

@@ -1,0 +1,121 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "转换完成时收到通知"
+icon: "webhook"
+---
+
+## 概览
+
+Webhook 可以在每次转换完成时向你自己的接口发送一条 HTTP POST 通知。你可以用它触发 Zapier、Make、n8n 或任意自建后端的工作流。
+
+<Note>
+  Webhook 是 **PRO 套餐**功能。每个用户最多注册 **3 个 webhook 端点**。
+</Note>
+
+## 设置
+
+1. 打开 Web2MD 扩展，进入 **Settings**。
+2. 滚动到 **Webhooks** 区域。
+3. 输入你的端点 URL，点击 **Add Webhook**。
+4. 复制**签名密钥（signing secret）**——验证请求来源时会用到。
+
+## 请求负载
+
+转换完成时，Web2MD 会向你的端点发送一个 `POST` 请求，JSON 请求体如下：
+
+```json
+{
+  "event": "conversion.completed",
+  "data": {
+    "conversionId": "conv_abc123",
+    "url": "https://example.com/article",
+    "title": "Example Article",
+    "markdownLength": 4820,
+    "timestamp": "2026-03-21T12:00:00.000Z"
+  }
+}
+```
+
+| 字段 | 类型 | 说明 |
+|-------|------|-------------|
+| `event` | `string` | 固定为 `"conversion.completed"` |
+| `data.conversionId` | `string` | 本次转换的唯一 ID |
+| `data.url` | `string` | 被转换的来源 URL |
+| `data.title` | `string` | 页面标题 |
+| `data.markdownLength` | `number` | 生成的 Markdown 的字符长度 |
+| `data.timestamp` | `string` | 转换时间的 ISO 8601 时间戳 |
+
+## 安全
+
+每个 webhook 请求都带有 `X-Web2MD-Signature` 头，内容是用你的 webhook 签名密钥对原始请求体做的 HMAC-SHA256 签名。
+
+<Warning>
+  处理 webhook 前务必先验证签名，防止攻击者向你的端点伪造请求。
+</Warning>
+
+### 验证示例（Node.js）
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// 在你的请求处理器中：
+app.post("/webhooks/web2md", (req, res) => {
+  const signature = req.headers["x-web2md-signature"];
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.WEB2MD_WEBHOOK_SECRET)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const { event, data } = req.body;
+  console.log(`Conversion completed: ${data.title} (${data.url})`);
+
+  res.status(200).send("OK");
+});
+```
+
+<Tip>
+  比较签名时用 `crypto.timingSafeEqual` 而不是 `===`，避免时序攻击。
+</Tip>
+
+## 重试策略
+
+| 尝试 | 时机 | 超时 |
+|---------|--------|---------|
+| 首次 | 立即 | 5 秒 |
+| 重试 | 首次失败后 1 秒 | 5 秒 |
+
+两次都失败（非 2xx 响应或超时）时，这次投递会被丢弃。除这一次重试外，Web2MD 不再继续重试。
+
+## 使用场景
+
+<CardGroup cols={2}>
+  <Card title="Zapier / Make / n8n" icon="bolt">
+    在自动化平台里用 Webhook 触发器，每当有页面被转换就启动一个工作流——发到 Slack、往表格加一行，或存进 Notion。
+  </Card>
+  <Card title="Slack 通知" icon="bell">
+    团队成员每转换一个页面就往 Slack 频道发条消息，让所有人保持同步。
+  </Card>
+  <Card title="自动存到外部存储" icon="hard-drive">
+    通过 REST API（用 `conversionId`）取回完整 Markdown，存到 S3、Google Drive 或你自己的数据库。
+  </Card>
+  <Card title="分析管线" icon="chart-line">
+    把 webhook 事件转发到你的分析后端，跟踪转换量和内容类型。
+  </Card>
+</CardGroup>
+
+## 测试 webhook
+
+开发阶段可以用 [webhook.site](https://webhook.site) 或 [ngrok](https://ngrok.com) 之类的工具暴露一个本地端点，先看看收到的负载长什么样，再把处理器部署到生产环境。

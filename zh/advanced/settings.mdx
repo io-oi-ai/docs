@@ -1,0 +1,86 @@
+---
+title: "设置"
+description: "Web2MD 全部设置项和选项的完整参考。"
+---
+
+## 概览
+
+在 Web2MD 弹窗的 **Settings** 标签页，或 Options 页面（右键点击扩展图标 → Options）中访问设置。
+
+## 转换选项
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Include images** | 开 | 在 Markdown 输出中保留带 alt 文本的图片链接 |
+| **Include links** | 开 | 在输出中保留超链接，关闭则得到纯文本 |
+| **Add metadata** | 开 | 在输出中加上 YAML frontmatter（标题、来源 URL、时间戳） |
+| **Detect code language** | 开 | 自动识别代码块的编程语言 |
+| **Auto copy** | 关 | 转换完成后自动把 Markdown 复制到剪贴板 |
+
+## 预览卡片选项
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Show preview card** | 开 | 通过快捷键/右键菜单转换后显示浮动预览卡片 |
+| **Card duration** | 15s | 卡片显示时长：5s、15s、30s 或常驻（Always） |
+| **Clear all cards** | — | 清除所有常驻卡片（Always 模式下可见） |
+
+## AI 设置
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Preferred AI platform** | Claude | Send to AI 的默认平台：Claude、ChatGPT 或 Gemini |
+| **Prompt template** | 无 | 发送给 AI 时使用的当前模板。[了解更多 →](/zh/advanced/prompt-templates) |
+| **Auto send to AI** | 关 | 每次转换后自动发送给 AI |
+
+## Obsidian 设置
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Enable Obsidian export** | 关 | 显示 "Save to Obsidian" 按钮。[了解更多 →](/zh/advanced/obsidian) |
+| **Vault name** | （空） | 目标 Obsidian 仓库名 |
+
+## 目标 AI 模型
+
+<Note>v0.6 新增</Note>
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Target AI model** | 无 | 可选 Claude 200K、GPT-4 128K、Gemini 1M 或 None。设置后，Web2MD 会自动压缩内容以适配所选模型的上下文窗口。 |
+
+## 自定义提取规则
+
+<Note>v0.7 新增 —— 仅 PRO</Note>
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Custom rules** | （空） | 按域名创建 CSS 选择器规则，精细控制提取内容。[了解更多 →](/zh/advanced/custom-rules) |
+
+## API keys
+
+<Note>v0.8 新增 —— 仅 PRO</Note>
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **API keys** | （无） | 创建和管理用于 REST API 和 MCP Server 的 API key，每个账户最多 5 个。[了解更多 →](/zh/advanced/api) |
+
+## Webhooks
+
+<Note>v0.8 新增 —— 仅 PRO</Note>
+
+| 设置 | 默认值 | 说明 |
+|---------|---------|-------------|
+| **Webhook endpoints** | （无） | 配置 webhook URL，自动接收转换事件。[了解更多 →](/zh/advanced/webhooks) |
+
+## 帮助与反馈
+
+| 链接 | 说明 |
+|------|-------------|
+| **Documentation** | 打开 Web2MD 文档站 |
+| **Send feedback** | 打开邮件联系支持团队 |
+
+## 数据存储
+
+Web2MD 使用 `chrome.storage.local` 在本地存储你的设置。设置在浏览器会话间保留，但**不会**跨设备同步。
+
+除非你是使用服务端转换 API 的 Free 用户，否则不会有任何个人数据或转换内容被发送到 Web2MD 服务器。

@@ -1,0 +1,60 @@
+---
+title: "アクションメニュー"
+description: "コピー、Markdown表示、AIで開くにワンボタンで即アクセスできるスプリットボタン式ドロップダウン。"
+---
+
+## 概要
+
+アクションメニューは、拡張機能ポップアップ内のスプリットボタンです。メインボタンはワンクリックでページをMarkdownとしてコピーします。**↑矢印** をクリックすると、利用可能なすべてのアクションがドロップダウンで表示されます。
+
+<Frame>
+  <img src="/images/action-menu.png" alt="Web2MD action menu dropdown" />
+</Frame>
+
+## 利用可能なアクション
+
+<CardGroup cols={2}>
+  <Card title="Copy page" icon="copy">
+    現在のページをLLM向けのMarkdownとしてコピーします。デフォルトのメインアクションです。
+  </Card>
+  <Card title="View as Markdown" icon="arrow-up-right-from-square">
+    現在のページをクリーンなプレーンテキストとして新しいタブで開きます。AIを使わずに読んだり共有したりするのに便利です。
+  </Card>
+  <Card title="Open in ChatGPT" icon="arrow-up-right-from-square">
+    ページを変換して [chatgpt.com](https://chatgpt.com) に直接送信し、その内容について質問できます。
+  </Card>
+  <Card title="Open in Claude" icon="arrow-up-right-from-square">
+    ページを変換して [claude.ai](https://claude.ai) に直接送信し、その内容について質問できます。
+  </Card>
+  <Card title="Open in Perplexity" icon="arrow-up-right-from-square">
+    ページを変換して [perplexity.ai](https://perplexity.ai) に直接送信し、その内容について質問できます。
+  </Card>
+</CardGroup>
+
+## 使い方
+
+<Steps>
+  <Step title="メインボタンをクリック">
+    **Copy page** をクリックすると、現在のページが即座にMarkdownとしてコピーされます。最もよく使うアクションにドロップダウンは不要です。
+  </Step>
+  <Step title="ドロップダウンを開く">
+    ボタン右側の **↑矢印** をクリックすると、利用可能なすべてのアクションが表示されます。
+  </Step>
+  <Step title="アクションを選ぶ">
+    メニューからアクションを選択します。「View as Markdown」とAI系のオプションは自動的に新しいタブで開きます。
+  </Step>
+</Steps>
+
+## なぜスプリットボタン?
+
+以前は、コピー / AIに送信 / 表示のモードを切り替えるには設定画面を開く必要がありました。アクションメニューならすべてのアクションが一箇所にまとまっており、設定画面を行き来する必要がありません。
+
+<Tip>
+素早くクリップボードに取り込みたいときは **Copy page** を、ページの内容についてすぐ質問したいときはAIショートカットを使いましょう。
+</Tip>
+
+## 関連ページ
+
+- [AIに送信](/ja/features/send-to-ai) — 好みのAIプラットフォームとプロンプトテンプレートの設定
+- [コンテキストメニュー](/ja/features/context-menu) — 同じアクションの右クリックショートカット
+- [ページを変換](/ja/features/convert) — 変換出力の詳細ドキュメント

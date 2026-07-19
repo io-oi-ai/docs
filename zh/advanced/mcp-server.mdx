@@ -1,0 +1,154 @@
+---
+title: "MCP Server"
+sidebarTitle: "MCP Server"
+description: "在 Claude Desktop、Cursor、Windsurf 中使用 Web2MD"
+icon: "robot"
+---
+
+## 概览
+
+Web2MD MCP server 基于 [Model Context Protocol (MCP)](https://modelcontextprotocol.io)——一个连接 AI 模型与外部工具、数据源的开放标准——把 Web2MD 封装成一组 AI 助手可以直接调用的工具。
+
+配置好之后，你可以让 Claude、Cursor 或 Windsurf 在对话中直接转换页面、搜索你的转换历史，或取回已保存的 Markdown。
+
+<Note>
+  MCP server 需要 **Web2MD API key**（PRO 套餐）。在[控制台](https://web2md.org/dashboard/api-keys)生成。
+</Note>
+
+## 可用工具
+
+MCP server 提供三个工具：
+
+| 工具 | 说明 |
+|------|-------------|
+| `convert_url` | 把任意 URL 转成干净的 Markdown |
+| `semantic_search` | 用自然语言搜索你保存的转换记录 |
+| `get_conversion` | 按 ID 取回某条已保存转换的完整 Markdown |
+
+### convert_url
+
+抓取一个 URL 并把页面内容以 Markdown 返回。支持与 REST API 相同的转换选项。
+
+**示例提示：** _"Convert this URL to markdown: https://docs.example.com/getting-started"_
+
+### semantic_search
+
+用自然语言查询搜索你之前保存的所有转换记录，返回匹配的转换列表，包含标题、URL 和相关性得分。
+
+**示例提示：** _"Search my saved pages for articles about database indexing"_
+
+### get_conversion
+
+按 ID 取回某条已保存转换的完整 Markdown 内容。适合先用 `semantic_search` 找到目标，再把完整文档拉进上下文。
+
+**示例提示：** _"Get the full content of conversion abc123"_
+
+## 配置
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    打开 Claude Desktop 配置文件：
+
+    - **macOS：** `~/Library/Application Support/Claude/claude_desktop_config.json`
+    - **Windows：** `%APPDATA%\Claude\claude_desktop_config.json`
+
+    在 `mcpServers` 下添加 `web2md` 条目：
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    重启 Claude Desktop，工具选择器里应该会出现 Web2MD 的工具。
+  </Tab>
+  <Tab title="Cursor">
+    打开 Cursor 的 MCP 配置文件 `~/.cursor/mcp.json`，添加：
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    重启 Cursor 加载新的 server。
+  </Tab>
+  <Tab title="Windsurf">
+    打开 Windsurf 的 MCP 配置文件 `~/.windsurf/mcp.json`，添加：
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md": {
+          "command": "npx",
+          "args": ["web2md-mcp"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+
+    重启 Windsurf 加载新的 server。
+  </Tab>
+</Tabs>
+
+## 使用示例
+
+MCP server 跑起来后，在 AI 助手里用自然语言即可：
+
+<AccordionGroup>
+  <Accordion title="把页面转成 Markdown">
+    **你：** Convert this URL to markdown: https://react.dev/learn/thinking-in-react
+
+    **助手：** _（调用 `convert_url`）_ 这是 "Thinking in React" 转换后的 Markdown……
+  </Accordion>
+  <Accordion title="搜索已保存的转换">
+    **你：** Search my saved pages for anything about authentication
+
+    **助手：** _（调用 `semantic_search`）_ 我找到 3 条与 authentication 相关的已保存转换：
+    1. "OAuth 2.0 Guide" —— 2 天前保存
+    2. "JWT Best Practices" —— 上周保存
+    3. ...
+  </Accordion>
+  <Accordion title="取回完整转换内容">
+    **你：** Get the full content of conversion abc123
+
+    **助手：** _（调用 `get_conversion`）_ 这是完整的 Markdown 内容……
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  可以在一次对话中组合使用多个工具。例如：_"Search my conversions for React docs, then get the full content of the most recent one."_
+</Tip>
+
+## 故障排查
+
+<AccordionGroup>
+  <Accordion title="配置后工具没出现">
+    确认你在编辑配置文件后重启了应用。同时在终端里验证 `npx web2md-mcp` 能正常运行。
+  </Accordion>
+  <Accordion title="认证错误">
+    确认 `WEB2MD_API_KEY` 填写正确，并且你的 PRO 订阅处于有效状态。可以在 [API keys 页面](https://web2md.org/dashboard/api-keys)核对你的 key。
+  </Accordion>
+  <Accordion title="npx 解析不到包">
+    先尝试全局安装：`npm install -g web2md-mcp`，然后把 `command` 改成 `web2md-mcp` 并删掉 `args` 字段。
+  </Accordion>
+</AccordionGroup>

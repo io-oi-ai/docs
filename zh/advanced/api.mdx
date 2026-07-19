@@ -1,0 +1,182 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "用编程方式把任意 URL 或 HTML 转成 Markdown"
+icon: "code"
+---
+
+## 概览
+
+Web2MD REST API 让你以编程方式把任意网页或原始 HTML 转成干净的 Markdown。可以用来搭建管线、自动化内容采集，或把 Web2MD 集成到你自己的工具里。
+
+<Note>
+  REST API 需要 **PRO 套餐**。在 [Web2MD 控制台](https://web2md.org/dashboard/api-keys)生成你的 API key。
+</Note>
+
+### 机器可读规范
+
+| 资源 | 地址 | 说明 |
+|----------|-----|-------------|
+| OpenAPI 3.1 规范 | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | 完整 API schema，可用于代码生成和工具集成 |
+| AI 插件清单 | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | Agent 发现（ChatGPT 插件 / AI 助手） |
+
+可以用 OpenAPI 规范自动生成客户端 SDK，或导入 Postman、Swagger UI、AI Agent 框架等工具。
+
+## 认证
+
+所有请求都必须在 `Authorization` 头中带上 API key：
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+API key 以 `w2m_` 为前缀，与你的账户绑定。
+
+## 接口
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### 请求体
+
+| 字段 | 类型 | 必填 | 说明 |
+|-------|------|----------|-------------|
+| `url` | `string` | `url` 和 `html` 二选一 | 要转换的页面 URL |
+| `html` | `string` | `url` 和 `html` 二选一 | 要转换的原始 HTML 字符串 |
+| `options` | `object` | 否 | 转换选项（见下文） |
+
+<Warning>
+  只能提供 `url` 或 `html` 其中之一。两者都传或都不传，请求会返回 `400` 错误。
+</Warning>
+
+### 选项
+
+| 字段 | 类型 | 默认值 | 说明 |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | 在输出中保留图片引用 |
+| `includeLinks` | `boolean` | `true` | 在输出中保留超链接 |
+| `includeMeta` | `boolean` | `true` | 在开头附加 YAML front matter 形式的页面元数据 |
+
+### 响应
+
+成功的响应返回：
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
+    }
+  }
+}
+```
+
+| 字段 | 类型 | 说明 |
+|-------|------|-------------|
+| `title` | `string` | 从 `<title>` 提取的页面标题 |
+| `url` | `string` | 来源 URL（如果传了的话） |
+| `extractedAt` | `string` | 转换时间的 ISO 8601 时间戳 |
+| `wordCount` | `integer` | 总字数（英文单词数 + 中日韩字符数） |
+| `tokenCount` | `integer` | 估算的 LLM token 数 |
+| `readingTime` | `integer` | 估算的阅读时长（分钟） |
+| `author` | `string?` | 来自 meta 标签或 JSON-LD 的作者名 |
+| `publishedDate` | `string?` | 发布日期（YYYY-MM-DD） |
+| `description` | `string?` | 来自 Open Graph 或 meta 标签的页面描述 |
+
+## 速率限制
+
+每个 API key 限制为**每分钟 60 次请求**。超出限制时 API 返回 `429` 状态码，请等待窗口重置后再重试。
+
+## 错误响应
+
+| 状态码 | 含义 | 示例 |
+|--------|---------|---------|
+| `400` | 请求有误——缺少或冲突的输入 | 同时传了 `url` 和 `html`，或两者都没传 |
+| `401` | 未授权——API key 无效或缺失 | 缺少 `Authorization` 头 |
+| `422` | 无法处理——URL 抓取失败 | 目标站点返回错误或超时 |
+| `429` | 超出速率限制 | 一分钟内超过 60 次请求 |
+| `500` | 服务器内部错误 | 我们这边出了意外故障 |
+
+所有错误响应遵循这个结构：
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## 示例
+
+### 用 curl 转换 URL
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### 用 curl 转换原始 HTML
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript（fetch）
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  把 API key 存在环境变量里，不要硬编码。比如在 Node.js 中用 `process.env.WEB2MD_API_KEY`。
+</Tip>

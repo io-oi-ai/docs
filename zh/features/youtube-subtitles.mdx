@@ -1,0 +1,50 @@
+---
+title: "YouTube 字幕"
+description: "把 YouTube 视频字幕提取为带时间戳的 Markdown。"
+---
+
+## 概述
+
+Web2MD 可以提取 YouTube 视频的字幕，并转换成干净、带时间戳的 Markdown。手动上传的字幕和自动生成的字幕（ASR）都支持。
+
+## 你将获得
+
+转换一个 YouTube 视频会得到：
+
+- **视频元数据** —— 标题、频道、时长、播放量
+- **简介** —— 视频的描述文字
+- **完整文字稿** —— 字幕按约 30 秒为一段分组，并附带时间戳
+
+## 输出示例
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## 支持的 URL
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## 语言优先级
+
+Web2MD 会选取质量最好的字幕轨：
+1. 手动上传的英文字幕（质量最高）
+2. 任意手动上传的字幕
+3. 自动生成的英文字幕（ASR）
+4. 任意自动生成的字幕

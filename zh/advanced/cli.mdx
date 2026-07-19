@@ -1,0 +1,236 @@
+---
+title: "CLI"
+sidebarTitle: "CLI (npx web2md)"
+description: "在命令行里把 URL 转成 Markdown——可以管道喂给 LLM、批量处理，或直接存进 Obsidian"
+icon: "terminal"
+---
+
+## 概览
+
+Web2MD CLI 让你直接在终端里把任意 URL 转成干净的 Markdown。输出可以用管道喂给 LLM、批量处理 URL 列表，或者导入你的 Obsidian 仓库——全程不用打开浏览器。
+
+```bash
+npx web2md https://example.com/article
+```
+
+<Note>
+  CLI 需要 **Node.js 18+**。运行 `node -v` 检查你的版本。
+</Note>
+
+## 安装
+
+无需安装——直接用 `npx` 运行即可：
+
+```bash
+npx web2md <url> [options]
+```
+
+也可以全局安装，启动更快：
+
+```bash
+npm install -g web2md
+web2md <url> [options]
+```
+
+## 运行模式
+
+Web2MD CLI 根据你的配置以三种模式运行：
+
+<CardGroup cols={3}>
+  <Card title="本地模式" icon="laptop">
+    **默认模式。** 无需 API key，本地抓取页面并转换，适用于大多数公开网站。
+  </Card>
+  <Card title="服务端模式" icon="server">
+    **配置 API key 后启用。** 设置 `WEB2MD_API_KEY` 即可解锁 Reddit、Fandom/Wikia 等需要服务端处理的受限站点。
+  </Card>
+  <Card title="Bridge 模式" icon="bridge">
+    **加 `--bridge` 参数启用。** 通过你的 Chrome 扩展抓取 JS 渲染或需要登录的页面，这些页面静态抓取拿不到。
+  </Card>
+</CardGroup>
+
+## 命令行参数
+
+| 参数 | 说明 |
+|------|-------------|
+| `--no-images` | 从输出中去掉图片引用 |
+| `--no-links` | 从输出中去掉超链接 |
+| `--meta` | 添加 YAML frontmatter（title、source、wordCount、tokenCount、readingTime、date） |
+| `--json` | 以 JSON 格式输出 `{ markdown, metadata }` |
+| `-o, --output <file>` | 把输出写入文件 |
+| `--output-dir <dir>` | 每个 URL 单独存为一个 `.md` 文件 |
+| `--batch <file>` | 从文件读取 URL（每行一个，`#` 开头为注释） |
+| `--vault <dir>` | Obsidian 仓库模式：保存到 `<dir>/raw/` 并更新 `<dir>/INDEX.md` |
+| `--concurrency <n>` | 最大并发抓取数（默认 3，最大 20） |
+| `--bridge` | 使用 Chrome 扩展处理 JS 渲染或需要登录的站点 |
+| `-q, --quiet` | 不显示进度信息 |
+
+## 环境变量
+
+| 变量 | 说明 |
+|----------|-------------|
+| `WEB2MD_API_KEY` | 用于 Reddit 等受限站点的 API key（`w2m_xxx`） |
+| `WEB2MD_API_URL` | 覆盖 API 基础地址 |
+| `WEB2MD_EXTENSION_ID` | 覆盖 `--bridge` 模式使用的 Chrome 扩展 ID |
+
+<Tip>
+  把这些变量加进你的 shell 配置文件（`~/.zshrc` 或 `~/.bashrc`），这样每次打开终端都能生效：
+  ```bash
+  export WEB2MD_API_KEY="w2m_your_key_here"
+  ```
+</Tip>
+
+## 使用示例
+
+### 基础转换
+
+```bash
+npx web2md https://example.com/article
+```
+
+把 Markdown 打印到 stdout。
+
+### 通过管道喂给 LLM
+
+```bash
+npx web2md https://react.dev/learn/thinking-in-react | llm "Summarize this page"
+```
+
+```bash
+npx web2md https://docs.python.org/3/tutorial/classes.html | claude "Explain the key concepts"
+```
+
+### 保存到文件
+
+```bash
+npx web2md https://example.com/article -o article.md
+```
+
+```bash
+npx web2md https://example.com/article --meta -o article.md
+```
+
+`--meta` 参数会在文件开头加上 YAML frontmatter，包含标题、来源 URL、字数、token 数、阅读时长和日期。
+
+### 从文件批量转换
+
+创建一个 `urls.txt` 文件：
+
+```text
+# 研究论文
+https://arxiv.org/abs/2301.00001
+https://arxiv.org/abs/2301.00002
+
+# 博客文章
+https://example.com/blog/post-1
+https://example.com/blog/post-2
+```
+
+然后运行：
+
+```bash
+npx web2md --batch urls.txt --output-dir ./research --concurrency 5
+```
+
+每个 URL 会在 `./research` 目录下单独存为一个 `.md` 文件。
+
+### 导入 Obsidian 仓库
+
+```bash
+npx web2md --batch urls.txt --vault ~/Documents/MyVault
+```
+
+每个页面会保存到 `~/Documents/MyVault/raw/`，同时更新 `~/Documents/MyVault/INDEX.md`，其中包含所有已转换页面的链接。
+
+### 用 API key 转换 Reddit
+
+```bash
+export WEB2MD_API_KEY="w2m_your_key_here"
+npx web2md https://www.reddit.com/r/LocalLLaMA/comments/example
+```
+
+<Warning>
+  Reddit 需要有效的 API key。由于 Reddit 的反爬限制，没有 key 时 Reddit URL 会转换失败。
+</Warning>
+
+### Bridge 模式
+
+用 Chrome 扩展处理 JS 渲染或需要登录的页面：
+
+```bash
+npx web2md --bridge https://app.example.com/dashboard
+```
+
+<Note>
+  Bridge 模式要求已安装 Web2MD Chrome 扩展且 Chrome 处于运行状态。CLI 通过 Chrome 的 native messaging 协议与扩展通信。
+</Note>
+
+### JSON 输出
+
+```bash
+npx web2md --json https://example.com/article
+```
+
+返回结构化输出：
+
+```json
+{
+  "markdown": "# Article Title\n\nContent here...",
+  "metadata": {
+    "title": "Article Title",
+    "source": "https://example.com/article",
+    "wordCount": 1250,
+    "tokenCount": 1680,
+    "readingTime": 5,
+    "date": "2026-04-11T10:30:00.000Z"
+  }
+}
+```
+
+适合程序化消费，或用管道传给 `jq`：
+
+```bash
+npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
+```
+
+## 优化支持的站点
+
+Web2MD 内置了以下站点的专用适配器，输出比通用转换更干净：
+
+<AccordionGroup>
+  <Accordion title="有专门优化的站点">
+    - **Wikipedia** —— 干净的文章提取，信息框（infobox）处理
+    - **arXiv** —— 论文摘要和元数据
+    - **Hacker News** —— 带评论的讨论串
+    - **GitHub** —— Issue 和 Pull Request
+    - **Stack Overflow** —— 问题和回答
+    - **dev.to** —— 博客文章
+    - **Medium** —— 文章（可绕过付费墙预览）
+    - **Substack** —— Newsletter 文章
+    - **OpenAI Docs** —— 文档页面
+    - **基于 Mintlify 的文档站** —— 用 Mintlify 搭建的文档站点
+    - **Reddit** —— 帖子和评论（需要 API key）
+  </Accordion>
+</AccordionGroup>
+
+## 常见工作流
+
+<AccordionGroup>
+  <Accordion title="把文档喂给 AI Agent">
+    ```bash
+    npx web2md --batch docs-urls.txt --output-dir ./context --quiet
+    ```
+    把 AI Agent 的上下文目录指向 `./context`，回答就有据可依。
+  </Accordion>
+  <Accordion title="搭建研究资料库">
+    ```bash
+    npx web2md --batch papers.txt --vault ~/Obsidian/Research --meta --concurrency 10
+    ```
+    在 Obsidian 里建立一个带索引、可搜索的研究资料库。
+  </Accordion>
+  <Accordion title="精简格式后喂给 LLM">
+    ```bash
+    npx web2md --no-images --no-links https://example.com/article | llm "Analyze this"
+    ```
+    去掉图片和链接，减少喂给 LLM 时的 token 消耗。
+  </Accordion>
+</AccordionGroup>

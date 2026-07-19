@@ -1,0 +1,244 @@
+---
+title: "Agent Bridge"
+sidebarTitle: "Agent Bridge"
+description: "AI エージェントが Chrome 拡張機能を介して Reddit や任意の Web サイトをバッチ変換"
+icon: "microchip"
+---
+
+## 概要
+
+Agent Bridge を使うと、AI エージェント(Claude Code、Cursor、Cowork など)が Web2MD Chrome 拡張機能をリモート操作して URL をバッチ変換できます。特に、サーバーサイドの API アクセスをブロックする Reddit、JS レンダリングページ、ログインが必要なページに有効です。
+
+Web2MD API を呼び出す(Reddit はこれをブロックします)代わりに、AI エージェントは [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging) を介してローカルの Chrome 拡張機能にコマンドを送ります。拡張機能は、**あなたの実際のブラウザセッション**(Cookie とログイン状態)を使って各ページをバックグラウンドタブで開き、コンテンツを抽出して Markdown に変換し、結果を返します。
+
+<Note>
+  Agent Bridge には **PRO プラン**と、マシンにインストールされた **Native Messaging ホスト**が必要です。また、Chrome で拡張機能が開いている必要があります。
+</Note>
+
+## アーキテクチャ
+
+```
+AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome Extension → Any Website
+```
+
+| コンポーネント | 役割 |
+|-----------|------|
+| **AI エージェント** | Claude Code、Cursor、Cowork — MCP ツールを呼び出す |
+| **MCP サーバー** | MCP ツール呼び出しを TCP メッセージに変換 |
+| **Native ホスト** | TCP と Chrome Native Messaging の間を中継 |
+| **Chrome 拡張機能** | タブを開き、HTML を抽出して Markdown に変換 |
+
+すべての通信は**ローカル**で完結し、マシンの外には何も出ません。Native ホストは `localhost:12315` のみで待ち受けます。
+
+## セットアップ
+
+### ステップ 1:MCP サーバーをビルドする
+
+```bash
+cd packages/mcp-server
+pnpm build
+```
+
+### ステップ 2:Native Messaging ホストをインストールする
+
+```bash
+cd packages/mcp-server
+./install.sh <your-extension-id>
+```
+
+<Tip>
+  拡張機能 ID は、デベロッパーモードを有効にした状態で `chrome://extensions` から確認できます。Web2MD を探して ID の文字列(例:`ijmgpkkfgpijifldbjafjiapehppcbcn`)をコピーしてください。
+</Tip>
+
+<Warning>
+  インストール後は、**Chrome を完全に終了(Mac では Cmd+Q)してから再度開いて**ください。Chrome は起動時にしか Native Messaging のマニフェストを読み込みません。拡張機能のリロードだけでは不十分です。
+</Warning>
+
+インストールスクリプトは次の処理を行います:
+- ホストファイルを `~/.web2md/` にコピー(`~/Desktop` に対する macOS の TCC 制限を回避)
+- `node` の絶対パスを解決(Chrome は最小限の PATH で起動するため)
+- Chrome の `NativeMessagingHosts` ディレクトリに NM マニフェストを書き込み
+
+### ステップ 3:MCP を設定する
+
+<Tabs>
+  <Tab title="Claude Code">
+    `~/.claude/settings.json` に追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    `~/.cursor/mcp.json` に追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Desktop">
+    Claude Desktop の設定ファイルに追加します:
+
+    ```json
+    {
+      "mcpServers": {
+        "web2md-agent": {
+          "command": "node",
+          "args": ["/path/to/packages/mcp-server/dist/index.js"],
+          "env": {
+            "WEB2MD_API_KEY": "w2m_your_key_here"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### ステップ 4:動作確認
+
+Chrome で `chrome://extensions` を開き、Web2MD の「Service Worker」リンクをクリックして Console を確認します:
+
+```
+[Web2MD] Service worker started
+[Web2MD] Connected to native host
+[Web2MD] Native host TCP relay ready on port 12315
+```
+
+この 3 行が表示されていれば、Agent Bridge は動作しています。
+
+## 利用可能なツール
+
+### agent_convert
+
+Chrome 拡張機能を使って単一の URL を変換します。
+
+| パラメーター | 型 | 説明 |
+|-----------|------|-------------|
+| `url` | string | 変換する URL |
+
+**戻り値:** タイトル、ソース URL、単語数、読了時間を含む Markdown コンテンツ。
+
+**最適な用途:** Reddit のスレッド、ログインが必要なページ、JS レンダリングサイト。
+
+### agent_batch_convert
+
+最大 50 件の URL をバッチ変換します。URL は順番に処理されます — 拡張機能が各ページをバックグラウンドタブで開き、コンテンツを抽出し、タブを閉じてから次に進みます。
+
+| パラメーター | 型 | 説明 |
+|-----------|------|-------------|
+| `urls` | string[] | 変換する URL の配列(最大 50 件) |
+
+**戻り値:** 完了ごとにストリーミングされる URL 単位の結果と、最後のサマリー。
+
+**最適な用途:** リサーチワークフロー — Reddit スレッド、HN ディスカッション、競合ページをバッチ変換して AI で分析。
+
+<Info>
+  成功したすべての変換は、AI が生成したサマリーとタグ付きで、自動的に[ダッシュボード履歴](https://web2md.org/dashboard/history)に保存されます。
+</Info>
+
+## 使用例
+
+<AccordionGroup>
+  <Accordion title="Reddit スレッドを変換する">
+    **あなた:** Convert this Reddit thread to Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+
+    **エージェント:** _(`agent_convert` を呼び出し)_ 法務文書向け RAG の精度について議論している 7 件のコメント付きスレッドを変換しました…
+  </Accordion>
+  <Accordion title="リサーチ用にバッチ変換する">
+    **あなた:** Batch convert these 5 Reddit URLs and summarize the key takeaways:
+    - https://reddit.com/r/MachineLearning/comments/...
+    - https://reddit.com/r/LocalLLaMA/comments/...
+    - https://reddit.com/r/LangChain/comments/...
+    - https://reddit.com/r/artificial/comments/...
+    - https://reddit.com/r/ChatGPT/comments/...
+
+    **エージェント:** _(`agent_batch_convert` を呼び出し)_ 5/5 件の URL を変換しました。主なポイントは次のとおりです…
+  </Accordion>
+  <Accordion title="ログインが必要なページを変換する">
+    **あなた:** Convert my company's internal wiki page at https://wiki.internal.com/architecture
+
+    **エージェント:** _(`agent_convert` を呼び出し)_ Chrome でこのサイトにログイン済みのため、全コンテンツを抽出できました…
+  </Accordion>
+</AccordionGroup>
+
+## 対応サイト
+
+Agent Bridge は、拡張機能と同じ 16 のサイト専用エクストラクターを使用します。
+
+| サイト | 方式 | タブ必要? |
+|------|--------|:---:|
+| Reddit | JSON API | 不要 |
+| Hacker News | Algolia API | 不要 |
+| YouTube | Transcript API | 不要 |
+| arXiv | HTML スクレイピング | 不要 |
+| Twitter/X | DOM 抽出 | 必要 |
+| GitHub Issues/PRs | REST API | 不要 |
+| Medium | DOM 抽出 | 必要 |
+| Substack | DOM 抽出 | 必要 |
+| Wikipedia | DOM 抽出 | 必要 |
+| Stack Overflow | SE API | 不要 |
+| その他のサイト | ページ HTML 全体 | 必要 |
+
+タブが「不要」のサイトは API 呼び出しで変換されるため、より高速で信頼性が高くなります。それ以外はバックグラウンドタブを使用します。
+
+## トラブルシューティング
+
+<AccordionGroup>
+  <Accordion title="'Native host not installed' または 'not found'">
+    Chrome が NM マニフェストを読み込んでいません。**Chrome を完全に終了(Cmd+Q)してから再度開いて**ください。拡張機能をリロードするだけでは不十分です。
+  </Accordion>
+  <Accordion title="'Native host has exited' がすぐに出る">
+    Chrome がホストスクリプトを実行できません。よくある原因:
+    - `node` が見つからない — `./install.sh` を再実行してください(node の絶対パスを使用します)
+    - ホストが TCC 保護対象ディレクトリ(`~/Desktop`、`~/Documents`)にある — インストールを再実行して `~/.web2md/` に移動してください
+  </Accordion>
+  <Accordion title="MCP から 'Agent connection error'">
+    Native ホストの TCP サーバーが起動していません。以下を確認してください:
+    1. Chrome が開いている
+    2. Web2MD 拡張機能が読み込まれている
+    3. Service Worker のコンソールに "TCP relay ready on port 12315" が表示されている
+  </Accordion>
+  <Accordion title="'Failed to extract content from the page'">
+    拡張機能がログインしていません。Chrome で Web2MD のポップアップを開き、PRO アカウントでサインインしてください。
+  </Accordion>
+  <Accordion title="'Tab load timeout'">
+    対象ページの読み込みに時間がかかりすぎています。遅いサイトでは正常な挙動です。拡張機能はタブごとに最大 15 秒待機します。Reddit は JSON API エクストラクターを使うためタブは不要です。Reddit でタイムアウトする場合は、通常は投稿 URL が無効(404)であることを意味します。
+  </Accordion>
+  <Accordion title="変換がダッシュボード履歴に表示されない">
+    履歴の保存には、拡張機能が PRO アカウントでログインしている必要があります。保存は fire-and-forget 方式のため、API 呼び出しが静かに失敗すると変換は履歴に表示されません。認証トークンが有効か確認してください。
+  </Accordion>
+</AccordionGroup>
+
+## MCP サーバーとの違い
+
+| 項目 | MCP サーバー(`convert_url`) | Agent Bridge(`agent_convert`) |
+|---------|---------------------------|-------------------------------|
+| 実行場所 | サーバーサイドの API 呼び出し | ローカルの Chrome ブラウザ |
+| Reddit 対応 | ❌ Reddit にブロックされる | ✅ 実際のブラウザセッションを使用 |
+| ログインが必要なページ | ❌ アクセス不可 | ✅ あなたの Cookie を使用 |
+| JS レンダリングページ | ❌ JavaScript なし | ✅ Chrome の完全なレンダリング |
+| 速度 | 速い(タブのオーバーヘッドなし) | 遅い(実際にタブを開く) |
+| Chrome の起動が必要 | 不要 | 必要 |
+
+**使い分けの目安:** 公開ページには `convert_url` を使用します。Reddit、認証が必要なページ、JS の多いサイトには `agent_convert` / `agent_batch_convert` を使用します。

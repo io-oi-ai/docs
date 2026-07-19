@@ -1,0 +1,51 @@
+---
+title: "多页队列"
+description: "转换多个页面，合并成一次请求发送给 AI。"
+---
+
+## 概述
+
+多页队列让你先把多个页面的 Markdown 收集起来，再一次性全部发送给 AI 助手。非常适合资料调研、竞品分析，或从多个来源汇总信息。
+
+## 工作方式
+
+<Steps>
+  <Step title="转换页面">
+    照常转换任意网页。
+  </Step>
+  <Step title="加入队列">
+    点击结果下方的 **"Add to queue & convert next page"**。
+  </Step>
+  <Step title="继续下一页">
+    打开下一个页面，转换后同样加入队列。
+  </Step>
+  <Step title="全部发送给 AI">
+    准备好后，在队列面板中点击 **"Send all → Claude"**（或你偏好的平台）。
+  </Step>
+</Steps>
+
+## 队列面板
+
+队列面板会显示：
+- 各页面的标题和字数
+- 用 × 移除单个条目
+- **Send all**：发送到你选定的 AI 平台
+- **Clear**：清空队列
+
+## 合并格式
+
+将队列发送给 AI 时，所有页面会合并为一个文档：
+
+```markdown
+# Page 1 Title
+
+[Page 1 Markdown content]
+
+---
+
+# Page 2 Title
+
+[Page 2 Markdown content]
+```
+
+发送前，Prompt 模板会应用到合并后的内容上。

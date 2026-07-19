@@ -1,0 +1,50 @@
+---
+title: "YouTube字幕"
+description: "YouTube動画の字幕を、タイムスタンプ付きMarkdownとして抽出します。"
+---
+
+## 概要
+
+Web2MDはYouTube動画から字幕を抽出し、タイムスタンプ付きのクリーンなMarkdownに変換できます。手動でアップロードされた字幕と自動生成字幕(ASR)の両方に対応しています。
+
+## 得られるもの
+
+YouTube動画を変換すると、次が生成されます。
+
+- **動画メタデータ** — タイトル、チャンネル、再生時間、再生回数
+- **説明** — 動画の説明文
+- **完全な文字起こし** — 約30秒ごとの段落にまとめられたタイムスタンプ付き字幕
+
+## 出力例
+
+```markdown
+# How React Hooks Work
+
+Channel: React Official | Duration: 12:34 | Views: 1,234,567
+
+## Description
+
+In this video we explain how React Hooks...
+
+## Transcript (English - auto-generated)
+
+**[0:00]** Welcome to this video about React Hooks. Today we're going to cover the fundamentals of useState and useEffect.
+
+**[0:30]** First, let's talk about why hooks were introduced...
+
+**[1:00]** The useState hook lets you add state to functional components...
+```
+
+## 対応URL
+
+- `youtube.com/watch?v=...`
+- `youtu.be/...`
+- `youtube.com/shorts/...`
+
+## 言語の優先順位
+
+Web2MDは利用可能な字幕トラックの中から最適なものを選択します。
+1. 手動作成の英語字幕(最高品質)
+2. 任意の手動作成字幕
+3. 自動生成の英語字幕(ASR)
+4. 任意の自動生成字幕

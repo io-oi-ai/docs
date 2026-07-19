@@ -1,0 +1,83 @@
+---
+title: "发送到 AI"
+description: "把转换好的 Markdown 直接发送给 Claude、ChatGPT、Gemini、Perplexity、Grok 或 DeepSeek。"
+---
+
+## 概览
+
+AI 平台选择器就在 Convert 标签页顶部的显眼位置。选好平台和模板，一键完成转换并发送——无需手动复制粘贴。
+
+<Frame>
+  <img src="/images/send-to-ai.png" alt="Send to AI feature" />
+</Frame>
+
+## 支持的平台
+
+<CardGroup cols={3}>
+  <Card title="Claude" icon="message">
+    [claude.ai](https://claude.ai) —— Anthropic 的 AI 助手。使用 ProseMirror 编辑器注入。
+  </Card>
+  <Card title="ChatGPT" icon="comment">
+    [chatgpt.com](https://chatgpt.com) —— OpenAI 的 GPT 模型。使用 textarea 注入。
+  </Card>
+  <Card title="Gemini" icon="sparkles">
+    [gemini.google.com](https://gemini.google.com) —— Google 的 AI。使用 contenteditable 注入。
+  </Card>
+  <Card title="Perplexity" icon="magnifying-glass">
+    [perplexity.ai](https://www.perplexity.ai) —— AI 驱动的搜索引擎。
+  </Card>
+  <Card title="Grok" icon="bolt">
+    [grok.com](https://grok.com) —— xAI 的对话式 AI。
+  </Card>
+  <Card title="DeepSeek" icon="brain">
+    [chat.deepseek.com](https://chat.deepseek.com) —— DeepSeek 的 AI 助手。
+  </Card>
+</CardGroup>
+
+## 工作流程
+
+<Steps>
+  <Step title="选择 AI 平台">
+    在 **Convert** 标签页顶部的平台选择器中，选好你偏好的 AI 平台。
+  </Step>
+  <Step title="挑选提示词模板">
+    可以选一个提示词模板，用指令把内容包装起来（可选）。
+  </Step>
+  <Step title="转换并发送">
+    点击 **Convert** —— 页面被转换为 Markdown，套用模板后，内容会在新标签页中注入到 AI 平台的聊天输入框。
+  </Step>
+</Steps>
+
+### 兜底机制
+
+如果注入失败（比如 AI 平台改了界面），Web2MD 会优雅降级：
+
+1. 把内容复制到剪贴板
+2. 在新标签页打开 AI 平台
+3. 显示提示：**"Content copied! Press Ctrl+V to paste"**
+
+## 提示词模板
+
+把发送到 AI 和[提示词模板](/zh/advanced/prompt-templates)结合使用，可以自动在内容外包上"总结这篇文章"或"提取要点"这类指令。
+
+选中模板后，内容会先套上你的提示词再发送：
+
+```
+Please summarize the following article concisely:
+
+[converted Markdown content here]
+```
+
+## 自动发送
+
+开启 **Auto send to AI**，每次转换后内容会自动发送到你偏好的平台——连点击都省了。
+
+## 设置
+
+| 设置项 | 说明 |
+|---------|-------------|
+| **偏好的 AI 平台** | 发送到 AI 的默认平台（Claude、ChatGPT、Gemini、Perplexity、Grok 或 DeepSeek） |
+| **提示词模板** | 发送到 AI 时套用的模板 |
+| **Auto send to AI** | 转换后自动发送 |
+
+这些设置直接在 **Convert** 标签页里通过平台选择器和模板选择器配置。[查看全部设置 →](/zh/advanced/settings)

@@ -28,54 +28,171 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Guides",
-        "groups": [
+        "language": "en",
+        "tabs": [
           {
-            "group": "Getting Started",
-            "pages": [
-              "index",
-              "quickstart"
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "index",
+                  "quickstart"
+                ]
+              },
+              {
+                "group": "Core Features",
+                "pages": [
+                  "features/convert",
+                  "features/action-menu",
+                  "features/send-to-ai",
+                  "features/selection-toolbar",
+                  "features/ai-summary",
+                  "features/batch-convert",
+                  "features/preview-card",
+                  "features/context-menu",
+                  "features/collections",
+                  "features/semantic-search",
+                  "features/ai-tags",
+                  "features/multi-page-queue",
+                  "features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "advanced/cli",
+                  "advanced/prompt-templates",
+                  "advanced/site-adapters",
+                  "advanced/custom-rules",
+                  "advanced/obsidian",
+                  "advanced/api",
+                  "advanced/mcp-server",
+                  "advanced/agent-bridge",
+                  "advanced/webhooks",
+                  "advanced/settings"
+                ]
+              },
+              {
+                "group": "Plans",
+                "pages": [
+                  "plans"
+                ]
+              }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "language": "cn",
+        "tabs": [
           {
-            "group": "Core Features",
-            "pages": [
-              "features/convert",
-              "features/action-menu",
-              "features/send-to-ai",
-              "features/selection-toolbar",
-              "features/ai-summary",
-              "features/batch-convert",
-              "features/preview-card",
-              "features/context-menu",
-              "features/collections",
-              "features/semantic-search",
-              "features/ai-tags",
-              "features/multi-page-queue",
-              "features/youtube-subtitles"
+            "tab": "使用指南",
+            "groups": [
+              {
+                "group": "快速上手",
+                "pages": [
+                  "zh/index",
+                  "zh/quickstart"
+                ]
+              },
+              {
+                "group": "核心功能",
+                "pages": [
+                  "zh/features/convert",
+                  "zh/features/action-menu",
+                  "zh/features/send-to-ai",
+                  "zh/features/selection-toolbar",
+                  "zh/features/ai-summary",
+                  "zh/features/batch-convert",
+                  "zh/features/preview-card",
+                  "zh/features/context-menu",
+                  "zh/features/collections",
+                  "zh/features/semantic-search",
+                  "zh/features/ai-tags",
+                  "zh/features/multi-page-queue",
+                  "zh/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "进阶用法",
+                "pages": [
+                  "zh/advanced/cli",
+                  "zh/advanced/prompt-templates",
+                  "zh/advanced/site-adapters",
+                  "zh/advanced/custom-rules",
+                  "zh/advanced/obsidian",
+                  "zh/advanced/api",
+                  "zh/advanced/mcp-server",
+                  "zh/advanced/agent-bridge",
+                  "zh/advanced/webhooks",
+                  "zh/advanced/settings"
+                ]
+              },
+              {
+                "group": "套餐",
+                "pages": [
+                  "zh/plans"
+                ]
+              }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "language": "jp",
+        "tabs": [
           {
-            "group": "Advanced",
-            "pages": [
-              "advanced/cli",
-              "advanced/prompt-templates",
-              "advanced/site-adapters",
-              "advanced/custom-rules",
-              "advanced/obsidian",
-              "advanced/api",
-              "advanced/mcp-server",
-              "advanced/agent-bridge",
-              "advanced/webhooks",
-              "advanced/settings"
-            ]
-          },
-          {
-            "group": "Plans",
-            "pages": [
-              "plans"
+            "tab": "ガイド",
+            "groups": [
+              {
+                "group": "はじめに",
+                "pages": [
+                  "ja/index",
+                  "ja/quickstart"
+                ]
+              },
+              {
+                "group": "主な機能",
+                "pages": [
+                  "ja/features/convert",
+                  "ja/features/action-menu",
+                  "ja/features/send-to-ai",
+                  "ja/features/selection-toolbar",
+                  "ja/features/ai-summary",
+                  "ja/features/batch-convert",
+                  "ja/features/preview-card",
+                  "ja/features/context-menu",
+                  "ja/features/collections",
+                  "ja/features/semantic-search",
+                  "ja/features/ai-tags",
+                  "ja/features/multi-page-queue",
+                  "ja/features/youtube-subtitles"
+                ]
+              },
+              {
+                "group": "高度な使い方",
+                "pages": [
+                  "ja/advanced/cli",
+                  "ja/advanced/prompt-templates",
+                  "ja/advanced/site-adapters",
+                  "ja/advanced/custom-rules",
+                  "ja/advanced/obsidian",
+                  "ja/advanced/api",
+                  "ja/advanced/mcp-server",
+                  "ja/advanced/agent-bridge",
+                  "ja/advanced/webhooks",
+                  "ja/advanced/settings"
+                ]
+              },
+              {
+                "group": "プラン",
+                "pages": [
+                  "ja/plans"
+                ]
+              }
             ]
           }
         ]

@@ -1,0 +1,51 @@
+---
+title: "Obsidian 連携"
+description: "変換した Markdown を Obsidian の Vault に直接保存します。"
+---
+
+## 概要
+
+Web2MD は、`obsidian://` URI プロトコルを使って、変換した Markdown を [Obsidian](https://obsidian.md) に直接送信できます。ブラウザを離れることなく、Web コンテンツを Vault に保存できます。
+
+## セットアップ
+
+<Steps>
+  <Step title="Obsidian 連携を有効にする">
+    **Settings → Obsidian** に移動し、**Enable Obsidian export** をオンにします。
+  </Step>
+  <Step title="Vault 名を設定する(任意)">
+    複数の Obsidian Vault を使っている場合は、対象の Vault 名を入力します。空欄のままにするとデフォルトの Vault が使われます。
+  </Step>
+  <Step title="Obsidian を起動しておく">
+    URI プロトコルが機能するには、Obsidian がコンピューター上で開いている必要があります。
+  </Step>
+</Steps>
+
+## 使い方
+
+ページを変換したら:
+
+1. 結果パネルの **Save to Obsidian** ボタンをクリックします
+2. Obsidian が開き、Markdown コンテンツを含む新しいノートが作成されます
+3. ノートのタイトルにはページタイトルが設定されます
+
+## 仕組み
+
+Web2MD は Obsidian の [URI プロトコル](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI)を利用しています。
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+これにより、指定した Vault に、変換した Markdown を内容とする新しいノートが作成されます。
+
+<Warning>
+`obsidian://` プロトコルには URL の長さ制限があります。非常に長い記事は途中で切れる場合があります。長いコンテンツの場合は、**Copy** を使って Obsidian に直接貼り付けることを検討してください。
+</Warning>
+
+## 設定
+
+| 設定 | 説明 |
+|---------|-------------|
+| **Enable Obsidian export** | 「Save to Obsidian」ボタンの表示・非表示 |
+| **Vault name** | 保存先の Vault(空欄でデフォルト) |

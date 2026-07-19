@@ -1,0 +1,95 @@
+---
+title: "介绍"
+description: "Web2MD 一键把任意网页转换成干净、可直接喂给 AI 的 Markdown。"
+---
+
+## Web2MD 是什么？
+
+Web2MD 是一款 Chrome 扩展，可以把任意网页转换成干净的 Markdown 格式。无论你是要把内容喂给 AI 助手、把文章存进 Obsidian，还是做网页内容归档——转换这件事交给 Web2MD 就好。
+
+<Frame>
+  <img src="/images/homepage.png" alt="Web2MD homepage — Web to Markdown, One Click" />
+</Frame>
+
+<CardGroup cols={2}>
+  <Card title="一键转换" icon="bolt">
+    按 `Alt+M` 或点击扩展图标，即刻转换当前页面。
+  </Card>
+  <Card title="发送到 AI" icon="robot">
+    选好 AI 平台和模板，一键完成转换并发送。
+  </Card>
+  <Card title="多页队列" icon="layer-group">
+    转换多个页面，再一次性全部发送给 AI。
+  </Card>
+  <Card title="AI 自动标签" icon="tags">
+    每次转换都会自动生成语义标签和摘要。
+  </Card>
+  <Card title="智能提取" icon="wand-magic-sparkles">
+    内置 16 个站点适配器，覆盖 Reddit、GitHub、YouTube、Hacker News、arXiv、Wikipedia、Medium 等。
+  </Card>
+</CardGroup>
+
+### 更多能力
+
+- **AI 摘要与标签** —— 每次转换自动生成摘要和主题标签（PRO）
+- **收藏集** —— 把保存的内容整理成收藏集，做知识管理（PRO）
+- **语义搜索** —— 按含义查找已保存的内容，不只是关键词匹配（PRO）
+- **REST API 与 MCP Server** —— 以编程方式把 Web2MD 接入你的开发工作流（PRO）
+- **CLI 工具** —— `npx web2md` 在命令行转换 URL。可以管道输出给 LLM、批量处理，或保存到 Obsidian 库
+- **Agent Bridge** —— 让 AI Agent（Claude Code、Cursor）通过你的 Chrome 扩展批量转换 Reddit 等站点
+- **导出为图片** —— 把 Markdown 保存为带深色/浅色主题的精美图片（PRO）
+
+
+## 实际效果
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Web2MD converting a webpage to Markdown" />
+</Frame>
+
+## 快速上手
+
+不到一分钟就能用起来。
+
+<Card
+  title="安装并完成第一次转换"
+  icon="rocket"
+  href="/zh/quickstart"
+  horizontal
+>
+  安装扩展、转换你的第一个页面，并了解核心功能。
+</Card>
+
+## 功能一览
+
+<CardGroup cols={2}>
+  <Card title="转换页面" icon="file-lines" href="/zh/features/convert">
+    核心转换流程与输出选项。
+  </Card>
+  <Card title="发送到 AI" icon="paper-plane" href="/zh/features/send-to-ai">
+    把 Markdown 直接注入 AI 聊天界面。
+  </Card>
+  <Card title="批量转换" icon="list-check" href="/zh/features/batch-convert">
+    一次转换多个页面。
+  </Card>
+  <Card title="预览卡片" icon="credit-card" href="/zh/features/preview-card">
+    页面内的浮动卡片，快捷操作触手可及。
+  </Card>
+  <Card title="右键菜单" icon="ellipsis-vertical" href="/zh/features/context-menu">
+    右键即可转换或发送到 AI。
+  </Card>
+  <Card title="提示词模板" icon="message" href="/zh/advanced/prompt-templates">
+    自定义内容发送给 AI 的方式。
+  </Card>
+  <Card title="站点适配器" icon="plug" href="/zh/advanced/site-adapters">
+    针对特定网站优化的内容提取。
+  </Card>
+  <Card title="Obsidian 集成" icon="vault" href="/zh/advanced/obsidian">
+    把 Markdown 直接保存到你的 Obsidian 库。
+  </Card>
+  <Card title="CLI" icon="terminal" href="/zh/advanced/cli">
+    在命令行转换 URL。
+  </Card>
+  <Card title="Agent Bridge" icon="microchip" href="/zh/advanced/agent-bridge">
+    让 AI Agent 控制你的扩展。
+  </Card>
+</CardGroup>

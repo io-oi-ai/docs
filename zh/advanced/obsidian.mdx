@@ -1,0 +1,51 @@
+---
+title: "Obsidian 集成"
+description: "把转换好的 Markdown 直接存进你的 Obsidian 仓库。"
+---
+
+## 概览
+
+Web2MD 可以通过 `obsidian://` URI 协议，把转换好的 Markdown 直接发送到 [Obsidian](https://obsidian.md)。你不用离开浏览器就能把网页内容存进仓库。
+
+## 设置
+
+<Steps>
+  <Step title="启用 Obsidian 集成">
+    进入 **Settings → Obsidian**，打开 **Enable Obsidian export** 开关。
+  </Step>
+  <Step title="设置仓库名（可选）">
+    如果你有多个 Obsidian 仓库，填写仓库名来指定目标仓库。留空则使用默认仓库。
+  </Step>
+  <Step title="确保 Obsidian 正在运行">
+    URI 协议需要 Obsidian 在电脑上处于打开状态才能工作。
+  </Step>
+</Steps>
+
+## 使用方法
+
+页面转换完成后：
+
+1. 点击结果面板里的 **Save to Obsidian** 按钮
+2. Obsidian 会打开并用 Markdown 内容创建一条新笔记
+3. 笔记标题即页面标题
+
+## 工作原理
+
+Web2MD 使用 Obsidian 的 [URI 协议](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI)：
+
+```
+obsidian://new?vault=MyVault&name=Article%20Title&content=...
+```
+
+它会在指定仓库中创建一条新笔记，内容就是转换后的 Markdown。
+
+<Warning>
+`obsidian://` 协议有 URL 长度限制，特别长的文章可能被截断。遇到长内容时，建议改用 **Copy** 复制后直接粘贴到 Obsidian。
+</Warning>
+
+## 设置项
+
+| 设置 | 说明 |
+|---------|-------------|
+| **Enable Obsidian export** | 显示/隐藏 "Save to Obsidian" 按钮 |
+| **Vault name** | 目标仓库（留空则使用默认仓库） |

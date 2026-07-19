@@ -1,0 +1,85 @@
+---
+title: "プロンプトテンプレート"
+description: "再利用可能なプロンプトテンプレートで、AI に送るコンテンツの形式をカスタマイズします。"
+---
+
+## 概要
+
+プロンプトテンプレートを使うと、変換した Markdown に指示文を付けて AI プラットフォームへ送信できます。毎回「この記事を要約して…」と手で入力する代わりに、テンプレートを一度作成すれば繰り返し使えます。
+
+## 組み込みテンプレート
+
+Web2MD には、すぐに使える 4 つのテンプレートが用意されています。
+
+| テンプレート | プロンプト |
+|----------|--------|
+| **Summarize** | "Please summarize the following article concisely:" |
+| **Extract Key Points** | "Please extract the key points and main takeaways from this article as a bullet list:" |
+| **Tweet** | "Please turn the following content into a concise, engaging tweet (under 280 characters):" |
+| **Q&A** | "Please generate a list of questions and answers based on the following content:" |
+
+## テンプレートの仕組み
+
+テンプレートを選択してコンテンツを AI に送ると、テンプレートがコンテンツを次のように包み込みます。
+
+```markdown
+Please summarize the following article concisely:
+
+# Article Title
+
+The actual converted Markdown content goes here...
+```
+
+テンプレート内の `{content}` プレースホルダーが、変換された Markdown に置き換えられます。
+
+## カスタムテンプレートの作成
+
+<Steps>
+  <Step title="Convert タブを開く">
+    Web2MD のポップアップを開き、**Convert** タブに移動します。
+  </Step>
+  <Step title="+ Custom をクリック">
+    テンプレートピッカーの横にある **「+ Custom」** ボタンをクリックします。
+  </Step>
+  <Step title="詳細を入力">
+    以下を入力します:
+    - **Name** — テンプレートの短い名前(例:「Code Review」)
+    - **Prompt** — 指示文。`{content}` をプレースホルダーとして使います
+  </Step>
+  <Step title="保存して選択">
+    テンプレートを保存します。保存すると自動的にアクティブなテンプレートとして選択されます。
+  </Step>
+</Steps>
+
+### カスタムテンプレートの例
+
+**Name:** Code Review
+
+**Prompt:**
+```
+Please review the following code and provide feedback on:
+1. Code quality and best practices
+2. Potential bugs or issues
+3. Performance improvements
+
+{content}
+```
+
+## プロンプトのプレビュー
+
+テンプレートピッカー内の任意のテンプレートにマウスオーバーすると、AI に送信されるプロンプト全文のプレビューが表示されます。変換前に正しいテンプレートが選択されているか確認するのに役立ちます。
+
+## テンプレートの選択
+
+Convert タブの**テンプレートピッカー**からアクティブなテンプレートを選択します。選択したテンプレートは、**Send to AI** を使うたびに自動的に適用されます。
+
+## テンプレートの編集・削除
+
+Convert タブのテンプレートピッカーでは、次の操作ができます。
+
+- カスタムテンプレートの名前やプロンプトを**編集**する
+- 不要になったカスタムテンプレートを**削除**する
+
+<Info>
+組み込みテンプレートは編集・削除できませんが、カスタムテンプレートを作成して代わりに使用できます。
+</Info>

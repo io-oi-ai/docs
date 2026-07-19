@@ -1,0 +1,182 @@
+---
+title: "REST API"
+sidebarTitle: "REST API"
+description: "任意の URL や HTML をプログラムから Markdown に変換"
+icon: "code"
+---
+
+## 概要
+
+Web2MD REST API を使うと、任意の Web ページや生の HTML をプログラムからクリーンな Markdown に変換できます。パイプラインの構築、コンテンツ取り込みの自動化、独自ツールへの Web2MD の組み込みなどに活用できます。
+
+<Note>
+  REST API には **PRO プラン**が必要です。API キーは [Web2MD ダッシュボード](https://web2md.org/dashboard/api-keys)から生成してください。
+</Note>
+
+### 機械可読な仕様
+
+| リソース | URL | 説明 |
+|----------|-----|-------------|
+| OpenAPI 3.1 仕様 | [`/api/v1/openapi.json`](https://web2md.org/api/v1/openapi.json) | コード生成やツール連携のための完全な API スキーマ |
+| AI プラグインマニフェスト | [`/.well-known/ai-plugin.json`](https://web2md.org/.well-known/ai-plugin.json) | エージェントによる発見用(ChatGPT Plugins / AI アシスタント) |
+
+OpenAPI 仕様を使えば、クライアント SDK の自動生成や、Postman、Swagger UI、AI エージェントフレームワークへのインポートが可能です。
+
+## 認証
+
+すべてのリクエストで、`Authorization` ヘッダーに API キーを含める必要があります。
+
+```
+Authorization: Bearer w2m_your_key_here
+```
+
+API キーは `w2m_` で始まり、アカウントに紐付いています。
+
+## エンドポイント
+
+<Card>
+  <strong>POST</strong> `https://web2md.org/api/v1/convert`
+</Card>
+
+### リクエストボディ
+
+| フィールド | 型 | 必須 | 説明 |
+|-------|------|----------|-------------|
+| `url` | `string` | `url` または `html` のいずれか | 変換するページの URL |
+| `html` | `string` | `url` または `html` のいずれか | 変換する生の HTML 文字列 |
+| `options` | `object` | いいえ | 変換オプション(下記参照) |
+
+<Warning>
+  `url` と `html` はどちらか一方のみを指定してください。両方を指定した場合、またはどちらも指定しなかった場合、リクエストは `400` エラーで失敗します。
+</Warning>
+
+### オプション
+
+| フィールド | 型 | デフォルト | 説明 |
+|-------|------|---------|-------------|
+| `includeImages` | `boolean` | `true` | 出力に画像参照を含める |
+| `includeLinks` | `boolean` | `true` | 出力にハイパーリンクを保持する |
+| `includeMeta` | `boolean` | `true` | ページのメタデータを YAML フロントマターとして先頭に付加する |
+
+### レスポンス
+
+成功時のレスポンスは次のとおりです。
+
+```json
+{
+  "success": true,
+  "data": {
+    "markdown": "# Page Title\n\nConverted content...",
+    "metadata": {
+      "title": "Page Title",
+      "url": "https://example.com/article",
+      "extractedAt": "2026-03-22T10:30:00.000Z",
+      "wordCount": 1250,
+      "tokenCount": 1680,
+      "readingTime": 5,
+      "author": "Jane Doe",
+      "publishedDate": "2026-03-20",
+      "description": "A brief summary extracted from the page meta tags."
+    }
+  }
+}
+```
+
+| フィールド | 型 | 説明 |
+|-------|------|-------------|
+| `title` | `string` | `<title>` から抽出したページタイトル |
+| `url` | `string` | ソース URL(指定した場合) |
+| `extractedAt` | `string` | 変換時刻の ISO 8601 タイムスタンプ |
+| `wordCount` | `integer` | 総単語数(英単語 + CJK 文字数) |
+| `tokenCount` | `integer` | LLM トークン数の推定値 |
+| `readingTime` | `integer` | 推定読了時間(分) |
+| `author` | `string?` | メタタグまたは JSON-LD から取得した著者名 |
+| `publishedDate` | `string?` | 公開日(YYYY-MM-DD) |
+| `description` | `string?` | Open Graph またはメタタグから取得したページ説明 |
+
+## レート制限
+
+API リクエストは API キーごとに**毎分 60 リクエスト**に制限されています。制限を超えると、API は `429` ステータスコードを返します。リセット時間を待ってから再試行してください。
+
+## エラーレスポンス
+
+| ステータス | 意味 | 例 |
+|--------|---------|---------|
+| `400` | 不正なリクエスト — 入力の欠落または競合 | `url` と `html` の両方を指定、またはどちらも未指定 |
+| `401` | 認証エラー — API キーが無効または未指定 | `Authorization` ヘッダーの欠落 |
+| `422` | 処理不能 — URL を取得できなかった | 対象サイトがエラーを返した、またはタイムアウト |
+| `429` | レート制限超過 | 1 分間に 60 リクエストを超過 |
+| `500` | サーバー内部エラー | 当社側での予期しない障害 |
+
+すべてのエラーレスポンスは次の形式に従います。
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Try again in 45 seconds."
+  }
+}
+```
+
+## 例
+
+### curl で URL を変換
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/blog/post",
+    "options": {
+      "includeImages": true,
+      "includeLinks": true,
+      "includeMeta": false
+    }
+  }'
+```
+
+### curl で生の HTML を変換
+
+```bash
+curl -X POST https://web2md.org/api/v1/convert \
+  -H "Authorization: Bearer w2m_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a <strong>test</strong> paragraph.</p>"
+  }'
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("https://web2md.org/api/v1/convert", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer w2m_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/blog/post",
+    options: {
+      includeImages: true,
+      includeLinks: true,
+    },
+  }),
+});
+
+const result = await response.json();
+
+if (result.success) {
+  console.log(result.data.markdown);
+  console.log(`Word count: ${result.data.metadata.wordCount}`);
+} else {
+  console.error(result.error.message);
+}
+```
+
+<Tip>
+  API キーはハードコードせず、環境変数に保存してください。たとえば Node.js では `process.env.WEB2MD_API_KEY` を使います。
+</Tip>

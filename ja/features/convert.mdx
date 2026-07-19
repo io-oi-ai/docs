@@ -1,0 +1,115 @@
+---
+title: "ページを変換"
+description: "あらゆるWebページをワンクリックでクリーンなAI対応Markdownに変換します。"
+---
+
+## 概要
+
+Web2MDのコア機能は、あらゆるWebページをクリーンなMarkdownに変換することです。広告、ナビゲーション、サイドバーなどの不要な要素を取り除き、本当に必要なコンテンツだけを残します。
+
+<Frame>
+  <img src="/images/demo-convert.gif" alt="Converting a webpage to Markdown" />
+</Frame>
+
+## 使い方
+
+<Steps>
+  <Step title="任意のWebページを開く">
+    変換したいページをブラウザで開きます。
+  </Step>
+  <Step title="変換を実行する">
+    Web2MDアイコンをクリックするか、`Alt+M` を押すか、右クリックして **Copy page as Markdown** を選択します。
+  </Step>
+  <Step title="クリーンなMarkdownを取得">
+    Web2MDがメインコンテンツを抽出し、不要な要素を除去して、構造の整ったMarkdownを生成します。
+  </Step>
+</Steps>
+
+## 変換結果
+
+変換後、次の内容を含む結果パネルが表示されます。
+
+<Frame>
+  <img src="/images/popup-result.png" alt="Web2MD popup showing conversion result" />
+</Frame>
+
+### 統計バー
+
+| 指標 | 説明 |
+|--------|-------------|
+| **Words** | 抽出されたコンテンツの総単語数 |
+| **Tokens** | 推定トークン数(平均4文字 = 1トークン)— AIのコンテキスト上限の確認に便利 |
+| **Read** | 推定読了時間(200語/分で算出) |
+
+### 出力アクション
+
+<CardGroup cols={2}>
+  <Card title="Copy" icon="copy">
+    Markdownをクリップボードにコピーします。設定で **Auto copy** を有効にすると自動でコピーされます。
+  </Card>
+  <Card title="Download" icon="download">
+    ページタイトルをファイル名にした `.md` ファイルとして保存します。
+  </Card>
+  <Card title="Send to AI" icon="paper-plane">
+    コンテンツをClaude、ChatGPT、Geminiに直接送信します。[詳しくはこちら →](/ja/features/send-to-ai)
+  </Card>
+  <Card title="Save to Obsidian" icon="vault">
+    `obsidian://` URIを使ってObsidian vaultにエクスポートします。[詳しくはこちら →](/ja/advanced/obsidian)
+  </Card>
+</CardGroup>
+
+### プレビューモード
+
+2つの表示を切り替えられます。
+
+- **Preview** — 見出し、リスト、コードブロック、画像を含むレンダリング済みMarkdown
+- **Source** — そのままコピー&ペーストできる生のMarkdownテキスト
+
+## 抽出される内容
+
+Web2MDは2段階のDOMクリーニング処理を行います。
+
+1. **フェーズ1** — 常に削除: `<script>`、`<style>`、`<nav>`、`<header>`、`<footer>`、`<aside>`
+2. **フェーズ2** — インライン要素は保持しつつ、ブロックレベルの妨害要素(広告、サイドバー、SNSシェアボタン)を削除
+
+### 保持されるコンテンツ
+
+- 見出しと階層構造
+- 段落とテキスト書式(太字、斜体、取り消し線)
+- リスト(順序付き・順序なし)
+- 言語検出付きコードブロック
+- 代替テキスト付き画像
+- リンク(設定で切り替え可能)
+- テーブル
+- 引用ブロック
+
+### メタデータ(オプション)
+
+設定で **Add metadata** を有効にすると、出力に以下が含まれます。
+
+```markdown
+---
+title: "Article Title"
+source: https://example.com/article
+date: 2025-01-15T10:30:00.000Z
+---
+```
+
+## 選択モード
+
+変換前にページ上のテキストを選択すると、ページ全体ではなく **選択した部分だけ** を抽出できます。次の方法で利用できます。
+
+- 拡張機能のポップアップ(テキスト選択状態でConvertをクリック)
+- 右クリック → **Copy selection as Markdown**
+
+<Tip>
+選択モードは、長い記事やフォーラムのスレッドから特定のセクションだけを抽出したいときに便利です。
+</Tip>
+
+## キーボードショートカット
+
+| ショートカット | アクション |
+|----------|--------|
+| `Alt+M` / `Option+M` | 現在のページを変換 |
+
+このショートカットはポップアップを開かなくても、どのタブでも使えます。

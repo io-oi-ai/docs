@@ -1,0 +1,236 @@
+---
+title: "CLI"
+sidebarTitle: "CLI (npx web2md)"
+description: "コマンドラインから URL を Markdown に変換 — LLM へのパイプ、バッチ処理、Obsidian への保存に対応"
+icon: "terminal"
+---
+
+## 概要
+
+Web2MD CLI を使うと、ターミナルから直接、任意の URL をクリーンな Markdown に変換できます。出力を LLM にパイプしたり、URL リストをバッチ処理したり、Obsidian の Vault にコンテンツを取り込んだり — すべてブラウザを開かずに行えます。
+
+```bash
+npx web2md https://example.com/article
+```
+
+<Note>
+  CLI には **Node.js 18 以上**が必要です。`node -v` でバージョンを確認してください。
+</Note>
+
+## インストール
+
+インストールは不要です。`npx` でそのまま実行できます。
+
+```bash
+npx web2md <url> [options]
+```
+
+起動を高速化したい場合は、グローバルにインストールすることもできます。
+
+```bash
+npm install -g web2md
+web2md <url> [options]
+```
+
+## 動作モード
+
+Web2MD CLI は、設定に応じて 3 つのモードで動作します。
+
+<CardGroup cols={3}>
+  <Card title="ローカル" icon="laptop">
+    **デフォルトのモード。** API キー不要。ページを取得してローカルで変換します。大半の公開 Web サイトで動作します。
+  </Card>
+  <Card title="サーバー" icon="server">
+    **API キー使用時。** `WEB2MD_API_KEY` を設定すると、Reddit や Fandom/Wikia など、サーバーサイド処理が必要な制限付きサイトに対応できます。
+  </Card>
+  <Card title="ブリッジ" icon="bridge">
+    **`--bridge` フラグ使用時。** Chrome 拡張機能を利用して、静的な取得では届かない JS レンダリングページやログインが必要なページを取得します。
+  </Card>
+</CardGroup>
+
+## フラグ
+
+| フラグ | 説明 |
+|------|-------------|
+| `--no-images` | 出力から画像参照を除去します |
+| `--no-links` | 出力からハイパーリンクを除去します |
+| `--meta` | YAML フロントマター(title、source、wordCount、tokenCount、readingTime、date)を追加します |
+| `--json` | JSON 形式 `{ markdown, metadata }` で出力します |
+| `-o, --output <file>` | 出力をファイルに書き込みます |
+| `--output-dir <dir>` | URL ごとに個別の `.md` ファイルとして書き出します |
+| `--batch <file>` | ファイルから URL を読み込みます(1 行 1 URL、`#` はコメント) |
+| `--vault <dir>` | Obsidian Vault モード:`<dir>/raw/` に保存し、`<dir>/INDEX.md` を更新します |
+| `--concurrency <n>` | 最大並列取得数(デフォルト:3、最大:20) |
+| `--bridge` | JS レンダリングページやログインが必要なサイトに Chrome 拡張機能を使用します |
+| `-q, --quiet` | 進捗メッセージを非表示にします |
+
+## 環境変数
+
+| 変数 | 説明 |
+|----------|-------------|
+| `WEB2MD_API_KEY` | Reddit などの制限付きサイト用の API キー(`w2m_xxx`) |
+| `WEB2MD_API_URL` | API のベース URL を上書きします |
+| `WEB2MD_EXTENSION_ID` | `--bridge` モードで使う Chrome 拡張機能 ID を上書きします |
+
+<Tip>
+  シェルのプロファイル(`~/.zshrc` または `~/.bashrc`)に追加しておくと、セッションをまたいで有効になります。
+  ```bash
+  export WEB2MD_API_KEY="w2m_your_key_here"
+  ```
+</Tip>
+
+## 使用例
+
+### 基本的な変換
+
+```bash
+npx web2md https://example.com/article
+```
+
+Markdown を標準出力に表示します。
+
+### LLM へのパイプ
+
+```bash
+npx web2md https://react.dev/learn/thinking-in-react | llm "Summarize this page"
+```
+
+```bash
+npx web2md https://docs.python.org/3/tutorial/classes.html | claude "Explain the key concepts"
+```
+
+### ファイルへの保存
+
+```bash
+npx web2md https://example.com/article -o article.md
+```
+
+```bash
+npx web2md https://example.com/article --meta -o article.md
+```
+
+`--meta` フラグを付けると、タイトル、ソース URL、単語数、トークン数、読了時間、日付を含む YAML フロントマターが先頭に付加されます。
+
+### ファイルからのバッチ変換
+
+`urls.txt` というファイルを作成します。
+
+```text
+# Research papers
+https://arxiv.org/abs/2301.00001
+https://arxiv.org/abs/2301.00002
+
+# Blog posts
+https://example.com/blog/post-1
+https://example.com/blog/post-2
+```
+
+次のように実行します。
+
+```bash
+npx web2md --batch urls.txt --output-dir ./research --concurrency 5
+```
+
+各 URL が `./research` ディレクトリに個別の `.md` ファイルとして保存されます。
+
+### Obsidian Vault への取り込み
+
+```bash
+npx web2md --batch urls.txt --vault ~/Documents/MyVault
+```
+
+各ページが `~/Documents/MyVault/raw/` に保存され、変換したすべてのページへのリンクを含む `~/Documents/MyVault/INDEX.md` が更新されます。
+
+### API キーを使った Reddit の変換
+
+```bash
+export WEB2MD_API_KEY="w2m_your_key_here"
+npx web2md https://www.reddit.com/r/LocalLLaMA/comments/example
+```
+
+<Warning>
+  Reddit には有効な API キーが必要です。キーがない場合、Reddit のボット制限により Reddit の URL は変換に失敗します。
+</Warning>
+
+### ブリッジモード
+
+Chrome 拡張機能を使って、JS レンダリングページやログインが必要なページを処理します。
+
+```bash
+npx web2md --bridge https://app.example.com/dashboard
+```
+
+<Note>
+  ブリッジモードを使うには、Web2MD Chrome 拡張機能がインストールされていて、Chrome が起動している必要があります。CLI は Chrome の Native Messaging プロトコルを介して拡張機能と通信します。
+</Note>
+
+### JSON 出力
+
+```bash
+npx web2md --json https://example.com/article
+```
+
+構造化された出力を返します。
+
+```json
+{
+  "markdown": "# Article Title\n\nContent here...",
+  "metadata": {
+    "title": "Article Title",
+    "source": "https://example.com/article",
+    "wordCount": 1250,
+    "tokenCount": 1680,
+    "readingTime": 5,
+    "date": "2026-04-11T10:30:00.000Z"
+  }
+}
+```
+
+プログラムからの利用や `jq` へのパイプに便利です。
+
+```bash
+npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
+```
+
+## 最適化済みサイト
+
+Web2MD には以下のサイト向けのアダプターが組み込まれており、汎用の変換よりもクリーンな出力が得られます。
+
+<AccordionGroup>
+  <Accordion title="最適化対応済みのサイト">
+    - **Wikipedia** — 記事のクリーンな抽出、インフォボックスの処理
+    - **arXiv** — 論文のアブストラクトとメタデータ
+    - **Hacker News** — コメント付きスレッド
+    - **GitHub** — Issue と Pull Request
+    - **Stack Overflow** — 質問と回答
+    - **dev.to** — ブログ記事
+    - **Medium** — 記事(ペイウォールのプレビューを回避)
+    - **Substack** — ニュースレター記事
+    - **OpenAI Docs** — ドキュメントページ
+    - **Mintlify ベースのドキュメント** — Mintlify で構築されたドキュメントサイト
+    - **Reddit** — 投稿とコメント(API キーが必要)
+  </Accordion>
+</AccordionGroup>
+
+## よくあるワークフロー
+
+<AccordionGroup>
+  <Accordion title="AI エージェントにドキュメントを渡す">
+    ```bash
+    npx web2md --batch docs-urls.txt --output-dir ./context --quiet
+    ```
+    AI エージェントのコンテキストディレクトリを `./context` に向ければ、根拠に基づいた回答が得られます。
+  </Accordion>
+  <Accordion title="リサーチコーパスを構築する">
+    ```bash
+    npx web2md --batch papers.txt --vault ~/Obsidian/Research --meta --concurrency 10
+    ```
+    Obsidian にインデックス付きで検索可能なリサーチ Vault を作成します。
+  </Accordion>
+  <Accordion title="LLM 入力用に装飾を除去する">
+    ```bash
+    npx web2md --no-images --no-links https://example.com/article | llm "Analyze this"
+    ```
+    画像とリンクを除去し、LLM へパイプする際のトークン消費を削減します。
+  </Accordion>
+</AccordionGroup>

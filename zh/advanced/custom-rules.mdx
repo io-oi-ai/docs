@@ -1,0 +1,101 @@
+---
+title: "自定义提取规则"
+sidebarTitle: "自定义规则"
+description: "按域名定义 CSS 选择器，精准控制内容提取。"
+icon: "code"
+---
+
+## 概览
+
+自定义提取规则（v0.7）让你按域名定义 CSS 选择器，精确控制 Web2MD 提取哪些内容。如果某个站点的正文放在不常见的容器里，或者有些元素你总想去掉，自定义规则给你完全的控制权。
+
+<Note>
+自定义规则是 **Pro 专属**功能。
+</Note>
+
+## 创建规则
+
+<Steps>
+  <Step title="打开设置">
+    在 Web2MD 弹窗中，进入 **Settings → Custom Rules**。
+  </Step>
+  <Step title="新建规则">
+    点击 **New Rule**，输入域名（例如 `example.com`）。
+  </Step>
+  <Step title="定义选择器">
+    设置正文选择器、移除选择器，还可以选填标题选择器。
+  </Step>
+  <Step title="保存并转换">
+    保存规则。下次转换该域名的页面时，你的自定义选择器会自动生效。
+  </Step>
+</Steps>
+
+## 规则字段
+
+| 字段 | 说明 | 示例 |
+|-------|-------------|---------|
+| **域名** | 规则适用的域名（精确匹配） | `docs.example.com` |
+| **正文选择器** | 主内容容器的 CSS 选择器 | `article.post-body` |
+| **移除选择器** | 要去掉的元素的 CSS 选择器（逗号分隔） | `.ads, .sidebar, .related-posts` |
+| **标题选择器** | 覆盖自动标题识别 | `h1.entry-title` |
+
+## 示例：清理某个博客
+
+假设你经常转换某个博客的文章，它的正文包在一个特定 div 里，还带着一堆碍事的侧边栏组件：
+
+```
+Domain:           blog.example.com
+Content selector: div.article-content
+Remove selectors: .author-bio, .newsletter-signup, .comments-section
+Title selector:   h1.post-title
+```
+
+有了这条规则，Web2MD 会：
+1. 只提取 `div.article-content` 内的内容
+2. 去掉作者简介、订阅引导和评论区
+3. 用 `h1.post-title` 元素作为文档标题
+
+## 规则如何生效
+
+<CardGroup cols={2}>
+  <Card title="自动匹配" icon="bullseye">
+    规则按域名匹配。转换页面时，Web2MD 检查该域名是否有自定义规则，如果有则在标准提取管线之前应用。
+  </Card>
+  <Card title="兜底行为" icon="shield">
+    如果正文选择器在页面上没匹配到任何内容，Web2MD 会回退到默认提取逻辑。你的规则不会导致转换失败。
+  </Card>
+</CardGroup>
+
+## 管理规则
+
+所有规则都在扩展弹窗的 **Settings → Custom Rules** 中管理。
+
+| 操作 | 方法 |
+|--------|-----|
+| **创建** | Settings → Custom Rules → New Rule |
+| **编辑** | 点击任意已有规则修改选择器 |
+| **删除** | 点击规则旁的垃圾桶图标 |
+| **测试** | 打开目标域名下的页面执行一次转换 |
+
+<Tip>
+创建规则前，先用浏览器的 DevTools（`Cmd+Shift+I` 或 `F12`）检查页面，找到合适的 CSS 选择器。
+</Tip>
+
+## 社区共享
+
+<Info>
+社区规则共享即将上线。届时你可以把规则标记为公开（`isPublic` 标记），让其他用户也能用上你为特定域名调好的选择器。
+</Info>
+
+## 与站点适配器的关系
+
+自定义规则和[站点适配器](/zh/advanced/site-adapters)的定位不同：
+
+| | 站点适配器 | 自定义规则 |
+|-|---------------|-------------|
+| **范围** | 内置，针对特定平台（Reddit、GitHub 等） | 任何你自己定义的域名 |
+| **方式** | 使用平台 API 和专用逻辑 | 仅 CSS 选择器 |
+| **维护方** | Web2MD 团队 | 你自己 |
+| **优先级** | 先运行 | 没有匹配的适配器时运行 |
+
+如果某个域名有站点适配器，适配器优先于自定义规则。自定义规则最适合没有专属适配器的站点。

@@ -1,0 +1,44 @@
+---
+title: "右键菜单"
+description: "右键点击即可转换页面，或直接将内容发送给 AI。"
+---
+
+## 概述
+
+Web2MD 会在浏览器的右键菜单中添加入口，无需打开弹窗即可快速操作。
+
+<Frame>
+  <img src="/images/demo-rightclick.gif" alt="Right-click context menu demo" />
+</Frame>
+
+## 菜单选项
+
+### 未选中文本时
+
+| 菜单项 | 操作 |
+|-----------|--------|
+| **Copy page as Markdown** | 转换整个页面并复制到剪贴板 |
+| **Convert & Send to [AI]** | 转换并发送到你偏好的 AI 平台 |
+
+### 选中文本时
+
+| 菜单项 | 操作 |
+|-----------|--------|
+| **Copy selection as Markdown** | 只转换选中的文本并复制到剪贴板 |
+| **Convert & Send to [AI]** | 转换选中内容并发送到你偏好的 AI 平台 |
+
+## 动态显示 AI 平台名称
+
+右键菜单会动态显示你偏好的 AI 平台名称。例如，如果你将 Claude 设为默认平台，你会看到：
+
+> Convert & Send to **Claude**
+
+在 **Settings → Preferred AI platform** 中更换平台，右键菜单会自动更新。
+
+## 与预览卡片联动
+
+当你使用右键菜单转换页面时，页面右上角会出现[预览卡片](/zh/features/preview-card)（需在设置中启用），提供 Copy All、Send All 等额外操作。
+
+<Tip>
+右键菜单是最快的转换方式——在任意位置右键一下就搞定。搭配 **Auto copy** 使用，工作流零摩擦。
+</Tip>
