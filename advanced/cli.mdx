@@ -28,7 +28,7 @@ npx web2md <url> [options]
 Or install globally for faster startup:
 
 ```bash
-npm install -g web2md
+npm install -g web2md-cli
 web2md <url> [options]
 ```
 
@@ -64,11 +64,57 @@ Web2MD CLI operates in three modes depending on your configuration:
 | `--bridge` | Use Chrome extension for JS-rendered or login-protected sites |
 | `-q, --quiet` | Suppress progress messages |
 
+## Commands
+
+Besides converting URLs, the CLI has two subcommands for authentication and Library sync:
+
+| Command | Description |
+|---------|-------------|
+| `web2md login` | Authenticate once and save your API key to `~/.web2md/config.json` |
+| `web2md sync [dir]` | Sync your Web2MD Library to a local directory as Markdown files |
+
+### login
+
+```bash
+npx web2md-cli login
+```
+
+Starts a browser-based device authorization flow: the CLI opens `https://web2md.org` and shows a code to approve. Once approved, your API key is saved to `~/.web2md/config.json` — no need to export `WEB2MD_API_KEY` in every shell. The [MCP server](/advanced/mcp-server#authentication) reads from the same file, so logging in once here also authenticates MCP tool calls.
+
+Prefer to paste a key directly instead of the browser flow?
+
+```bash
+npx web2md-cli login --key
+```
+
+This prompts for a key (`w2m_...`) on stdin and saves it the same way. Get a key from the [dashboard](https://web2md.org/dashboard/api-keys).
+
+### sync
+
+```bash
+npx web2md-cli sync [dir] [--tag <t>] [--full]
+```
+
+Syncs your Library — every page you've saved via the extension, dashboard, or API — to a local directory as Markdown files with frontmatter, organized by tag. Requires being logged in (or `WEB2MD_API_KEY` set).
+
+| Flag | Description |
+|------|-------------|
+| `dir` | Target directory (default: `./web2md-vault`) |
+| `--tag <t>` | Only sync items with this tag |
+| `--full` | Ignore the incremental cursor and re-scan full history |
+
+Sync is incremental by default: it tracks a cursor in `<dir>/.web2md-sync.json` and only pulls new items on subsequent runs. Point Obsidian (or any Markdown-reading tool) at the target directory to browse your Library as notes.
+
+```bash
+npx web2md-cli login
+npx web2md-cli sync ~/Documents/Web2MD-Library
+```
+
 ## Environment variables
 
 | Variable | Description |
 |----------|-------------|
-| `WEB2MD_API_KEY` | API key (`w2m_xxx`) for Reddit and restricted sites |
+| `WEB2MD_API_KEY` | API key (`w2m_xxx`) for Reddit, restricted sites, and `sync` — takes priority over `~/.web2md/config.json` |
 | `WEB2MD_API_URL` | Override the API base URL |
 | `WEB2MD_EXTENSION_ID` | Override the Chrome extension ID for `--bridge` mode |
 

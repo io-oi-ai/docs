@@ -7,41 +7,98 @@ icon: "robot"
 
 ## Descripción general
 
-El servidor MCP de Web2MD expone Web2MD como un conjunto de herramientas que los asistentes de IA pueden invocar directamente, mediante el [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — un estándar abierto para conectar modelos de IA con herramientas y fuentes de datos externas.
+El servidor MCP de Web2MD expone Web2MD como un conjunto de herramientas que los asistentes de IA pueden invocar directamente, usando el [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — un estándar abierto para conectar modelos de IA con herramientas y fuentes de datos externas.
 
-Una vez configurado, puedes pedirle a Claude, Cursor o Windsurf que convierta páginas, busque en tu historial de conversiones o recupere Markdown guardado sin salir de la conversación.
+Una vez configurado, puedes pedirle a Claude, Cursor o Windsurf que convierta páginas, busque y sincronice tu Library, haga conversión por lotes con la extensión de Chrome, o traiga una Skill guardada — sin salir de la conversación.
 
 <Note>
-  El servidor MCP requiere una **clave de API de Web2MD** (plan PRO). Genera una desde el [panel de control](https://web2md.org/dashboard/api-keys).
+  El servidor MCP requiere una **clave de API de Web2MD** (plan PRO). Genera una desde el [panel](https://web2md.org/dashboard/api-keys), o ejecuta `npx web2md-cli login` para autenticarte una vez y compartir la clave con la CLI automáticamente (ver [Autenticación](#authentication) más abajo).
 </Note>
 
 ## Herramientas disponibles
 
-El servidor MCP ofrece tres herramientas:
+El servidor MCP ofrece 11 herramientas, agrupadas por lo que hacen:
 
 | Herramienta | Descripción |
 |------|-------------|
-| `convert_url` | Convierte cualquier URL a Markdown limpio |
-| `semantic_search` | Busca en tus conversiones guardadas con lenguaje natural |
-| `get_conversion` | Recupera el Markdown completo de una conversión guardada por ID |
+| `convert_url` | Convierte cualquier URL a Markdown limpio mediante el conversor del lado del servidor |
+| `bridge_convert_url` | Convierte una URL a través de tu extensión de Chrome vía HTTP — para Reddit, páginas renderizadas con JS o protegidas por login |
+| `agent_convert` | Convierte una URL a través de la extensión de Chrome vía native messaging (mismos casos de uso que `bridge_convert_url`, distinto transporte) |
+| `agent_batch_convert` | Convierte por lotes hasta 50 URLs a través de la extensión de Chrome vía native messaging |
+| `search_library` | Busca en tu Library guardada por palabra clave y/o etiqueta |
+| `get_library_items` | Obtiene el Markdown completo de elementos de la Library por id |
+| `sync_library` | Sincroniza tu Library con un directorio local como archivos Markdown |
+| `list_skills` | Lista las Skills guardadas en tu cuenta cloud de Web2MD |
+| `get_skill` | Obtiene el cuerpo completo de una Skill por id o nombre |
+| `semantic_search` | **Obsoleta** — usa `search_library` + `get_library_items` en su lugar |
+| `get_conversion` | **Obsoleta** — usa `search_library` + `get_library_items` en su lugar |
 
 ### convert_url
 
-Obtiene una URL y devuelve el contenido de la página como Markdown. Admite las mismas opciones de conversión que la API REST.
+Obtiene una URL del lado del servidor y devuelve el contenido de la página como Markdown, con título, recuento de palabras y tiempo de lectura. Admite las mismas opciones de conversión que la API REST (`includeImages`, `includeLinks`).
 
-**Prompt de ejemplo:** _"Convierte esta URL a markdown: https://docs.example.com/getting-started"_
+**Ejemplo de prompt:** _"Convierte esta URL a markdown: https://docs.example.com/getting-started"_
 
-### semantic_search
+### bridge_convert_url
 
-Busca entre todas tus conversiones guardadas previamente mediante una consulta en lenguaje natural. Devuelve una lista de conversiones coincidentes con títulos, URLs y puntuaciones de relevancia.
+Convierte una URL obteniendo su HTML a través de tu extensión de Chrome en ejecución (mediante un puente HTTP local), y luego convierte ese HTML a Markdown del lado del servidor. Úsala para páginas a las que el servidor no puede acceder directamente — Reddit, sitios protegidos por login, o páginas fuertemente renderizadas con JS. Requiere Chrome abierto con la extensión de Web2MD instalada; el ID de la extensión se descubre automáticamente a partir de tu clave de API.
 
-**Prompt de ejemplo:** _"Busca en mis páginas guardadas artículos sobre indexación de bases de datos"_
+**Ejemplo de prompt:** _"Usa el bridge para convertir este hilo de Reddit: https://reddit.com/r/..."_
 
-### get_conversion
+### agent_convert
 
-Recupera el contenido Markdown completo de una conversión guardada específica según su ID. Útil para traer un documento completo al contexto después de encontrarlo con `semantic_search`.
+Convierte una URL de la misma forma que `bridge_convert_url` — a través de tu extensión de Chrome — pero por el canal de native messaging de [Agent Bridge](/es/advanced/agent-bridge) en lugar de HTTP. Acepta un parámetro opcional `skill`: pasa un id o nombre de Skill y su contenido se añade al Markdown devuelto para que el agente pueda actuar sobre él de inmediato. Requiere Chrome en ejecución con la extensión y el host nativo instalados.
 
-**Prompt de ejemplo:** _"Obtén el contenido completo de la conversión abc123"_
+**Ejemplo de prompt:** _"Convierte esta página aplicando la skill summarize: https://..."_
+
+### agent_batch_convert
+
+Mismo transporte que `agent_convert`, pero toma un array de hasta 50 URLs y las convierte secuencialmente en una sola llamada. Ideal para traer muchos hilos de Reddit o páginas renderizadas con JS de una sola vez.
+
+**Ejemplo de prompt:** _"Convierte por lotes estas 12 URLs a Markdown: [...]"_
+
+### search_library
+
+Busca en tu Library de Web2MD — cada página que has guardado — por palabra clave (coincide con el título y el contenido completo de la página) y/o etiqueta, de más reciente a más antigua. Devuelve metadatos compactos (id, título, url, fecha, etiquetas), no el Markdown completo. Las cuentas del plan Free solo ven los elementos más recientes en los resultados; la herramienta te avisa cuando los resultados fueron truncados.
+
+**Ejemplo de prompt:** _"Busca en mi library algo sobre autenticación"_
+
+### get_library_items
+
+Obtiene el contenido Markdown completo de elementos de la Library por id (hasta 20 por llamada — usa primero `search_library` para encontrar los ids). Las respuestas pueden ser grandes; para páginas largas, agrupa 5 ids o menos por llamada.
+
+**Ejemplo de prompt:** _"Obtén el contenido completo de los elementos de library abc123 y def456"_
+
+### sync_library
+
+Sincroniza toda tu Library con un directorio local como archivos Markdown, organizados por etiqueta con frontmatter. Incremental por defecto (registra un cursor en `<dir>/.web2md-sync.json`); pasa `full: true` para volver a escanear todo. Es la misma sincronización que ejecuta `web2md sync` desde la [CLI](/es/advanced/cli) — usa la superficie que mejor se adapte a tu flujo de trabajo.
+
+**Ejemplo de prompt:** _"Sincroniza mi library en ~/notes/web2md, solo la etiqueta 'research'"_
+
+### list_skills
+
+Lista las Skills guardadas en tu cuenta cloud de Web2MD como un array compacto (id, nombre, descripción). Usa `get_skill` para obtener una en detalle.
+
+**Ejemplo de prompt:** _"¿Qué skills tengo guardadas?"_
+
+### get_skill
+
+Obtiene el cuerpo completo, al estilo SKILL.md, de una Skill por id o nombre — sus instrucciones, descripción y contenido completo. Usa primero `list_skills` si no conoces el id.
+
+**Ejemplo de prompt:** _"Obtén mi skill 'summarize'"_
+
+### semantic_search / get_conversion (obsoletas)
+
+Estas dos herramientas son anteriores a la Library. Siguen funcionando pero solo ven conversiones guardadas a través de la antigua API de historial, no la Library completa — las nuevas integraciones deberían usar `search_library` y `get_library_items` en su lugar.
+
+## Autenticación
+
+El servidor resuelve la clave de API en este orden:
+
+1. La variable de entorno `WEB2MD_API_KEY`, si está definida.
+2. En caso contrario, `~/.web2md/config.json` — el mismo archivo que escribe `npx web2md-cli login` (el flujo de device-login de la [CLI](/es/advanced/cli)). Ejecuta `login` una vez y tanto la CLI como el servidor MCP recogen la clave automáticamente, sin necesidad de un bloque `env`.
+
+Si no se encuentra ninguna, el servidor arranca pero cada llamada a una herramienta devuelve un error de autenticación con una sugerencia para definir la clave o ejecutar `login`.
 
 ## Configuración
 
@@ -52,14 +109,14 @@ Recupera el contenido Markdown completo de una conversión guardada específica 
     - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
     - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-    Agrega la entrada `web2md` bajo `mcpServers`:
+    Añade la entrada `web2md` bajo `mcpServers`:
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -68,17 +125,19 @@ Recupera el contenido Markdown completo de una conversión guardada específica 
     }
     ```
 
+    Si ya ejecutaste `npx web2md-cli login`, puedes omitir por completo el bloque `env` — el servidor lee la clave desde `~/.web2md/config.json`.
+
     Reinicia Claude Desktop. Deberías ver aparecer las herramientas de Web2MD en el selector de herramientas.
   </Tab>
   <Tab title="Cursor">
-    Abre tu archivo de configuración MCP de Cursor en `~/.cursor/mcp.json` y agrega:
+    Abre tu archivo de configuración MCP de Cursor en `~/.cursor/mcp.json` y añade:
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -90,14 +149,14 @@ Recupera el contenido Markdown completo de una conversión guardada específica 
     Reinicia Cursor para cargar el nuevo servidor.
   </Tab>
   <Tab title="Windsurf">
-    Abre tu archivo de configuración MCP de Windsurf en `~/.windsurf/mcp.json` y agrega:
+    Abre tu archivo de configuración MCP de Windsurf en `~/.windsurf/mcp.json` y añade:
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -112,44 +171,53 @@ Recupera el contenido Markdown completo de una conversión guardada específica 
 
 ## Ejemplos de uso
 
-Una vez que el servidor MCP esté en funcionamiento, puedes usar lenguaje natural en tu asistente de IA:
+Una vez que el servidor MCP está en ejecución, puedes usar lenguaje natural en tu asistente de IA:
 
 <AccordionGroup>
   <Accordion title="Convertir una página a Markdown">
     **Tú:** Convierte esta URL a markdown: https://react.dev/learn/thinking-in-react
 
-    **Asistente:** _(llama a `convert_url`)_ Aquí tienes el Markdown convertido de "Thinking in React"...
+    **Asistente:** _(invoca `convert_url`)_ Aquí está el Markdown convertido de "Thinking in React"...
   </Accordion>
-  <Accordion title="Buscar en conversiones guardadas">
-    **Tú:** Busca en mis páginas guardadas algo sobre autenticación
+  <Accordion title="Buscar y traer de tu Library">
+    **Tú:** Busca en mi library algo sobre autenticación, y luego trae el contenido completo del más reciente
 
-    **Asistente:** _(llama a `semantic_search`)_ Encontré 3 conversiones guardadas relacionadas con autenticación:
-    1. "OAuth 2.0 Guide" — guardada hace 2 días
-    2. "JWT Best Practices" — guardada la semana pasada
-    3. ...
+    **Asistente:** _(invoca `search_library`, luego `get_library_items`)_ Encontré 3 elementos relacionados con autenticación. Aquí está el contenido completo del más reciente, "OAuth 2.0 Guide"...
   </Accordion>
-  <Accordion title="Recuperar una conversión completa">
-    **Tú:** Obtén el contenido completo de la conversión abc123
+  <Accordion title="Sincronizar tu Library localmente">
+    **Tú:** Sincroniza mi library en ~/notes/web2md
 
-    **Asistente:** _(llama a `get_conversion`)_ Aquí tienes el contenido Markdown completo...
+    **Asistente:** _(invoca `sync_library`)_ Se sincronizaron 42 elementos nuevos, 118 ya estaban actualizados, 0 fallaron.
+  </Accordion>
+  <Accordion title="Convertir por lotes con la extensión">
+    **Tú:** Convierte por lotes estos 8 hilos de Reddit: [...]
+
+    **Asistente:** _(invoca `agent_batch_convert`)_ Se convirtieron 8/8 URLs correctamente.
+  </Accordion>
+  <Accordion title="Aplicar una Skill guardada">
+    **Tú:** ¿Qué skills tengo, y puedes aplicar "summarize" a esta página?: https://...
+
+    **Asistente:** _(invoca `list_skills`, luego `agent_convert` con `skill: "summarize"`)_ Aquí está la página convertida a Markdown, con la skill summarize aplicada debajo...
   </Accordion>
 </AccordionGroup>
 
 <Tip>
-  Combina herramientas en una sola conversación. Por ejemplo: _"Busca en mis conversiones documentación de React y luego obtén el contenido completo de la más reciente."_
+  Combina herramientas en una misma conversación. Por ejemplo: _"Busca en mi library documentación sobre React, y luego trae el contenido completo del más reciente."_
 </Tip>
 
 ## Solución de problemas
 
 <AccordionGroup>
-  <Accordion title="Las herramientas no aparecen después de la configuración">
-    Asegúrate de haber reiniciado la aplicación después de editar el archivo de configuración. Verifica que `npx web2md-mcp` se ejecute correctamente en tu terminal.
+  <Accordion title="Las herramientas no aparecen después de configurar">
+    Asegúrate de haber reiniciado la aplicación después de editar el archivo de configuración. Verifica que `npx -y web2md-mcp-server` se ejecute correctamente en tu terminal.
   </Accordion>
   <Accordion title="Errores de autenticación">
-    Verifica que tu `WEB2MD_API_KEY` sea correcta y que tu suscripción PRO esté activa. Puedes comprobar tu clave en la [página de claves de API](https://web2md.org/dashboard/api-keys).
+    Verifica que `WEB2MD_API_KEY` sea una clave `w2m_` válida, o que `~/.web2md/config.json` tenga una (vuelve a ejecutar `npx web2md-cli login` si no estás seguro). Puedes verificar tu clave en la [página de claves de API](https://web2md.org/dashboard/api-keys).
+  </Accordion>
+  <Accordion title="agent_convert / agent_batch_convert / bridge_convert_url fallan">
+    Estas herramientas requieren Chrome abierto con la extensión de Web2MD instalada, y — para las herramientas `agent_*` — el host nativo también instalado. Consulta [Agent Bridge](/es/advanced/agent-bridge) para la configuración.
   </Accordion>
   <Accordion title="npx no logra resolver el paquete">
-    Prueba instalar el paquete globalmente primero: `npm install -g web2md-mcp`, luego cambia el `command` a `web2md-mcp` y elimina el campo `args`.
+    Intenta instalar el paquete globalmente primero: `npm install -g web2md-mcp-server`, luego cambia `command` a `web2md-mcp-server` y elimina el campo `args`.
   </Accordion>
 </AccordionGroup>
-</content>

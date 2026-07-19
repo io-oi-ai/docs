@@ -9,39 +9,96 @@ icon: "robot"
 
 The Web2MD MCP server exposes Web2MD as a set of tools that AI assistants can call directly, using the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — an open standard for connecting AI models to external tools and data sources.
 
-Once configured, you can ask Claude, Cursor, or Windsurf to convert pages, search your conversion history, or retrieve saved Markdown without leaving the conversation.
+Once configured, you can ask Claude, Cursor, or Windsurf to convert pages, search and sync your Library, batch-convert with the Chrome extension, or pull in a saved Skill — without leaving the conversation.
 
 <Note>
-  The MCP server requires a **Web2MD API key** (PRO plan). Generate one from the [dashboard](https://web2md.org/dashboard/api-keys).
+  The MCP server requires a **Web2MD API key** (PRO plan). Generate one from the [dashboard](https://web2md.org/dashboard/api-keys), or run `npx web2md-cli login` to authenticate once and share the key with the CLI automatically (see [Authentication](#authentication) below).
 </Note>
 
 ## Available tools
 
-The MCP server provides three tools:
+The MCP server provides 11 tools, grouped by what they do:
 
 | Tool | Description |
 |------|-------------|
-| `convert_url` | Convert any URL to clean Markdown |
-| `semantic_search` | Search your saved conversions with natural language |
-| `get_conversion` | Retrieve the full Markdown of a saved conversion by ID |
+| `convert_url` | Convert any URL to clean Markdown via the server-side converter |
+| `bridge_convert_url` | Convert a URL through your Chrome extension over HTTP — for Reddit, JS-rendered, or login-protected pages |
+| `agent_convert` | Convert a URL through the Chrome extension via native messaging (same use cases as `bridge_convert_url`, different transport) |
+| `agent_batch_convert` | Batch-convert up to 50 URLs through the Chrome extension via native messaging |
+| `search_library` | Search your saved Library by keyword and/or tag |
+| `get_library_items` | Fetch full Markdown for Library items by id |
+| `sync_library` | Sync your Library to a local directory as Markdown files |
+| `list_skills` | List the Skills saved in your Web2MD cloud account |
+| `get_skill` | Fetch the full body of one Skill by id or name |
+| `semantic_search` | **Deprecated** — use `search_library` + `get_library_items` instead |
+| `get_conversion` | **Deprecated** — use `search_library` + `get_library_items` instead |
 
 ### convert_url
 
-Fetches a URL and returns the page content as Markdown. Supports the same conversion options as the REST API.
+Fetches a URL server-side and returns the page content as Markdown, with title, word count, and reading time. Supports the same conversion options as the REST API (`includeImages`, `includeLinks`).
 
 **Example prompt:** _"Convert this URL to markdown: https://docs.example.com/getting-started"_
 
-### semantic_search
+### bridge_convert_url
 
-Searches across all your previously saved conversions using a natural language query. Returns a list of matching conversions with titles, URLs, and relevance scores.
+Converts a URL by fetching its HTML through your running Chrome extension (over a local HTTP bridge), then converting that HTML to Markdown server-side. Use this for pages the server can't reach directly — Reddit, sites gated behind login, or heavily JS-rendered pages. Requires Chrome open with the Web2MD extension installed; the extension ID is auto-discovered from your API key.
 
-**Example prompt:** _"Search my saved pages for articles about database indexing"_
+**Example prompt:** _"Use the bridge to convert this Reddit thread: https://reddit.com/r/..."_
 
-### get_conversion
+### agent_convert
 
-Retrieves the full Markdown content of a specific saved conversion by its ID. Useful for pulling a complete document into context after finding it with `semantic_search`.
+Converts a URL the same way `bridge_convert_url` does — through your Chrome extension — but over the [Agent Bridge](/advanced/agent-bridge) native-messaging channel instead of HTTP. Accepts an optional `skill` parameter: pass a Skill id or name and its body is appended to the returned Markdown so the agent can act on it immediately. Requires Chrome running with the extension and native host installed.
 
-**Example prompt:** _"Get the full content of conversion abc123"_
+**Example prompt:** _"Convert this page with the summarize skill applied: https://..."_
+
+### agent_batch_convert
+
+Same transport as `agent_convert`, but takes an array of up to 50 URLs and converts them sequentially in one call. Best for pulling many Reddit threads or JS-rendered pages in one go.
+
+**Example prompt:** _"Batch-convert these 12 URLs to Markdown: [...]"_
+
+### search_library
+
+Searches your Web2MD Library — every page you've saved — by keyword (matches title and full page content) and/or tag, newest first. Returns compact metadata (id, title, url, date, tags), not the full Markdown. Free-plan accounts only see the most recent items in results; the tool tells you when results were truncated.
+
+**Example prompt:** _"Search my library for anything about authentication"_
+
+### get_library_items
+
+Fetches full Markdown content for Library items by id (up to 20 per call — use `search_library` first to find the ids). Responses can be large; for long pages, batch 5 or fewer ids per call.
+
+**Example prompt:** _"Get the full content of library items abc123 and def456"_
+
+### sync_library
+
+Syncs your entire Library to a local directory as Markdown files, organized by tag with frontmatter. Incremental by default (tracks a cursor in `<dir>/.web2md-sync.json`); pass `full: true` to re-scan everything. This is the same sync that `web2md sync` runs from the [CLI](/advanced/cli) — use whichever surface fits your workflow.
+
+**Example prompt:** _"Sync my library to ~/notes/web2md, tag 'research' only"_
+
+### list_skills
+
+Lists the Skills saved in your Web2MD cloud account as a compact array (id, name, description). Use `get_skill` to fetch one in full.
+
+**Example prompt:** _"What skills do I have saved?"_
+
+### get_skill
+
+Fetches the full SKILL.md-style body of one Skill by id or name — its instructions, description, and content in full. Use `list_skills` first if you don't know the id.
+
+**Example prompt:** _"Get my 'summarize' skill"_
+
+### semantic_search / get_conversion (deprecated)
+
+These two tools predate the Library. They still work but only see conversions saved through the old history API, not the full Library — new integrations should use `search_library` and `get_library_items` instead.
+
+## Authentication
+
+The server resolves the API key in this order:
+
+1. `WEB2MD_API_KEY` environment variable, if set.
+2. Otherwise, `~/.web2md/config.json` — the same file written by `npx web2md-cli login` (the [CLI](/advanced/cli)'s device-login flow). Run `login` once and both the CLI and MCP server pick up the key automatically, no `env` block needed.
+
+If neither is found, the server starts but every tool call returns an authentication error with a hint to set the key or run `login`.
 
 ## Setup
 
@@ -59,7 +116,7 @@ Retrieves the full Markdown content of a specific saved conversion by its ID. Us
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -67,6 +124,8 @@ Retrieves the full Markdown content of a specific saved conversion by its ID. Us
       }
     }
     ```
+
+    If you've already run `npx web2md-cli login`, you can drop the `env` block entirely — the server reads the key from `~/.web2md/config.json`.
 
     Restart Claude Desktop. You should see the Web2MD tools appear in the tool picker.
   </Tab>
@@ -78,7 +137,7 @@ Retrieves the full Markdown content of a specific saved conversion by its ID. Us
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -97,7 +156,7 @@ Retrieves the full Markdown content of a specific saved conversion by its ID. Us
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -120,35 +179,45 @@ Once the MCP server is running, you can use natural language in your AI assistan
 
     **Assistant:** _(calls `convert_url`)_ Here is the converted Markdown for "Thinking in React"...
   </Accordion>
-  <Accordion title="Search saved conversions">
-    **You:** Search my saved pages for anything about authentication
+  <Accordion title="Search and pull from your Library">
+    **You:** Search my library for anything about authentication, then get the full content of the most recent one
 
-    **Assistant:** _(calls `semantic_search`)_ I found 3 saved conversions related to authentication:
-    1. "OAuth 2.0 Guide" — saved 2 days ago
-    2. "JWT Best Practices" — saved last week
-    3. ...
+    **Assistant:** _(calls `search_library`, then `get_library_items`)_ I found 3 items related to authentication. Here's the full content of the most recent one, "OAuth 2.0 Guide"...
   </Accordion>
-  <Accordion title="Retrieve a full conversion">
-    **You:** Get the full content of conversion abc123
+  <Accordion title="Sync your Library locally">
+    **You:** Sync my library to ~/notes/web2md
 
-    **Assistant:** _(calls `get_conversion`)_ Here is the full Markdown content...
+    **Assistant:** _(calls `sync_library`)_ Synced 42 new items, 118 already up to date, 0 failed.
+  </Accordion>
+  <Accordion title="Batch-convert with the extension">
+    **You:** Batch-convert these 8 Reddit threads: [...]
+
+    **Assistant:** _(calls `agent_batch_convert`)_ Converted 8/8 URLs successfully.
+  </Accordion>
+  <Accordion title="Apply a saved Skill">
+    **You:** What skills do I have, and can you apply "summarize" to this page: https://...
+
+    **Assistant:** _(calls `list_skills`, then `agent_convert` with `skill: "summarize"`)_ Here's the page converted to Markdown, with the summarize skill applied below it...
   </Accordion>
 </AccordionGroup>
 
 <Tip>
-  Combine tools in a single conversation. For example: _"Search my conversions for React docs, then get the full content of the most recent one."_
+  Combine tools in a single conversation. For example: _"Search my library for React docs, then get the full content of the most recent one."_
 </Tip>
 
 ## Troubleshooting
 
 <AccordionGroup>
   <Accordion title="Tools don't appear after setup">
-    Make sure you have restarted the application after editing the configuration file. Verify that `npx web2md-mcp` runs successfully in your terminal.
+    Make sure you have restarted the application after editing the configuration file. Verify that `npx -y web2md-mcp-server` runs successfully in your terminal.
   </Accordion>
   <Accordion title="Authentication errors">
-    Double-check that your `WEB2MD_API_KEY` is correct and that your PRO subscription is active. You can verify your key on the [API keys page](https://web2md.org/dashboard/api-keys).
+    Double-check that `WEB2MD_API_KEY` is a valid `w2m_` key, or that `~/.web2md/config.json` has one (re-run `npx web2md-cli login` if unsure). You can verify your key on the [API keys page](https://web2md.org/dashboard/api-keys).
+  </Accordion>
+  <Accordion title="agent_convert / agent_batch_convert / bridge_convert_url fail">
+    These tools require Chrome open with the Web2MD extension installed, and — for the `agent_*` tools — the native host installed too. See [Agent Bridge](/advanced/agent-bridge) for setup.
   </Accordion>
   <Accordion title="npx fails to resolve the package">
-    Try installing the package globally first: `npm install -g web2md-mcp`, then change the `command` to `web2md-mcp` and remove the `args` field.
+    Try installing the package globally first: `npm install -g web2md-mcp-server`, then change `command` to `web2md-mcp-server` and remove the `args` field.
   </Accordion>
 </AccordionGroup>

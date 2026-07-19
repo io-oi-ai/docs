@@ -7,7 +7,7 @@ icon: "terminal"
 
 ## Descripción general
 
-La CLI de Web2MD te permite convertir cualquier URL a Markdown limpio directamente desde tu terminal. Envía el resultado a LLMs, procesa listas de URLs en lote o incorpora contenido a tu bóveda de Obsidian, todo sin abrir un navegador.
+La CLI de Web2MD te permite convertir cualquier URL a Markdown limpio directamente desde tu terminal. Envía la salida a LLMs, procesa listas de URLs en lote, o incorpora contenido en tu bóveda de Obsidian — todo sin abrir un navegador.
 
 ```bash
 npx web2md https://example.com/article
@@ -19,16 +19,16 @@ npx web2md https://example.com/article
 
 ## Instalación
 
-No se necesita instalación — simplemente ejecútala con `npx`:
+No se necesita instalación — simplemente ejecuta con `npx`:
 
 ```bash
 npx web2md <url> [options]
 ```
 
-O instálala de forma global para un inicio más rápido:
+O instala globalmente para un arranque más rápido:
 
 ```bash
-npm install -g web2md
+npm install -g web2md-cli
 web2md <url> [options]
 ```
 
@@ -41,10 +41,10 @@ La CLI de Web2MD opera en tres modos según tu configuración:
     **Modo predeterminado.** No requiere clave de API. Obtiene páginas y las convierte localmente. Funciona para la mayoría de los sitios web públicos.
   </Card>
   <Card title="Servidor" icon="server">
-    **Con clave de API.** Configura `WEB2MD_API_KEY` para desbloquear Reddit, Fandom/Wikia y otros sitios restringidos que requieren procesamiento en el servidor.
+    **Con clave de API.** Define `WEB2MD_API_KEY` para desbloquear Reddit, Fandom/Wikia y otros sitios restringidos que requieren manejo del lado del servidor.
   </Card>
   <Card title="Bridge" icon="bridge">
-    **Con la opción `--bridge`.** Usa tu extensión de Chrome para obtener páginas renderizadas con JS o protegidas por inicio de sesión a las que la obtención estática no puede acceder.
+    **Con la opción `--bridge`.** Usa tu extensión de Chrome para obtener páginas renderizadas con JS o protegidas por login a las que la obtención estática no puede acceder.
   </Card>
 </CardGroup>
 
@@ -54,21 +54,67 @@ La CLI de Web2MD opera en tres modos según tu configuración:
 |------|-------------|
 | `--no-images` | Elimina las referencias a imágenes del resultado |
 | `--no-links` | Elimina los hipervínculos del resultado |
-| `--meta` | Añade frontmatter YAML (title, source, wordCount, tokenCount, readingTime, date) |
-| `--json` | Genera la salida como JSON `{ markdown, metadata }` |
+| `--meta` | Añade frontmatter en YAML (title, source, wordCount, tokenCount, readingTime, date) |
+| `--json` | Muestra el resultado como JSON `{ markdown, metadata }` |
 | `-o, --output <file>` | Escribe el resultado en un archivo |
-| `--output-dir <dir>` | Escribe cada URL en un archivo `.md` independiente |
-| `--batch <file>` | Lee las URLs desde un archivo (una por línea, `#` = comentario) |
+| `--output-dir <dir>` | Escribe cada URL en un archivo `.md` separado |
+| `--batch <file>` | Lee URLs desde un archivo (una por línea, `#` = comentario) |
 | `--vault <dir>` | Modo bóveda de Obsidian: guarda en `<dir>/raw/` y actualiza `<dir>/INDEX.md` |
-| `--concurrency <n>` | Número máximo de descargas en paralelo (predeterminado: 3, máximo: 20) |
-| `--bridge` | Usa la extensión de Chrome para sitios renderizados con JS o protegidos por inicio de sesión |
+| `--concurrency <n>` | Número máximo de solicitudes en paralelo (predeterminado: 3, máximo: 20) |
+| `--bridge` | Usa la extensión de Chrome para sitios renderizados con JS o protegidos por login |
 | `-q, --quiet` | Suprime los mensajes de progreso |
+
+## Comandos
+
+Además de convertir URLs, la CLI tiene dos subcomandos para autenticación y sincronización de la Library:
+
+| Comando | Descripción |
+|---------|-------------|
+| `web2md login` | Autentícate una vez y guarda tu clave de API en `~/.web2md/config.json` |
+| `web2md sync [dir]` | Sincroniza tu Library de Web2MD con un directorio local como archivos Markdown |
+
+### login
+
+```bash
+npx web2md-cli login
+```
+
+Inicia un flujo de autorización de dispositivo basado en el navegador: la CLI abre `https://web2md.org` y muestra un código para aprobar. Una vez aprobado, tu clave de API se guarda en `~/.web2md/config.json` — sin necesidad de exportar `WEB2MD_API_KEY` en cada shell. El [servidor MCP](/es/advanced/mcp-server#authentication) lee del mismo archivo, así que iniciar sesión aquí una vez también autentica las llamadas a herramientas MCP.
+
+¿Prefieres pegar una clave directamente en lugar del flujo del navegador?
+
+```bash
+npx web2md-cli login --key
+```
+
+Esto solicita una clave (`w2m_...`) por stdin y la guarda de la misma forma. Obtén una clave desde el [panel](https://web2md.org/dashboard/api-keys).
+
+### sync
+
+```bash
+npx web2md-cli sync [dir] [--tag <t>] [--full]
+```
+
+Sincroniza tu Library — cada página que has guardado vía la extensión, el panel o la API — con un directorio local como archivos Markdown con frontmatter, organizados por etiqueta. Requiere haber iniciado sesión (o tener definida `WEB2MD_API_KEY`).
+
+| Opción | Descripción |
+|------|-------------|
+| `dir` | Directorio de destino (predeterminado: `./web2md-vault`) |
+| `--tag <t>` | Sincroniza solo los elementos con esta etiqueta |
+| `--full` | Ignora el cursor incremental y vuelve a escanear todo el historial |
+
+La sincronización es incremental por defecto: registra un cursor en `<dir>/.web2md-sync.json` y solo trae elementos nuevos en ejecuciones posteriores. Apunta Obsidian (o cualquier herramienta que lea Markdown) al directorio de destino para explorar tu Library como notas.
+
+```bash
+npx web2md-cli login
+npx web2md-cli sync ~/Documents/Web2MD-Library
+```
 
 ## Variables de entorno
 
 | Variable | Descripción |
 |----------|-------------|
-| `WEB2MD_API_KEY` | Clave de API (`w2m_xxx`) para Reddit y sitios restringidos |
+| `WEB2MD_API_KEY` | Clave de API (`w2m_xxx`) para Reddit, sitios restringidos y `sync` — tiene prioridad sobre `~/.web2md/config.json` |
 | `WEB2MD_API_URL` | Sobrescribe la URL base de la API |
 | `WEB2MD_EXTENSION_ID` | Sobrescribe el ID de la extensión de Chrome para el modo `--bridge` |
 
@@ -87,7 +133,7 @@ La CLI de Web2MD opera en tres modos según tu configuración:
 npx web2md https://example.com/article
 ```
 
-Imprime Markdown en la salida estándar (stdout).
+Imprime Markdown en stdout.
 
 ### Enviar a un LLM
 
@@ -99,7 +145,7 @@ npx web2md https://react.dev/learn/thinking-in-react | llm "Summarize this page"
 npx web2md https://docs.python.org/3/tutorial/classes.html | claude "Explain the key concepts"
 ```
 
-### Guardar en un archivo
+### Guardar en archivo
 
 ```bash
 npx web2md https://example.com/article -o article.md
@@ -109,9 +155,9 @@ npx web2md https://example.com/article -o article.md
 npx web2md https://example.com/article --meta -o article.md
 ```
 
-La opción `--meta` antepone frontmatter YAML con el título, la URL de origen, el conteo de palabras, el conteo de tokens, el tiempo de lectura y la fecha.
+La opción `--meta` antepone frontmatter en YAML con título, URL de origen, recuento de palabras, recuento de tokens, tiempo de lectura y fecha.
 
-### Procesamiento en lote desde un archivo
+### Lote desde archivo
 
 Crea un archivo `urls.txt`:
 
@@ -131,7 +177,7 @@ Luego ejecuta:
 npx web2md --batch urls.txt --output-dir ./research --concurrency 5
 ```
 
-Cada URL se guarda como un archivo `.md` independiente en el directorio `./research`.
+Cada URL se guarda como un archivo `.md` separado en el directorio `./research`.
 
 ### Incorporación a una bóveda de Obsidian
 
@@ -149,22 +195,22 @@ npx web2md https://www.reddit.com/r/LocalLLaMA/comments/example
 ```
 
 <Warning>
-  Reddit requiere una clave de API válida. Sin ella, las URLs de Reddit fallarán debido a las restricciones antibots de Reddit.
+  Reddit requiere una clave de API válida. Sin ella, las URLs de Reddit fallarán debido a las restricciones anti-bot de Reddit.
 </Warning>
 
-### Modo Bridge
+### Modo bridge
 
-Usa la extensión de Chrome para gestionar páginas renderizadas con JS o protegidas por inicio de sesión:
+Usa la extensión de Chrome para manejar páginas renderizadas con JS o protegidas por login:
 
 ```bash
 npx web2md --bridge https://app.example.com/dashboard
 ```
 
 <Note>
-  El modo Bridge requiere que la extensión de Chrome de Web2MD esté instalada y que Chrome esté en ejecución. La CLI se comunica con la extensión mediante el protocolo de mensajería nativa de Chrome.
+  El modo bridge requiere que la extensión de Chrome de Web2MD esté instalada y que Chrome esté en ejecución. La CLI se comunica con la extensión mediante el protocolo de native messaging de Chrome.
 </Note>
 
-### Salida en JSON
+### Salida JSON
 
 ```bash
 npx web2md --json https://example.com/article
@@ -186,7 +232,7 @@ Devuelve una salida estructurada:
 }
 ```
 
-Útil para el consumo programático o para enviarlo a `jq`:
+Útil para consumo programático o para enviar a `jq`:
 
 ```bash
 npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
@@ -194,20 +240,20 @@ npx web2md --json https://example.com/article | jq '.metadata.tokenCount'
 
 ## Sitios optimizados
 
-Web2MD incluye adaptadores integrados para estos sitios, que producen un resultado más limpio que la conversión genérica:
+Web2MD incluye adaptadores integrados para estos sitios, produciendo un resultado más limpio que la conversión genérica:
 
 <AccordionGroup>
   <Accordion title="Sitios con soporte optimizado">
-    - **Wikipedia** — extracción limpia de artículos, gestión de infoboxes
+    - **Wikipedia** — extracción limpia de artículos, manejo de infoboxes
     - **arXiv** — resúmenes y metadatos de artículos
     - **Hacker News** — hilos con comentarios
     - **GitHub** — Issues y Pull Requests
     - **Stack Overflow** — preguntas y respuestas
     - **dev.to** — entradas de blog
-    - **Medium** — artículos (evita la vista previa del muro de pago)
+    - **Medium** — artículos (evita la vista previa del paywall)
     - **Substack** — publicaciones de newsletter
     - **OpenAI Docs** — páginas de documentación
-    - **Documentación basada en Mintlify** — sitios de documentación construidos sobre Mintlify
+    - **Sitios de documentación basados en Mintlify** — sitios de documentación construidos sobre Mintlify
     - **Reddit** — publicaciones y comentarios (requiere clave de API)
   </Accordion>
 </AccordionGroup>
@@ -225,12 +271,12 @@ Web2MD incluye adaptadores integrados para estos sitios, que producen un resulta
     ```bash
     npx web2md --batch papers.txt --vault ~/Obsidian/Research --meta --concurrency 10
     ```
-    Crea una bóveda de investigación indexada y con capacidad de búsqueda en Obsidian.
+    Crea una bóveda de investigación indexada y consultable en Obsidian.
   </Accordion>
-  <Accordion title="Eliminar formato para entradas a LLMs">
+  <Accordion title="Eliminar formato para entrada a LLM">
     ```bash
     npx web2md --no-images --no-links https://example.com/article | llm "Analyze this"
     ```
-    Elimina imágenes y enlaces para reducir el uso de tokens al enviar contenido a LLMs.
+    Elimina imágenes y enlaces para reducir el uso de tokens al enviar a LLMs.
   </Accordion>
 </AccordionGroup>

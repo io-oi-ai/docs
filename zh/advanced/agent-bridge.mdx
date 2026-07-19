@@ -7,12 +7,12 @@ icon: "microchip"
 
 ## 概览
 
-Agent Bridge 让 AI Agent（Claude Code、Cursor、Cowork 等）远程控制 Web2MD Chrome 扩展批量转换 URL——尤其是 Reddit、JS 渲染页面和需要登录的页面，这些页面服务端 API 都拿不到。
+Agent Bridge 让 AI Agent（Claude Code、Cursor、Cowork 等）远程控制 Web2MD Chrome 扩展来批量转换 URL——尤其是 Reddit、JS 渲染或需要登录的页面，这些页面会拦截服务端 API 访问。
 
-AI Agent 不走 Web2MD API（Reddit 会拦截），而是通过 [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging) 向你本地的 Chrome 扩展发指令。扩展用**你的真实浏览器会话**——带着你的 cookie 和登录状态——在后台标签页打开每个页面，提取内容、转成 Markdown 并返回结果。
+AI Agent 不再调用会被 Reddit 拦截的 Web2MD API，而是通过 [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging) 向你本地的 Chrome 扩展发送命令。扩展会用**你真实的浏览器会话**——带着你的 cookies 和登录状态——在后台标签页中打开每个页面，提取内容，转换为 Markdown，再返回结果。
 
 <Note>
-  Agent Bridge 需要 **PRO 套餐**，并在你的机器上安装 **native messaging host**。扩展需要在 Chrome 中处于启用状态。
+  Agent Bridge 需要 **PRO 套餐**，并且你的机器上要安装 **native messaging host**。扩展必须在 Chrome 中处于打开状态。
 </Note>
 
 ## 架构
@@ -24,22 +24,22 @@ AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome 
 | 组件 | 角色 |
 |-----------|------|
 | **AI Agent** | Claude Code、Cursor、Cowork——调用 MCP 工具 |
-| **MCP Server** | 把 MCP 工具调用翻译成 TCP 消息 |
-| **Native Host** | 在 TCP 和 Chrome Native Messaging 之间做中继 |
-| **Chrome 扩展** | 打开标签页、提取 HTML、转成 Markdown |
+| **MCP Server** | 把 MCP 工具调用转换为 TCP 消息 |
+| **Native Host** | 在 TCP 和 Chrome Native Messaging 之间做中转 |
+| **Chrome Extension** | 打开标签页、提取 HTML、转换为 Markdown |
 
-所有通信都是**本地的**——不会有任何数据离开你的机器。Native Host 只监听 `localhost:12315`。
+所有通信都在**本地**完成——不会有任何数据离开你的机器。Native Host 只监听 `localhost:12315`。
 
-## 安装配置
+## 设置
 
-### 第一步：构建 MCP Server
+### 步骤 1：构建 MCP Server
 
 ```bash
 cd packages/mcp-server
 pnpm build
 ```
 
-### 第二步：安装 Native Messaging Host
+### 步骤 2：安装 Native Messaging Host
 
 ```bash
 cd packages/mcp-server
@@ -47,23 +47,23 @@ cd packages/mcp-server
 ```
 
 <Tip>
-  在 `chrome://extensions` 开启开发者模式后可以找到扩展 ID。找到 Web2MD，复制 ID 字符串（例如 `ijmgpkkfgpijifldbjafjiapehppcbcn`）。
+  在开启开发者模式的情况下访问 `chrome://extensions` 查看你的扩展 ID。找到 Web2MD，复制其 ID 字符串（例如 `ijmgpkkfgpijifldbjafjiapehppcbcn`）。
 </Tip>
 
 <Warning>
-  安装完成后必须**完全退出 Chrome（Mac 上按 Cmd+Q）再重新打开**。Chrome 只在启动时读取 Native Messaging 清单——仅仅重载扩展是不够的。
+  安装完成后，必须**完全退出 Chrome（Mac 上是 Cmd+Q）再重新打开**。Chrome 只在启动时读取 Native Messaging manifest——仅重新加载扩展是不够的。
 </Warning>
 
 安装脚本会：
-- 把 host 文件复制到 `~/.web2md/`（避开 macOS 对 `~/Desktop` 的 TCC 限制）
-- 解析 `node` 的绝对路径（Chrome 启动时 PATH 极简）
-- 把 NM 清单写入 Chrome 的 `NativeMessagingHosts` 目录
+- 把 host 文件复制到 `~/.web2md/`（避开 macOS TCC 对 `~/Desktop` 的限制）
+- 解析出 `node` 的绝对路径（Chrome 启动时 PATH 很有限）
+- 把 NM manifest 写入 Chrome 的 `NativeMessagingHosts` 目录
 
-### 第三步：配置 MCP
+### 步骤 3：配置 MCP
 
 <Tabs>
   <Tab title="Claude Code">
-    添加到 `~/.claude/settings.json`：
+    在 `~/.claude/settings.json` 中添加：
 
     ```json
     {
@@ -80,7 +80,7 @@ cd packages/mcp-server
     ```
   </Tab>
   <Tab title="Cursor">
-    添加到 `~/.cursor/mcp.json`：
+    在 `~/.cursor/mcp.json` 中添加：
 
     ```json
     {
@@ -97,7 +97,7 @@ cd packages/mcp-server
     ```
   </Tab>
   <Tab title="Claude Desktop">
-    添加到你的 Claude Desktop 配置：
+    在你的 Claude Desktop 配置文件中添加：
 
     ```json
     {
@@ -115,9 +115,9 @@ cd packages/mcp-server
   </Tab>
 </Tabs>
 
-### 第四步：验证
+### 步骤 4：验证
 
-在 Chrome 打开 `chrome://extensions` → 点击 Web2MD 的 "Service Worker" 链接 → 查看 Console：
+在 Chrome 中打开 `chrome://extensions` → 点击 Web2MD 的 "Service Worker" 链接 → 查看 Console：
 
 ```
 [Web2MD] Service worker started
@@ -125,120 +125,152 @@ cd packages/mcp-server
 [Web2MD] Native host TCP relay ready on port 12315
 ```
 
-看到这三行，Agent Bridge 就跑通了。
+如果看到这三行日志，说明 Agent Bridge 工作正常。
 
 ## 可用工具
 
+Agent Bridge 暴露了三个 MCP 工具——根据传输方式和批处理需求选择。三者的完整文档见 [MCP Server](/zh/advanced/mcp-server) 页面，这里只做快速对比。
+
+| 工具 | 传输方式 | 批处理 |
+|------|-----------|----------|
+| `bridge_convert_url` | HTTP（扩展抓取 HTML，服务端转换） | 单个 URL |
+| `agent_convert` | Native messaging（本页所述架构） | 单个 URL，可选 `skill` 参数 |
+| `agent_batch_convert` | Native messaging | 最多 50 个 URL，依次处理 |
+
 ### agent_convert
 
-用 Chrome 扩展转换单个 URL。
+通过 native messaging 用 Chrome 扩展转换单个 URL。
 
 | 参数 | 类型 | 说明 |
 |-----------|------|-------------|
 | `url` | string | 要转换的 URL |
+| `skill` | string（可选） | Skill 的 id 或名称——其内容会附加到返回的 Markdown 后面 |
 
-**返回：** Markdown 内容，附带标题、来源 URL、字数和阅读时长。
+**返回：** 包含标题、来源 URL、字数和阅读时长的 Markdown 内容。
 
 **最适合：** Reddit 帖子、需要登录的页面、JS 渲染的站点。
 
 ### agent_batch_convert
 
-批量转换最多 50 个 URL。URL 会依次处理——扩展在后台标签页打开一个页面，提取内容后关掉标签页，再处理下一个。
+批量转换最多 50 个 URL。URL 依次处理——扩展在后台标签页中打开每个页面，提取内容，关闭标签页，然后处理下一个。
 
 | 参数 | 类型 | 说明 |
 |-----------|------|-------------|
 | `urls` | string[] | 要转换的 URL 数组（最多 50 个） |
 
-**返回：** 每个 URL 的结果完成即流式返回，最后附上汇总。
+**返回：** 每个 URL 的结果会在完成时流式返回，并附带一份汇总。
 
-**最适合：** 调研类工作流——批量转换 Reddit 帖子、HN 讨论或竞品页面，交给 AI 分析。
+**最适合：** 研究类工作流——批量转换 Reddit 帖子、HN 讨论串，或供 AI 分析的竞品页面。
+
+### bridge_convert_url
+
+通过扩展经本地 HTTP bridge（而非 native messaging）抓取单个 URL 的 HTML，再在服务端转换。对于一次性转换，功能上与 `agent_convert` 类似，但不需要安装 native messaging host——只需扩展已安装并运行。
+
+| 参数 | 类型 | 说明 |
+|-----------|------|-------------|
+| `url` | string | 要转换的 URL |
+| `extensionId` | string（可选） | 覆盖扩展 ID（省略时会根据你的 API key 自动发现） |
 
 <Info>
-  所有成功的转换都会自动存进你的[控制台历史记录](https://web2md.org/dashboard/history)，并附带 AI 生成的摘要和标签。
+  所有成功的转换都会自动保存到你的[控制台历史记录](https://web2md.org/dashboard/history)，并附带 AI 生成的摘要和标签。
 </Info>
 
 ## 使用示例
 
 <AccordionGroup>
-  <Accordion title="转换 Reddit 帖子">
-    **你：** Convert this Reddit thread to Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
+  <Accordion title="转换一个 Reddit 帖子">
+    **你：** 把这个 Reddit 帖子转成 Markdown：https://www.reddit.com/r/LangChain/comments/1siwh6q/...
 
-    **Agent：** _（调用 `agent_convert`）_ 这是转换后的帖子，含 7 条讨论法律文档 RAG 精度的评论……
+    **Agent：** _（调用 `agent_convert`）_ 这是转换后的帖子，其中有 7 条评论在讨论法律文档场景下的 RAG 精度问题……
   </Accordion>
-  <Accordion title="批量转换做调研">
-    **你：** Batch convert these 5 Reddit URLs and summarize the key takeaways:
+  <Accordion title="批量转换用于研究">
+    **你：** 批量转换这 5 个 Reddit URL，并总结关键要点：
     - https://reddit.com/r/MachineLearning/comments/...
     - https://reddit.com/r/LocalLLaMA/comments/...
     - https://reddit.com/r/LangChain/comments/...
     - https://reddit.com/r/artificial/comments/...
     - https://reddit.com/r/ChatGPT/comments/...
 
-    **Agent：** _（调用 `agent_batch_convert`）_ 5/5 个 URL 全部转换成功。以下是核心结论……
+    **Agent：** _（调用 `agent_batch_convert`）_ 已成功转换 5/5 个 URL。以下是关键要点……
   </Accordion>
   <Accordion title="转换需要登录的页面">
-    **你：** Convert my company's internal wiki page at https://wiki.internal.com/architecture
+    **你：** 转换我公司内部 wiki 页面：https://wiki.internal.com/architecture
 
-    **Agent：** _（调用 `agent_convert`）_ 由于你在 Chrome 里已登录该站点，我成功提取了完整内容……
+    **Agent：** _（调用 `agent_convert`）_ 由于你在 Chrome 中已登录该站点，我成功提取了完整内容……
   </Accordion>
 </AccordionGroup>
 
 ## 支持的站点
 
-Agent Bridge 使用与扩展相同的 16 个站点专用提取器：
+Agent Bridge 使用与扩展相同的 27 个站点专用提取器——每一个都知道如何从对应站点的 DOM 或 API 中提取干净内容，而不是退回到抓取原始页面 HTML。
 
-| 站点 | 方式 | 需要标签页？ |
-|------|--------|:---:|
-| Reddit | JSON API | 否 |
-| Hacker News | Algolia API | 否 |
-| YouTube | Transcript API | 否 |
-| arXiv | HTML 抓取 | 否 |
-| Twitter/X | DOM 提取 | 是 |
-| GitHub Issues/PRs | REST API | 否 |
-| Medium | DOM 提取 | 是 |
-| Substack | DOM 提取 | 是 |
-| Wikipedia | DOM 提取 | 是 |
-| Stack Overflow | SE API | 否 |
-| 其他任意站点 | 完整页面 HTML | 是 |
+<AccordionGroup>
+  <Accordion title="社交与讨论区（7）">
+    Reddit · Hacker News · Twitter/X · Quora · Xiaohongshu（小红书） · Zhihu（知乎） · Instagram
+  </Accordion>
+  <Accordion title="AI 对话导出（2）">
+    Claude 对话记录 · 其他 AI 聊天平台（ChatGPT、Gemini 等，通过通用 DOM 提取器支持）
+  </Accordion>
+  <Accordion title="文档与知识库（6）">
+    Wikipedia · arXiv · OpenAI Docs · 基于 Mintlify 的文档站 · Notion · Google Docs
+  </Accordion>
+  <Accordion title="开发与代码（3）">
+    GitHub Issues/PR · Stack Overflow · dev.to
+  </Accordion>
+  <Accordion title="内容发布（3）">
+    Medium · Substack · Product Hunt
+  </Accordion>
+  <Accordion title="中文/CJK 平台（4）">
+    WeChat（微信公众号） · Bilibili（哔哩哔哩） · Feishu（飞书）——再加上前面提到的 Xiaohongshu 和 Zhihu。代码中把这整个类别标记为差异化程度最高的提取器组——几乎没有竞品能处理这些平台。
+  </Accordion>
+  <Accordion title="视频与媒体（1）">
+    YouTube（字幕提取）
+  </Accordion>
+  <Accordion title="办公与生产力（5）">
+    Gmail · LinkedIn · Amazon（产品页面） · Canvas LMS · XenForo 论坛
+  </Accordion>
+</AccordionGroup>
 
-标记「否」的站点通过 API 调用转换——更快也更稳定，其余的走后台标签页。
+没有专用提取器的 URL 会退回到全页面 HTML 提取——仍然可以工作，只是没有专用提取器带来的针对性清理（去除导航栏、广告、评论组件等）。提供公开 API 的站点（Reddit、Hacker News、GitHub、Stack Overflow）会尽可能通过该 API 抓取——比打开后台标签页更快、更可靠。其余站点都会在后台标签页打开页面，从渲染后的 DOM 中提取内容。
 
 ## 故障排查
 
 <AccordionGroup>
   <Accordion title="'Native host not installed' 或 'not found'">
-    Chrome 还没加载 NM 清单。**完全退出 Chrome（Cmd+Q）再重新打开。** 仅仅重载扩展是不够的。
+    Chrome 没有加载 NM manifest。**完全退出 Chrome（Cmd+Q）再重新打开。** 仅重新加载扩展是不够的。
   </Accordion>
-  <Accordion title="'Native host has exited' 立刻退出">
+  <Accordion title="'Native host has exited' 立即出现">
     Chrome 无法执行 host 脚本。常见原因：
     - 找不到 `node`——重新运行 `./install.sh`，它会使用 node 的绝对路径
-    - host 在 TCC 受保护目录（`~/Desktop`、`~/Documents`）里——重新运行安装脚本把它移到 `~/.web2md/`
+    - Host 位于受 TCC 保护的目录（`~/Desktop`、`~/Documents`）——重新运行安装脚本，把它移动到 `~/.web2md/`
   </Accordion>
   <Accordion title="MCP 报 'Agent connection error'">
-    Native Host 的 TCP 服务没在运行。确认：
+    Native Host 的 TCP server 没有运行。请确认：
     1. Chrome 已打开
     2. Web2MD 扩展已加载
     3. Service Worker 控制台显示 "TCP relay ready on port 12315"
   </Accordion>
   <Accordion title="'Failed to extract content from the page'">
-    扩展未登录。在 Chrome 里打开 Web2MD 弹窗，登录你的 PRO 账户。
+    扩展未登录。在 Chrome 中打开 Web2MD 弹窗，登录你的 PRO 账户。
   </Accordion>
   <Accordion title="'Tab load timeout'">
-    目标页面加载太慢，慢站点出现这种情况很正常。扩展每个标签页最多等 15 秒。Reddit 走 JSON API 提取器不需要标签页，所以 Reddit 上的超时通常意味着帖子 URL 无效（404）。
+    目标页面加载太慢。对于慢速站点这是正常现象。扩展每个标签页最多等待 15 秒。Reddit 使用 JSON API 提取器，不需要打开标签页，所以 Reddit 上的超时通常意味着帖子 URL 无效（404）。
   </Accordion>
-  <Accordion title="转换没出现在控制台历史记录里">
-    历史保存需要扩展以 PRO 账户登录。保存是 fire-and-forget 的——如果 API 调用静默失败，转换就不会出现。检查你的认证 token 是否有效。
+  <Accordion title="转换结果没有出现在控制台历史记录里">
+    保存历史记录需要扩展以 PRO 账户登录状态运行。保存操作是"发出后不管"的——如果 API 调用静默失败，转换结果就不会出现。请检查你的认证 token 是否有效。
   </Accordion>
 </AccordionGroup>
 
 ## 与 MCP Server 的区别
 
-| 特性 | MCP Server（`convert_url`） | Agent Bridge（`agent_convert`） |
-|---------|---------------------------|-------------------------------|
-| 运行位置 | 服务端 API 调用 | 你本地的 Chrome 浏览器 |
-| Reddit 支持 | ❌ 被 Reddit 拦截 | ✅ 使用真实浏览器会话 |
-| 需要登录的页面 | ❌ 无法访问 | ✅ 使用你的 cookie |
-| JS 渲染页面 | ❌ 不执行 JavaScript | ✅ 完整 Chrome 渲染 |
-| 速度 | 更快（无标签页开销） | 较慢（要打开真实标签页） |
-| 是否需要 Chrome 打开 | 否 | 是 |
+| 特性 | `convert_url` | `bridge_convert_url` | `agent_convert` / `agent_batch_convert` |
+|---------|--------------|----------------------|------------------------------------------|
+| 运行位置 | 服务端 API 调用 | 扩展抓取 HTML，服务端转换 | 你本地的 Chrome 浏览器（native messaging） |
+| Reddit 支持 | ❌ 被 Reddit 拦截 | ✅ 使用真实浏览器会话 | ✅ 使用真实浏览器会话 |
+| 需要登录的页面 | ❌ 无法访问 | ✅ 使用你的 cookies | ✅ 使用你的 cookies |
+| JS 渲染页面 | ❌ 无 JavaScript 支持 | ✅ 完整 Chrome 渲染 | ✅ 完整 Chrome 渲染 |
+| 所需设置 | 仅需 API key | 需安装并运行扩展 | 需安装扩展和 native messaging host |
+| 批处理 | — | 仅单个 URL | 最多 50 个 URL（`agent_batch_convert`） |
+| 需要 Chrome 保持打开 | 否 | 是 | 是 |
 
-**经验法则：** 公开页面用 `convert_url`；Reddit、需要认证的页面和重度依赖 JS 的站点用 `agent_convert` / `agent_batch_convert`。
+**经验法则：** 公开页面用 `convert_url`。想用扩展的浏览器会话但不想安装 native messaging host 时用 `bridge_convert_url`。Reddit、需要登录的页面、大量依赖 JS 的站点、需要批量处理，或想通过 `agent_convert` 的 `skill` 参数应用 Skill 时，用 `agent_convert` / `agent_batch_convert`。

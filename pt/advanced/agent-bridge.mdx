@@ -7,12 +7,12 @@ icon: "microchip"
 
 ## Visão geral
 
-O Agent Bridge permite que agentes de IA (Claude Code, Cursor, Cowork, etc.) controlem remotamente a extensão do Web2MD para Chrome e convertam URLs em lote — especialmente páginas do Reddit, renderizadas via JS, ou protegidas por login, que bloqueiam o acesso via API server-side.
+O Agent Bridge permite que agentes de IA (Claude Code, Cursor, Cowork, etc.) controlem remotamente a extensão do Chrome do Web2MD para converter URLs em lote — especialmente Reddit, páginas renderizadas por JS e páginas protegidas por login que bloqueiam o acesso via API no servidor.
 
-Em vez de chamar a API do Web2MD (que o Reddit bloqueia), o agente de IA envia comandos para sua extensão local do Chrome via [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). A extensão abre cada página em uma aba em segundo plano usando **sua sessão real do navegador** — com seus cookies e estado de login —, extrai o conteúdo, converte para Markdown e retorna o resultado.
+Em vez de chamar a API do Web2MD (que o Reddit bloqueia), o agente de IA envia comandos para a sua extensão local do Chrome via [Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging). A extensão abre cada página em uma aba em segundo plano usando **sua sessão real do navegador** — com seus cookies e estado de login — extrai o conteúdo, converte em Markdown e retorna o resultado.
 
 <Note>
-  O Agent Bridge requer um plano **PRO** e o **host de native messaging** instalado na sua máquina. A extensão precisa estar aberta no Chrome.
+  O Agent Bridge requer um **plano PRO** e o **host de native messaging** instalado na sua máquina. A extensão precisa estar aberta no Chrome.
 </Note>
 
 ## Arquitetura
@@ -23,23 +23,23 @@ AI Agent ←MCP/stdio→ MCP Server ←TCP:12315→ Native Host ←NM→ Chrome 
 
 | Componente | Papel |
 |-----------|------|
-| **Agente de IA** | Claude Code, Cursor, Cowork — chama as ferramentas MCP |
+| **AI Agent** | Claude Code, Cursor, Cowork — chama as ferramentas MCP |
 | **MCP Server** | Traduz chamadas de ferramentas MCP em mensagens TCP |
-| **Native Host** | Faz o intermédio entre TCP e o Chrome Native Messaging |
-| **Extensão do Chrome** | Abre abas, extrai HTML, converte para Markdown |
+| **Native Host** | Faz o relay entre TCP e o Native Messaging do Chrome |
+| **Chrome Extension** | Abre abas, extrai HTML, converte em Markdown |
 
 Toda a comunicação é **local** — nada sai da sua máquina. O Native Host escuta apenas em `localhost:12315`.
 
 ## Configuração
 
-### Passo 1: Compile o MCP Server
+### Passo 1: Compilar o MCP Server
 
 ```bash
 cd packages/mcp-server
 pnpm build
 ```
 
-### Passo 2: Instale o Native Messaging Host
+### Passo 2: Instalar o Native Messaging Host
 
 ```bash
 cd packages/mcp-server
@@ -47,23 +47,23 @@ cd packages/mcp-server
 ```
 
 <Tip>
-  Encontre o ID da sua extensão em `chrome://extensions` com o Modo Desenvolvedor ativado. Procure pelo Web2MD e copie a string do ID (ex.: `ijmgpkkfgpijifldbjafjiapehppcbcn`).
+  Encontre seu Extension ID em `chrome://extensions` com o Modo de Desenvolvedor ativado. Procure por Web2MD e copie a string do ID (ex.: `ijmgpkkfgpijifldbjafjiapehppcbcn`).
 </Tip>
 
 <Warning>
-  Após a instalação, você precisa **fechar completamente o Chrome (Cmd+Q no Mac) e reabri-lo**. O Chrome só lê os manifestos de Native Messaging na inicialização — apenas recarregar a extensão não é suficiente.
+  Depois da instalação, você precisa **fechar completamente o Chrome (Cmd+Q no Mac) e reabri-lo**. O Chrome só lê os manifestos de Native Messaging na inicialização — recarregar a extensão não é suficiente.
 </Warning>
 
 O script de instalação:
-- Copia os arquivos do host para `~/.web2md/` (evita restrições de TCC do macOS em `~/Desktop`)
+- Copia os arquivos do host para `~/.web2md/` (evita restrições do TCC do macOS em `~/Desktop`)
 - Resolve o caminho absoluto do `node` (o Chrome inicia com um PATH mínimo)
 - Escreve o manifesto NM no diretório `NativeMessagingHosts` do Chrome
 
-### Passo 3: Configure o MCP
+### Passo 3: Configurar o MCP
 
 <Tabs>
   <Tab title="Claude Code">
-    Adicione em `~/.claude/settings.json`:
+    Adicione a `~/.claude/settings.json`:
 
     ```json
     {
@@ -80,7 +80,7 @@ O script de instalação:
     ```
   </Tab>
   <Tab title="Cursor">
-    Adicione em `~/.cursor/mcp.json`:
+    Adicione a `~/.cursor/mcp.json`:
 
     ```json
     {
@@ -97,7 +97,7 @@ O script de instalação:
     ```
   </Tab>
   <Tab title="Claude Desktop">
-    Adicione na sua configuração do Claude Desktop:
+    Adicione à sua configuração do Claude Desktop:
 
     ```json
     {
@@ -115,9 +115,9 @@ O script de instalação:
   </Tab>
 </Tabs>
 
-### Passo 4: Verifique
+### Passo 4: Verificar
 
-No Chrome, abra `chrome://extensions` → clique no link "Service Worker" do Web2MD → verifique o Console:
+No Chrome, abra `chrome://extensions` → clique no link "Service Worker" do Web2MD → confira o Console:
 
 ```
 [Web2MD] Service worker started
@@ -125,33 +125,51 @@ No Chrome, abra `chrome://extensions` → clique no link "Service Worker" do Web
 [Web2MD] Native host TCP relay ready on port 12315
 ```
 
-Se você ver essas três linhas, o Agent Bridge está funcionando.
+Se você vir essas três linhas, o Agent Bridge está funcionando.
 
 ## Ferramentas disponíveis
 
+O Agent Bridge expõe três ferramentas MCP — escolha com base no transporte e na necessidade de processamento em lote. As três são documentadas por completo na página do [MCP Server](/pt/advanced/mcp-server); aqui está a comparação rápida.
+
+| Ferramenta | Transporte | Lote |
+|------|-----------|----------|
+| `bridge_convert_url` | HTTP (a extensão busca o HTML, o servidor converte) | URL única |
+| `agent_convert` | Native messaging (a arquitetura desta página) | URL única, parâmetro `skill` opcional |
+| `agent_batch_convert` | Native messaging | Até 50 URLs, sequencial |
+
 ### agent_convert
 
-Converte uma única URL usando a extensão do Chrome.
+Converte uma única URL usando a extensão do Chrome via native messaging.
 
 | Parâmetro | Tipo | Descrição |
 |-----------|------|-------------|
-| `url` | string | A URL a ser convertida |
+| `url` | string | A URL a converter |
+| `skill` | string (opcional) | Id ou nome de Skill — seu corpo é anexado ao Markdown retornado |
 
 **Retorna:** Conteúdo em Markdown com título, URL de origem, contagem de palavras e tempo de leitura.
 
-**Ideal para:** Threads do Reddit, páginas protegidas por login, sites renderizados via JS.
+**Ideal para:** Threads do Reddit, páginas protegidas por login, sites renderizados por JS.
 
 ### agent_batch_convert
 
-Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a extensão abre cada página em uma aba em segundo plano, extrai o conteúdo, fecha a aba e passa para a próxima.
+Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a extensão abre cada página em uma aba em segundo plano, extrai o conteúdo, fecha a aba, e passa para a próxima.
 
 | Parâmetro | Tipo | Descrição |
 |-----------|------|-------------|
-| `urls` | string[] | Array de URLs a converter (máx. 50) |
+| `urls` | string[] | Array de URLs a converter (máximo 50) |
 
-**Retorna:** Resultados por URL transmitidos conforme são concluídos, mais um resumo.
+**Retorna:** Resultados por URL transmitidos conforme são concluídos, além de um resumo.
 
-**Ideal para:** Fluxos de pesquisa — converter em lote threads do Reddit, discussões do HN ou páginas de concorrentes para análise por IA.
+**Ideal para:** Fluxos de pesquisa — converter em lote threads do Reddit, discussões do HN, ou páginas de concorrentes para análise por IA.
+
+### bridge_convert_url
+
+Converte uma única URL buscando seu HTML através da extensão via uma ponte HTTP local (em vez de native messaging), depois convertendo no servidor. Funcionalmente similar a `agent_convert` para conversões pontuais, mas não requer o host de native messaging — apenas a extensão precisa estar instalada e em execução.
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|-------------|
+| `url` | string | A URL a converter |
+| `extensionId` | string (opcional) | Sobrescreve o ID da extensão (descoberto automaticamente a partir da sua chave de API se omitido) |
 
 <Info>
   Todas as conversões bem-sucedidas são salvas automaticamente no [Histórico do Dashboard](https://web2md.org/dashboard/history), com resumos e tags gerados por IA.
@@ -163,7 +181,7 @@ Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a ex
   <Accordion title="Converter uma thread do Reddit">
     **Você:** Convert this Reddit thread to Markdown: https://www.reddit.com/r/LangChain/comments/1siwh6q/...
 
-    **Agente:** _(chama `agent_convert`)_ Aqui está a thread convertida com 7 comentários discutindo precisão de RAG para documentos jurídicos...
+    **Agente:** _(chama `agent_convert`)_ Aqui está a thread convertida com 7 comentários discutindo a precisão de RAG para documentos jurídicos...
   </Accordion>
   <Accordion title="Converter em lote para pesquisa">
     **Você:** Batch convert these 5 Reddit URLs and summarize the key takeaways:
@@ -173,7 +191,7 @@ Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a ex
     - https://reddit.com/r/artificial/comments/...
     - https://reddit.com/r/ChatGPT/comments/...
 
-    **Agente:** _(chama `agent_batch_convert`)_ Converti 5/5 URLs com sucesso. Aqui estão os principais pontos...
+    **Agente:** _(chama `agent_batch_convert`)_ 5/5 URLs convertidas com sucesso. Aqui estão os principais destaques...
   </Accordion>
   <Accordion title="Converter páginas protegidas por login">
     **Você:** Convert my company's internal wiki page at https://wiki.internal.com/architecture
@@ -184,23 +202,36 @@ Converte em lote até 50 URLs. As URLs são processadas sequencialmente — a ex
 
 ## Sites suportados
 
-O Agent Bridge usa os mesmos 16 extratores específicos por site que a extensão:
+O Agent Bridge usa os mesmos 27 extratores específicos por site que a extensão — cada um sabe como extrair conteúdo limpo do DOM ou da API de um site, em vez de recorrer ao HTML bruto da página.
 
-| Site | Método | Requer aba? |
-|------|--------|:---:|
-| Reddit | JSON API | Não |
-| Hacker News | Algolia API | Não |
-| YouTube | Transcript API | Não |
-| arXiv | HTML scraping | Não |
-| Twitter/X | Extração via DOM | Sim |
-| GitHub Issues/PRs | REST API | Não |
-| Medium | Extração via DOM | Sim |
-| Substack | Extração via DOM | Sim |
-| Wikipedia | Extração via DOM | Sim |
-| Stack Overflow | SE API | Não |
-| Qualquer outro site | HTML da página completa | Sim |
+<AccordionGroup>
+  <Accordion title="Social e discussão (7)">
+    Reddit · Hacker News · Twitter/X · Quora · Xiaohongshu (小红书) · Zhihu (知乎) · Instagram
+  </Accordion>
+  <Accordion title="Exportações de chat de IA (2)">
+    Conversas do Claude · Outras plataformas de chat de IA (ChatGPT, Gemini, etc. via um extrator de DOM compartilhado)
+  </Accordion>
+  <Accordion title="Docs e bases de conhecimento (6)">
+    Wikipedia · arXiv · OpenAI Docs · Sites de documentação baseados em Mintlify · Notion · Google Docs
+  </Accordion>
+  <Accordion title="Dev e código (3)">
+    GitHub Issues/PRs · Stack Overflow · dev.to
+  </Accordion>
+  <Accordion title="Publicação (3)">
+    Medium · Substack · Product Hunt
+  </Accordion>
+  <Accordion title="Plataformas CJK (4)">
+    WeChat (微信公众号) · Bilibili (哔哩哔哩) · Feishu (飞书) — além de Xiaohongshu e Zhihu acima. O código marca essa categoria inteira como seu grupo de extratores de maior diferenciação — poucos concorrentes lidam com essas plataformas.
+  </Accordion>
+  <Accordion title="Vídeo e mídia (1)">
+    YouTube (extração de transcrição)
+  </Accordion>
+  <Accordion title="Trabalho e produtividade (5)">
+    Gmail · LinkedIn · Amazon (páginas de produto) · Canvas LMS · fóruns XenForo
+  </Accordion>
+</AccordionGroup>
 
-Sites marcados como "Não" na exigência de aba são convertidos via chamadas de API — mais rápido e confiável. Os demais usam abas em segundo plano.
+Qualquer URL sem um extrator dedicado recorre à extração da página HTML completa — ainda funciona, apenas sem a limpeza específica do site (remoção de menus de navegação, anúncios, widgets de comentários, etc.) que os extratores especializados aplicam. Sites que expõem uma API pública (Reddit, Hacker News, GitHub, Stack Overflow) são buscados via essa API quando possível — mais rápido e confiável do que abrir uma aba em segundo plano. Todo o resto abre a página em uma aba em segundo plano e extrai do DOM renderizado.
 
 ## Solução de problemas
 
@@ -210,10 +241,10 @@ Sites marcados como "Não" na exigência de aba são convertidos via chamadas de
   </Accordion>
   <Accordion title="'Native host has exited' imediatamente">
     O Chrome não consegue executar o script do host. Causas comuns:
-    - `node` não encontrado — rode novamente `./install.sh`, que usa o caminho absoluto do node
-    - O host está em um diretório protegido por TCC (`~/Desktop`, `~/Documents`) — rode a instalação novamente para mover para `~/.web2md/`
+    - `node` não encontrado — execute novamente `./install.sh`, que usa o caminho absoluto do node
+    - O host está em um diretório protegido pelo TCC (`~/Desktop`, `~/Documents`) — execute a instalação novamente para mover para `~/.web2md/`
   </Accordion>
-  <Accordion title="'Agent connection error' no MCP">
+  <Accordion title="'Agent connection error' do MCP">
     O servidor TCP do Native Host não está em execução. Verifique se:
     1. O Chrome está aberto
     2. A extensão do Web2MD está carregada
@@ -223,22 +254,23 @@ Sites marcados como "Não" na exigência de aba são convertidos via chamadas de
     A extensão não está logada. Abra o popup do Web2MD no Chrome e faça login na sua conta PRO.
   </Accordion>
   <Accordion title="'Tab load timeout'">
-    A página de destino demora demais para carregar. Isso é normal em sites lentos. A extensão espera até 15 segundos por aba. O Reddit usa o extrator via JSON API e não precisa de aba, então timeouts no Reddit geralmente significam que a URL do post é inválida (404).
+    A página de destino demora demais para carregar. Isso é normal em sites lentos. A extensão espera até 15 segundos por aba. O Reddit usa o extrator da API JSON e não precisa de uma aba, então timeouts no Reddit geralmente significam que a URL do post é inválida (404).
   </Accordion>
   <Accordion title="Conversões não aparecem no Histórico do Dashboard">
-    Salvar o histórico requer que a extensão esteja logada com uma conta PRO. O salvamento é "fire-and-forget" — se a chamada de API falhar silenciosamente, as conversões não aparecerão. Verifique se seu token de autenticação é válido.
+    Salvar no histórico requer que a extensão esteja logada com uma conta PRO. O salvamento é fire-and-forget — se a chamada de API falhar silenciosamente, as conversões não aparecerão. Verifique se seu token de autenticação é válido.
   </Accordion>
 </AccordionGroup>
 
-## Em que difere do MCP Server
+## Diferenças em relação ao MCP Server
 
-| Recurso | MCP Server (`convert_url`) | Agent Bridge (`agent_convert`) |
-|---------|---------------------------|-------------------------------|
-| Onde roda | Chamada de API server-side | Seu navegador Chrome local |
-| Suporte a Reddit | ❌ Bloqueado pelo Reddit | ✅ Usa sua sessão real do navegador |
-| Páginas protegidas por login | ❌ Sem acesso | ✅ Usa seus cookies |
-| Páginas renderizadas via JS | ❌ Sem JavaScript | ✅ Renderização completa do Chrome |
-| Velocidade | Mais rápido (sem overhead de aba) | Mais lento (abre abas reais) |
-| Requer Chrome aberto | Não | Sim |
+| Recurso | `convert_url` | `bridge_convert_url` | `agent_convert` / `agent_batch_convert` |
+|---------|--------------|----------------------|------------------------------------------|
+| Onde executa | Chamada de API no servidor | A extensão busca o HTML, o servidor converte | Seu navegador Chrome local (native messaging) |
+| Suporte a Reddit | ❌ Bloqueado pelo Reddit | ✅ Usa sessão real do navegador | ✅ Usa sessão real do navegador |
+| Páginas protegidas por login | ❌ Sem acesso | ✅ Usa seus cookies | ✅ Usa seus cookies |
+| Páginas renderizadas por JS | ❌ Sem JavaScript | ✅ Renderização completa do Chrome | ✅ Renderização completa do Chrome |
+| Configuração necessária | Apenas chave de API | Extensão instalada e em execução | Extensão + host de native messaging instalados |
+| Processamento em lote | — | Apenas URL única | Até 50 URLs (`agent_batch_convert`) |
+| Requer o Chrome aberto | Não | Sim | Sim |
 
-**Regra prática:** Use `convert_url` para páginas públicas. Use `agent_convert` / `agent_batch_convert` para Reddit, páginas autenticadas e sites com muito JS.
+**Regra prática:** Use `convert_url` para páginas públicas. Use `bridge_convert_url` quando quiser a sessão do navegador da extensão, mas não quiser instalar o host de native messaging. Use `agent_convert` / `agent_batch_convert` para Reddit, páginas autenticadas, sites pesados em JS, ou quando precisar processar em lote — ou quiser aplicar uma Skill via o parâmetro `skill` de `agent_convert`.

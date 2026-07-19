@@ -25,10 +25,10 @@ npx web2md https://example.com/article
 npx web2md <url> [options]
 ```
 
-أو ثبّته بشكل عام لبدء تشغيل أسرع:
+أو ثبّته عالميًا لبدء تشغيل أسرع:
 
 ```bash
-npm install -g web2md
+npm install -g web2md-cli
 web2md <url> [options]
 ```
 
@@ -64,11 +64,57 @@ web2md <url> [options]
 | `--bridge` | استخدام إضافة Chrome للمواقع المعروضة عبر JS أو المحمية بتسجيل دخول |
 | `-q, --quiet` | إخفاء رسائل التقدّم |
 
+## الأوامر
+
+إلى جانب تحويل الروابط، يحتوي CLI على أمرين فرعيين للمصادقة ومزامنة المكتبة:
+
+| الأمر | الوصف |
+|---------|-------------|
+| `web2md login` | المصادقة مرة واحدة وحفظ مفتاح API الخاص بك في `~/.web2md/config.json` |
+| `web2md sync [dir]` | مزامنة مكتبة Web2MD الخاصة بك إلى مجلد محلي كملفات Markdown |
+
+### login
+
+```bash
+npx web2md-cli login
+```
+
+يبدأ تدفق تفويض عبر الجهاز (device authorization) قائم على المتصفح: يفتح CLI عنوان `https://web2md.org` ويعرض رمزًا للموافقة عليه. بمجرد الموافقة، يُحفظ مفتاح API الخاص بك في `~/.web2md/config.json` — دون الحاجة لتصدير `WEB2MD_API_KEY` في كل صدفة (shell). يقرأ [خادم MCP](/ar/advanced/mcp-server#authentication) من نفس الملف، لذا فإن تسجيل الدخول هنا مرة واحدة يُصادق أيضًا استدعاءات أدوات MCP.
+
+هل تفضّل لصق مفتاح مباشرة بدلاً من تدفق المتصفح؟
+
+```bash
+npx web2md-cli login --key
+```
+
+يطلب هذا مفتاحًا (`w2m_...`) عبر الإدخال القياسي (stdin) ويحفظه بنفس الطريقة. احصل على مفتاح من [لوحة التحكم](https://web2md.org/dashboard/api-keys).
+
+### sync
+
+```bash
+npx web2md-cli sync [dir] [--tag <t>] [--full]
+```
+
+يزامن مكتبتك — كل صفحة قمت بحفظها عبر الإضافة أو لوحة التحكم أو API — إلى مجلد محلي كملفات Markdown مع بيانات وصفية أمامية (frontmatter)، منظّمة حسب الوسم. يتطلب تسجيل الدخول (أو ضبط `WEB2MD_API_KEY`).
+
+| العلامة | الوصف |
+|------|-------------|
+| `dir` | المجلد الهدف (الافتراضي: `./web2md-vault`) |
+| `--tag <t>` | مزامنة العناصر ذات هذا الوسم فقط |
+| `--full` | تجاهل المؤشر التزايدي وإعادة مسح السجل الكامل |
+
+المزامنة تزايدية افتراضيًا: تتبع مؤشرًا في `<dir>/.web2md-sync.json` وتسحب فقط العناصر الجديدة في عمليات التشغيل اللاحقة. وجّه Obsidian (أو أي أداة تقرأ Markdown) نحو المجلد الهدف لتصفح مكتبتك كملاحظات.
+
+```bash
+npx web2md-cli login
+npx web2md-cli sync ~/Documents/Web2MD-Library
+```
+
 ## متغيرات البيئة
 
 | المتغير | الوصف |
 |----------|-------------|
-| `WEB2MD_API_KEY` | مفتاح API (`w2m_xxx`) لـ Reddit والمواقع المقيَّدة |
+| `WEB2MD_API_KEY` | مفتاح API (`w2m_xxx`) لـ Reddit والمواقع المقيَّدة و`sync` — له الأولوية على `~/.web2md/config.json` |
 | `WEB2MD_API_URL` | تجاوز عنوان API الأساسي |
 | `WEB2MD_EXTENSION_ID` | تجاوز معرّف إضافة Chrome لوضع `--bridge` |
 

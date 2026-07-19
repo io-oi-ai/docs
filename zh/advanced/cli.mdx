@@ -28,7 +28,7 @@ npx web2md <url> [options]
 也可以全局安装，启动更快：
 
 ```bash
-npm install -g web2md
+npm install -g web2md-cli
 web2md <url> [options]
 ```
 
@@ -64,11 +64,57 @@ Web2MD CLI 根据你的配置以三种模式运行：
 | `--bridge` | 使用 Chrome 扩展处理 JS 渲染或需要登录的站点 |
 | `-q, --quiet` | 不显示进度信息 |
 
+## 命令
+
+除了转换 URL，CLI 还提供两个用于认证和 Library 同步的子命令：
+
+| 命令 | 说明 |
+|---------|-------------|
+| `web2md login` | 完成一次认证，将 API key 保存到 `~/.web2md/config.json` |
+| `web2md sync [dir]` | 把你的 Web2MD Library 同步到本地目录，存为 Markdown 文件 |
+
+### login
+
+```bash
+npx web2md-cli login
+```
+
+启动一个基于浏览器的设备授权流程：CLI 会打开 `https://web2md.org` 并显示一个待确认的验证码。确认后，你的 API key 会保存到 `~/.web2md/config.json`——不用每次在 shell 里手动导出 `WEB2MD_API_KEY`。[MCP server](/zh/advanced/mcp-server#authentication) 读取的是同一个文件，所以在这里登录一次也会让 MCP 工具调用一并完成认证。
+
+想跳过浏览器流程，直接粘贴密钥？
+
+```bash
+npx web2md-cli login --key
+```
+
+这会在 stdin 提示你输入密钥（`w2m_...`），并以相同方式保存。可以从[控制台](https://web2md.org/dashboard/api-keys)获取密钥。
+
+### sync
+
+```bash
+npx web2md-cli sync [dir] [--tag <t>] [--full]
+```
+
+把你的 Library——所有通过扩展、控制台或 API 保存的页面——同步到本地目录，存为带 frontmatter 的 Markdown 文件，按标签组织。需要先登录（或设置 `WEB2MD_API_KEY`）。
+
+| 参数 | 说明 |
+|------|-------------|
+| `dir` | 目标目录（默认：`./web2md-vault`） |
+| `--tag <t>` | 只同步带此标签的条目 |
+| `--full` | 忽略增量游标，重新扫描全部历史记录 |
+
+同步默认是增量的：它会在 `<dir>/.web2md-sync.json` 中追踪一个游标，后续运行只拉取新条目。把 Obsidian（或任何支持 Markdown 的工具）指向目标目录，即可把你的 Library 当作笔记浏览。
+
+```bash
+npx web2md-cli login
+npx web2md-cli sync ~/Documents/Web2MD-Library
+```
+
 ## 环境变量
 
 | 变量 | 说明 |
 |----------|-------------|
-| `WEB2MD_API_KEY` | 用于 Reddit 等受限站点的 API key（`w2m_xxx`） |
+| `WEB2MD_API_KEY` | 用于 Reddit、受限站点和 `sync` 的 API key（`w2m_xxx`）——优先级高于 `~/.web2md/config.json` |
 | `WEB2MD_API_URL` | 覆盖 API 基础地址 |
 | `WEB2MD_EXTENSION_ID` | 覆盖 `--bridge` 模式使用的 Chrome 扩展 ID |
 

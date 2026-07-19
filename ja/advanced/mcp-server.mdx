@@ -9,57 +9,114 @@ icon: "robot"
 
 Web2MD MCP サーバーは、AI モデルを外部ツールやデータソースに接続するためのオープン標準である [Model Context Protocol (MCP)](https://modelcontextprotocol.io) を使って、AI アシスタントが直接呼び出せるツール群として Web2MD を公開します。
 
-設定が完了すると、Claude、Cursor、Windsurf との会話を離れることなく、ページの変換、変換履歴の検索、保存済み Markdown の取得を依頼できます。
+設定が完了すると、Claude、Cursor、Windsurf にページの変換、Library の検索・同期、Chrome 拡張機能によるバッチ変換、保存済み Skill の取り込みを、会話を離れることなく依頼できます。
 
 <Note>
-  MCP サーバーには **Web2MD API キー**(PRO プラン)が必要です。[ダッシュボード](https://web2md.org/dashboard/api-keys)から生成してください。
+  MCP サーバーには **Web2MD API キー**(PRO プラン)が必要です。[ダッシュボード](https://web2md.org/dashboard/api-keys)から生成するか、`npx web2md-cli login` を実行して一度認証すれば、CLI とキーを自動的に共有できます(下記の[認証](#認証)を参照)。
 </Note>
 
 ## 利用可能なツール
 
-MCP サーバーは 3 つのツールを提供します。
+MCP サーバーは、機能ごとにグループ化された 11 個のツールを提供します。
 
 | ツール | 説明 |
 |------|-------------|
-| `convert_url` | 任意の URL をクリーンな Markdown に変換 |
-| `semantic_search` | 保存済みの変換を自然言語で検索 |
-| `get_conversion` | 保存済みの変換の Markdown 全文を ID で取得 |
+| `convert_url` | サーバー側の変換機能で任意の URL をクリーンな Markdown に変換 |
+| `bridge_convert_url` | Chrome 拡張機能を HTTP 経由で使って URL を変換 — Reddit、JS レンダリングされたページ、ログインが必要なページ向け |
+| `agent_convert` | ネイティブメッセージングを介して Chrome 拡張機能で URL を変換(`bridge_convert_url` と用途は同じでトランスポートが異なる) |
+| `agent_batch_convert` | ネイティブメッセージングを介して Chrome 拡張機能で最大 50 件の URL を一括変換 |
+| `search_library` | 保存済みの Library をキーワードやタグで検索 |
+| `get_library_items` | id を指定して Library アイテムの Markdown 全文を取得 |
+| `sync_library` | Library をローカルディレクトリに Markdown ファイルとして同期 |
+| `list_skills` | Web2MD クラウドアカウントに保存されている Skill の一覧を取得 |
+| `get_skill` | id または名前で指定した Skill の本文全体を取得 |
+| `semantic_search` | **非推奨** — 代わりに `search_library` + `get_library_items` を使用してください |
+| `get_conversion` | **非推奨** — 代わりに `search_library` + `get_library_items` を使用してください |
 
 ### convert_url
 
-URL を取得し、ページ内容を Markdown として返します。REST API と同じ変換オプションに対応しています。
+URL をサーバー側で取得し、ページ内容をタイトル・文字数・読了時間とともに Markdown として返します。REST API と同じ変換オプション(`includeImages`、`includeLinks`)に対応しています。
 
 **プロンプト例:** _"Convert this URL to markdown: https://docs.example.com/getting-started"_
 
-### semantic_search
+### bridge_convert_url
 
-自然言語クエリを使って、これまでに保存したすべての変換を横断検索します。タイトル、URL、関連度スコア付きのマッチした変換のリストを返します。
+実行中の Chrome 拡張機能を通じて(ローカルの HTTP ブリッジ経由で)URL の HTML を取得し、その HTML をサーバー側で Markdown に変換します。サーバーが直接アクセスできないページ — Reddit、ログインで保護されたサイト、JS レンダリングが多いページ — に使用します。Web2MD 拡張機能をインストールした状態で Chrome を開いている必要があり、拡張機能 ID は API キーから自動的に検出されます。
 
-**プロンプト例:** _"Search my saved pages for articles about database indexing"_
+**プロンプト例:** _"Use the bridge to convert this Reddit thread: https://reddit.com/r/..."_
 
-### get_conversion
+### agent_convert
 
-指定した ID の保存済み変換の Markdown 全文を取得します。`semantic_search` で見つけた後、ドキュメント全体をコンテキストに取り込むのに便利です。
+`bridge_convert_url` と同じく Chrome 拡張機能を使って URL を変換しますが、HTTP の代わりに[Agent Bridge](/ja/advanced/agent-bridge)のネイティブメッセージングチャネルを経由します。オプションの `skill` パラメータを受け付け、Skill の id または名前を渡すとその本文が返却される Markdown に追加され、エージェントがすぐに活用できます。拡張機能とネイティブホストをインストールした状態で Chrome を実行している必要があります。
 
-**プロンプト例:** _"Get the full content of conversion abc123"_
+**プロンプト例:** _"Convert this page with the summarize skill applied: https://..."_
+
+### agent_batch_convert
+
+`agent_convert` と同じトランスポートを使いますが、最大 50 件の URL 配列を受け取り、1 回の呼び出しで順次変換します。多数の Reddit スレッドや JS レンダリングされたページをまとめて取得するのに最適です。
+
+**プロンプト例:** _"Batch-convert these 12 URLs to Markdown: [...]"_
+
+### search_library
+
+保存したすべてのページからなる Web2MD Library を、キーワード(タイトルとページ内容全文に一致)やタグで検索し、新しい順に返します。返されるのは id・タイトル・URL・日付・タグといったコンパクトなメタデータのみで、Markdown 本文は含まれません。Free プランのアカウントは最新のアイテムのみが結果に表示され、結果が切り詰められた場合はツールがその旨を伝えます。
+
+**プロンプト例:** _"Search my library for anything about authentication"_
+
+### get_library_items
+
+id を指定して Library アイテムの Markdown 全文を取得します(1 回の呼び出しにつき最大 20 件 — まず `search_library` で id を調べてください)。レスポンスが大きくなることがあるため、長いページの場合は 1 回の呼び出しあたり 5 件以下にまとめることを推奨します。
+
+**プロンプト例:** _"Get the full content of library items abc123 and def456"_
+
+### sync_library
+
+Library 全体をタグ別に整理された Markdown ファイルとしてローカルディレクトリに同期し、フロントマターを付与します。デフォルトでは差分同期です(`<dir>/.web2md-sync.json` にカーソルを記録)。すべてを再スキャンする場合は `full: true` を指定してください。これは [CLI](/ja/advanced/cli) の `web2md sync` と同じ同期処理です — ワークフローに合わせて使いやすい方を選んでください。
+
+**プロンプト例:** _"Sync my library to ~/notes/web2md, tag 'research' only"_
+
+### list_skills
+
+Web2MD クラウドアカウントに保存されている Skill を、id・名前・説明からなるコンパクトな配列として一覧表示します。全文を取得するには `get_skill` を使用してください。
+
+**プロンプト例:** _"What skills do I have saved?"_
+
+### get_skill
+
+id または名前を指定して、1 つの Skill の SKILL.md 形式の本文全体 — 指示・説明・内容全文 — を取得します。id が分からない場合はまず `list_skills` を使用してください。
+
+**プロンプト例:** _"Get my 'summarize' skill"_
+
+### semantic_search / get_conversion(非推奨)
+
+この 2 つのツールは Library より前から存在するものです。現在も動作しますが、旧来の履歴 API 経由で保存された変換のみを対象とし、Library 全体は参照しません — 新規に統合する場合は `search_library` と `get_library_items` を使用してください。
+
+## 認証
+
+サーバーは次の順序で API キーを解決します。
+
+1. `WEB2MD_API_KEY` 環境変数が設定されていればそれを使用します。
+2. 設定されていない場合は `~/.web2md/config.json` を参照します — これは `npx web2md-cli login`([CLI](/ja/advanced/cli)のデバイスログインフロー)によって書き込まれるのと同じファイルです。一度 `login` を実行すれば、CLI と MCP サーバーの両方がキーを自動的に読み込むため、`env` ブロックは不要になります。
+
+どちらも見つからない場合、サーバーは起動しますが、すべてのツール呼び出しでキーの設定または `login` の実行を促す認証エラーが返されます。
 
 ## セットアップ
 
 <Tabs>
   <Tab title="Claude Desktop">
-    Claude Desktop の設定ファイルを開きます:
+    Claude Desktop の設定ファイルを開きます。
 
     - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
     - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-    `mcpServers` の下に `web2md` エントリを追加します:
+    `mcpServers` の下に `web2md` エントリを追加します。
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -68,17 +125,19 @@ URL を取得し、ページ内容を Markdown として返します。REST API 
     }
     ```
 
-    Claude Desktop を再起動します。ツールピッカーに Web2MD のツールが表示されるはずです。
+    すでに `npx web2md-cli login` を実行済みの場合は、`env` ブロックを丸ごと省略できます — サーバーが `~/.web2md/config.json` からキーを読み込みます。
+
+    Claude Desktop を再起動してください。ツールピッカーに Web2MD のツールが表示されます。
   </Tab>
   <Tab title="Cursor">
-    Cursor の MCP 設定ファイル `~/.cursor/mcp.json` を開き、次を追加します:
+    `~/.cursor/mcp.json` にある Cursor の MCP 設定ファイルを開き、以下を追加します。
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -87,17 +146,17 @@ URL を取得し、ページ内容を Markdown として返します。REST API 
     }
     ```
 
-    Cursor を再起動して新しいサーバーを読み込みます。
+    新しいサーバーを読み込むため Cursor を再起動してください。
   </Tab>
   <Tab title="Windsurf">
-    Windsurf の MCP 設定ファイル `~/.windsurf/mcp.json` を開き、次を追加します:
+    `~/.windsurf/mcp.json` にある Windsurf の MCP 設定ファイルを開き、以下を追加します。
 
     ```json
     {
       "mcpServers": {
         "web2md": {
           "command": "npx",
-          "args": ["web2md-mcp"],
+          "args": ["-y", "web2md-mcp-server"],
           "env": {
             "WEB2MD_API_KEY": "w2m_your_key_here"
           }
@@ -106,49 +165,61 @@ URL を取得し、ページ内容を Markdown として返します。REST API 
     }
     ```
 
-    Windsurf を再起動して新しいサーバーを読み込みます。
+    新しいサーバーを読み込むため Windsurf を再起動してください。
   </Tab>
 </Tabs>
 
 ## 使用例
 
-MCP サーバーが起動したら、AI アシスタントに自然言語で依頼できます。
+MCP サーバーが起動していれば、AI アシスタントに自然な言葉で依頼できます。
 
 <AccordionGroup>
   <Accordion title="ページを Markdown に変換する">
     **あなた:** Convert this URL to markdown: https://react.dev/learn/thinking-in-react
 
-    **アシスタント:** _(`convert_url` を呼び出し)_ 「Thinking in React」の変換済み Markdown はこちらです…
+    **アシスタント:** _(`convert_url` を呼び出し)_ "Thinking in React" を変換した Markdown はこちらです...
   </Accordion>
-  <Accordion title="保存済みの変換を検索する">
-    **あなた:** Search my saved pages for anything about authentication
+  <Accordion title="Library を検索して取得する">
+    **あなた:** Search my library for anything about authentication, then get the full content of the most recent one
 
-    **アシスタント:** _(`semantic_search` を呼び出し)_ 認証に関連する保存済み変換が 3 件見つかりました:
-    1. "OAuth 2.0 Guide" — 2 日前に保存
-    2. "JWT Best Practices" — 先週保存
-    3. ...
+    **アシスタント:** _(`search_library` を呼び出し、続けて `get_library_items` を呼び出し)_ 認証に関連するアイテムが 3 件見つかりました。最新のもの「OAuth 2.0 Guide」の全文はこちらです...
   </Accordion>
-  <Accordion title="変換の全文を取得する">
-    **あなた:** Get the full content of conversion abc123
+  <Accordion title="Library をローカルに同期する">
+    **あなた:** Sync my library to ~/notes/web2md
 
-    **アシスタント:** _(`get_conversion` を呼び出し)_ Markdown の全文はこちらです…
+    **アシスタント:** _(`sync_library` を呼び出し)_ 新規 42 件を同期し、118 件は既に最新、失敗は 0 件でした。
+  </Accordion>
+  <Accordion title="拡張機能でバッチ変換する">
+    **あなた:** Batch-convert these 8 Reddit threads: [...]
+
+    **アシスタント:** _(`agent_batch_convert` を呼び出し)_ 8/8 件の URL を変換しました。
+  </Accordion>
+  <Accordion title="保存済み Skill を適用する">
+    **あなた:** What skills do I have, and can you apply "summarize" to this page: https://...
+
+    **アシスタント:** _(`list_skills` を呼び出し、続けて `skill: "summarize"` を指定して `agent_convert` を呼び出し)_ ページを Markdown に変換し、その下に summarize Skill を適用した内容を付け加えました...
   </Accordion>
 </AccordionGroup>
 
 <Tip>
-  1 つの会話の中でツールを組み合わせられます。例:_"Search my conversions for React docs, then get the full content of the most recent one."_
+  1 回の会話で複数のツールを組み合わせられます。例: _"Search my library for React docs, then get the full content of the most recent one."_
 </Tip>
 
 ## トラブルシューティング
 
 <AccordionGroup>
-  <Accordion title="セットアップ後にツールが表示されない">
-    設定ファイルを編集した後、アプリケーションを再起動したか確認してください。ターミナルで `npx web2md-mcp` が正常に実行できるかも確認してください。
+  <Accordion title="設定後もツールが表示されない">
+    設定ファイルを編集した後にアプリケーションを再起動したか確認してください。ターミナルで `npx -y web2md-mcp-server` が正常に実行できるかも確認してください。
   </Accordion>
-  <Accordion title="認証エラー">
-    `WEB2MD_API_KEY` が正しいこと、PRO サブスクリプションが有効であることを再確認してください。キーは [API キーページ](https://web2md.org/dashboard/api-keys)で確認できます。
+  <Accordion title="認証エラーが発生する">
+    `WEB2MD_API_KEY` が有効な `w2m_` キーであるか、`~/.web2md/config.json` にキーが保存されているか確認してください(不明な場合は `npx web2md-cli login` を再実行)。キーは[API キーページ](https://web2md.org/dashboard/api-keys)で確認できます。
+  </Accordion>
+  <Accordion title="agent_convert / agent_batch_convert / bridge_convert_url が失敗する">
+    これらのツールは、Web2MD 拡張機能をインストールした状態で Chrome を開いている必要があり、`agent_*` 系のツールについてはネイティブホストのインストールも必要です。セットアップ方法は[Agent Bridge](/ja/advanced/agent-bridge)を参照してください。
   </Accordion>
   <Accordion title="npx がパッケージを解決できない">
-    まずパッケージをグローバルにインストールしてみてください:`npm install -g web2md-mcp`。その後、`command` を `web2md-mcp` に変更し、`args` フィールドを削除します。
+    まずパッケージをグローバルにインストールしてみてください: `npm install -g web2md-mcp-server`。その後 `command` を `web2md-mcp-server` に変更し、`args` フィールドを削除してください。
   </Accordion>
 </AccordionGroup>
+</content>
+</invoke>

@@ -28,7 +28,7 @@ npx web2md <url> [options]
 또는 더 빠른 시작을 위해 전역으로 설치할 수 있습니다.
 
 ```bash
-npm install -g web2md
+npm install -g web2md-cli
 web2md <url> [options]
 ```
 
@@ -64,11 +64,57 @@ Web2MD CLI는 설정에 따라 세 가지 모드로 동작합니다.
 | `--bridge` | JS 렌더링 또는 로그인 보호 사이트에 Chrome 확장 프로그램 사용 |
 | `-q, --quiet` | 진행 메시지 숨기기 |
 
+## 명령어
+
+URL 변환 외에도, CLI에는 인증과 Library 동기화를 위한 두 가지 하위 명령어가 있습니다.
+
+| 명령어 | 설명 |
+|---------|-------------|
+| `web2md login` | 한 번 인증하고 API 키를 `~/.web2md/config.json`에 저장 |
+| `web2md sync [dir]` | Web2MD Library를 로컬 디렉터리에 Markdown 파일로 동기화 |
+
+### login
+
+```bash
+npx web2md-cli login
+```
+
+브라우저 기반의 device authorization 흐름을 시작합니다. CLI가 `https://web2md.org`를 열고 승인할 코드를 표시합니다. 승인되면 API 키가 `~/.web2md/config.json`에 저장됩니다 — 매 셸마다 `WEB2MD_API_KEY`를 export할 필요가 없습니다. [MCP server](/ko/advanced/mcp-server#인증)도 동일한 파일을 읽으므로, 여기서 한 번 로그인하면 MCP 도구 호출도 함께 인증됩니다.
+
+브라우저 흐름 대신 키를 직접 붙여넣고 싶다면 다음을 사용하세요.
+
+```bash
+npx web2md-cli login --key
+```
+
+이 명령은 표준 입력(stdin)으로 키(`w2m_...`)를 요청하고 동일한 방식으로 저장합니다. [대시보드](https://web2md.org/dashboard/api-keys)에서 키를 발급받으세요.
+
+### sync
+
+```bash
+npx web2md-cli sync [dir] [--tag <t>] [--full]
+```
+
+extension, 대시보드, API를 통해 저장한 모든 페이지를 담은 Library를 태그별로 정리되고 frontmatter가 포함된 Markdown 파일로 로컬 디렉터리에 동기화합니다. 로그인되어 있거나(또는 `WEB2MD_API_KEY`가 설정되어) 있어야 합니다.
+
+| 플래그 | 설명 |
+|------|-------------|
+| `dir` | 대상 디렉터리(기본값: `./web2md-vault`) |
+| `--tag <t>` | 이 태그가 있는 항목만 동기화 |
+| `--full` | 증분 커서를 무시하고 전체 기록을 다시 스캔 |
+
+기본적으로 동기화는 증분 방식입니다. `<dir>/.web2md-sync.json`에 커서를 추적해 이후 실행부터는 새 항목만 가져옵니다. 대상 디렉터리를 Obsidian(또는 Markdown을 읽을 수 있는 다른 도구)에 지정하면 Library를 노트처럼 탐색할 수 있습니다.
+
+```bash
+npx web2md-cli login
+npx web2md-cli sync ~/Documents/Web2MD-Library
+```
+
 ## 환경 변수
 
 | 변수 | 설명 |
 |----------|-------------|
-| `WEB2MD_API_KEY` | Reddit 및 제한된 사이트용 API 키 (`w2m_xxx`) |
+| `WEB2MD_API_KEY` | Reddit, 제한된 사이트, `sync`용 API 키 (`w2m_xxx`) — `~/.web2md/config.json`보다 우선함 |
 | `WEB2MD_API_URL` | API 기본 URL 재정의 |
 | `WEB2MD_EXTENSION_ID` | `--bridge` 모드용 Chrome 확장 프로그램 ID 재정의 |
 
@@ -234,5 +280,3 @@ Web2MD에는 다음 사이트를 위한 내장 어댑터가 포함되어 있어 
     LLM에 파이프할 때 토큰 사용량을 줄이기 위해 이미지와 링크를 제거합니다.
   </Accordion>
 </AccordionGroup>
-</content>
-</invoke>
